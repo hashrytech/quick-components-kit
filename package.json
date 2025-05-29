@@ -5,10 +5,9 @@
 		"type": "git",
 		"url": "git+https://github.com/hashrytech/quick-components-kit.git"
 	},
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"license": "MIT",
 	"author": "Hashry Tech",
-	"private": true,
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run prepack",
