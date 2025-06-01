@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.3.0
+
+### Minor Changes
+
+- feat: adding textinput component
+
 ## 0.2.1
 
 ### Patch Changes

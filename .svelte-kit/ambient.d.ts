@@ -29,6 +29,7 @@ declare module '$env/static/private' {
 	export const ALLUSERSPROFILE: string;
 	export const AMDRMPATH: string;
 	export const APPDATA: string;
+	export const BUNDLED_DEBUGPY_PATH: string;
 	export const ChocolateyInstall: string;
 	export const ChocolateyLastPathUpdate: string;
 	export const CHROME_CRASHPAD_PIPE_NAME: string;
@@ -40,11 +41,11 @@ declare module '$env/static/private' {
 	export const ComSpec: string;
 	export const DriverData: string;
 	export const EDITOR: string;
-	export const EFC_10132_1262719628: string;
-	export const EFC_10132_1592913036: string;
-	export const EFC_10132_2283032206: string;
-	export const EFC_10132_2775293581: string;
-	export const EFC_10132_3789132940: string;
+	export const EFC_34384_1262719628: string;
+	export const EFC_34384_1592913036: string;
+	export const EFC_34384_2283032206: string;
+	export const EFC_34384_2775293581: string;
+	export const EFC_34384_3789132940: string;
 	export const FPS_BROWSER_APP_PROFILE_STRING: string;
 	export const FPS_BROWSER_USER_PROFILE_STRING: string;
 	export const GIT_ASKPASS: string;
@@ -58,6 +59,7 @@ declare module '$env/static/private' {
 	export const LOGONSERVER: string;
 	export const MAVEN_HOME: string;
 	export const NODE: string;
+	export const NODE_ENV: string;
 	export const npm_command: string;
 	export const npm_config_cache: string;
 	export const npm_config_engine_strict: string;
@@ -68,7 +70,6 @@ declare module '$env/static/private' {
 	export const npm_config_node_gyp: string;
 	export const npm_config_noproxy: string;
 	export const npm_config_npm_version: string;
-	export const npm_config_package: string;
 	export const npm_config_prefix: string;
 	export const npm_config_userconfig: string;
 	export const npm_config_user_agent: string;
@@ -76,10 +77,8 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_event: string;
 	export const npm_lifecycle_script: string;
 	export const npm_node_execpath: string;
-	export const npm_package_integrity: string;
 	export const npm_package_json: string;
 	export const npm_package_name: string;
-	export const npm_package_resolved: string;
 	export const npm_package_version: string;
 	export const NUMBER_OF_PROCESSORS: string;
 	export const OneDrive: string;
@@ -97,6 +96,7 @@ declare module '$env/static/private' {
 	export const PROMPT: string;
 	export const PSModulePath: string;
 	export const PUBLIC: string;
+	export const PYDEVD_DISABLE_FILE_VALIDATION: string;
 	export const PYTHONIOENCODING: string;
 	export const PYTHONUNBUFFERED: string;
 	export const SESSIONNAME: string;
@@ -113,12 +113,15 @@ declare module '$env/static/private' {
 	export const VBOX_HWVIRTEX_IGNORE_SVM_IN_USE: string;
 	export const VIRTUAL_ENV: string;
 	export const VIRTUAL_ENV_PROMPT: string;
+	export const VSCODE_DEBUGPY_ADAPTER_ENDPOINTS: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
 	export const VSCODE_INJECTION: string;
 	export const windir: string;
+	export const __STORYBOOK_SCRIPT__: string;
+	export const __STORYBOOK_URL__: string;
 }
 
 /**
@@ -153,6 +156,7 @@ declare module '$env/dynamic/private' {
 		ALLUSERSPROFILE: string;
 		AMDRMPATH: string;
 		APPDATA: string;
+		BUNDLED_DEBUGPY_PATH: string;
 		ChocolateyInstall: string;
 		ChocolateyLastPathUpdate: string;
 		CHROME_CRASHPAD_PIPE_NAME: string;
@@ -164,11 +168,11 @@ declare module '$env/dynamic/private' {
 		ComSpec: string;
 		DriverData: string;
 		EDITOR: string;
-		EFC_10132_1262719628: string;
-		EFC_10132_1592913036: string;
-		EFC_10132_2283032206: string;
-		EFC_10132_2775293581: string;
-		EFC_10132_3789132940: string;
+		EFC_34384_1262719628: string;
+		EFC_34384_1592913036: string;
+		EFC_34384_2283032206: string;
+		EFC_34384_2775293581: string;
+		EFC_34384_3789132940: string;
 		FPS_BROWSER_APP_PROFILE_STRING: string;
 		FPS_BROWSER_USER_PROFILE_STRING: string;
 		GIT_ASKPASS: string;
@@ -182,6 +186,7 @@ declare module '$env/dynamic/private' {
 		LOGONSERVER: string;
 		MAVEN_HOME: string;
 		NODE: string;
+		NODE_ENV: string;
 		npm_command: string;
 		npm_config_cache: string;
 		npm_config_engine_strict: string;
@@ -192,7 +197,6 @@ declare module '$env/dynamic/private' {
 		npm_config_node_gyp: string;
 		npm_config_noproxy: string;
 		npm_config_npm_version: string;
-		npm_config_package: string;
 		npm_config_prefix: string;
 		npm_config_userconfig: string;
 		npm_config_user_agent: string;
@@ -200,10 +204,8 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_event: string;
 		npm_lifecycle_script: string;
 		npm_node_execpath: string;
-		npm_package_integrity: string;
 		npm_package_json: string;
 		npm_package_name: string;
-		npm_package_resolved: string;
 		npm_package_version: string;
 		NUMBER_OF_PROCESSORS: string;
 		OneDrive: string;
@@ -221,6 +223,7 @@ declare module '$env/dynamic/private' {
 		PROMPT: string;
 		PSModulePath: string;
 		PUBLIC: string;
+		PYDEVD_DISABLE_FILE_VALIDATION: string;
 		PYTHONIOENCODING: string;
 		PYTHONUNBUFFERED: string;
 		SESSIONNAME: string;
@@ -237,12 +240,15 @@ declare module '$env/dynamic/private' {
 		VBOX_HWVIRTEX_IGNORE_SVM_IN_USE: string;
 		VIRTUAL_ENV: string;
 		VIRTUAL_ENV_PROMPT: string;
+		VSCODE_DEBUGPY_ADAPTER_ENDPOINTS: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		VSCODE_GIT_IPC_HANDLE: string;
 		VSCODE_INJECTION: string;
 		windir: string;
+		__STORYBOOK_SCRIPT__: string;
+		__STORYBOOK_URL__: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}
