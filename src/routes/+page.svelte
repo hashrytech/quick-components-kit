@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {TextBox as TextInput} from "$lib/text-input/index.js";
+    import { TextInput} from "$lib/text-input/index.js";
     import Button from "$lib/button/Button.svelte";
 </script>
 

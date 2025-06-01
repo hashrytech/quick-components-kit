@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.3.1
+
+### Patch Changes
+
+- fix: adding plugin to link css to components
+
 ## 0.3.0
 
 ### Minor Changes
