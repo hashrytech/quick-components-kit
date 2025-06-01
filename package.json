@@ -5,7 +5,7 @@
 		"type": "git",
 		"url": "git+https://github.com/hashrytech/quick-components-kit.git"
 	},
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"license": "MIT",
 	"author": "Hashry Tech",
 	"scripts": {
@@ -49,7 +49,8 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
-		}
+		},
+		"./tailwind": "./dist/quick-components-kit-plugin.js"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"

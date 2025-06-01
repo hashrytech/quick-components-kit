@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.3.2
+
+### Patch Changes
+
+- fix: plugin update for tailwind
+
 ## 0.3.1
 
 ### Patch Changes
