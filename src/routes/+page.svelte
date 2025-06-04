@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<form class="w-full">
+<form class="w-full flex flex-col gap-4">
     <div class="flex w-full max-w-lg gap-2">
         <TextInput id="Apple" placeholder="Small..." labelText="Small" inputStyle="" size="sm" required={true} type="text">
             {#snippet icon()}
@@ -42,6 +42,10 @@
         <TextInput id="Apple" placeholder="Medium..." labelText="Medium" inputStyle="" size="md" disabled={true} />
         <TextInput id="Apple" placeholder="Large..." labelText="Large" inputStyle="" size="lg" error="A name is required." />
     </div>
+    
+    <hr />
+    
+    <Button class="text-white text-base font-semibold">Get Started</Button>
 
     <button type="submit" class="bg-green-500 p-2 rounded-primary">Submit</button>
 </form>
