@@ -1,6 +1,7 @@
 <script lang="ts">
     import { TextInput} from "$lib/text-input/index.js";
     import Button from "$lib/button/Button.svelte";
+	import LinkButton from "$lib/link-button/LinkButton.svelte";
 </script>
 
 <h1 class="mt-4 text-center bg-primary-600 p-2 rounded-lg text-white font-semibold text-xl mx-2">Quick Components Kit</h1>
@@ -46,6 +47,7 @@
     <hr />
     
     <Button class="text-white text-base font-semibold">Get Started</Button>
+    <LinkButton href="/">Get Started</LinkButton>
 
     <button type="submit" class="bg-green-500 p-2 rounded-primary">Submit</button>
 </form>
