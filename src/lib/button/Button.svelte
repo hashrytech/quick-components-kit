@@ -1,22 +1,24 @@
-<script lang="ts">
-  export let type: 'button' | 'submit' | 'reset' = 'button';
-  export let variant: 'primary' | 'secondary' | 'danger' = 'primary';
-  export let size: 'sm' | 'md' | 'lg' = 'md';
-  export let disabled: boolean = false;
-  export let className: string = ''; // Allow extra classes
+<script lang="ts" module>
+	  import type { Snippet } from 'svelte';
+    import type { ClassNameValue } from 'tailwind-merge';
+    
+    export type ButtonProps = {
+        children?: Snippet;
+        icon?: Snippet;
+        class?: ClassNameValue;
+    };
+
 </script>
 
-<button
-  type={type}
-  class={`inline-flex items-center justify-center font-medium rounded-md
-    ${variant === 'primary' ? 'bg-blue-600 text-white hover:bg-blue-700' : ''}
-    ${variant === 'secondary' ? 'bg-gray-200 text-gray-800 hover:bg-gray-300' : ''}
-    ${variant === 'danger' ? 'bg-red-600 text-white hover:bg-red-700' : ''}
-    ${size === 'sm' ? 'px-2 py-1 text-sm' : ''}
-    ${size === 'md' ? 'px-4 py-2 text-base' : ''}
-    ${size === 'lg' ? 'px-6 py-3 text-lg' : ''}
-    ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-    ${className}`}
-  disabled={disabled}>
-  <slot />
+<script lang="ts">
+  import {twMerge} from 'tailwind-merge';
+  
+  let {children, icon, ...props}: ButtonProps = $props();
+
+</script>
+
+<button class={twMerge("flex flex-row items-center gap-2 px-4 py-2 bg-button-primary hover:bg-button-primary-hover rounded-primary w-fit cursor-pointer text-white", props.class)}>
+  {#if icon}<span class="w-10">{@render icon()}</span>{/if}
+  {@render children?.()}
 </button>
+
