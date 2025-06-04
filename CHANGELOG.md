@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.4.1
+
+### Patch Changes
+
+- fix: link button package fix
+
 ## 0.4.0
 
 ### Minor Changes

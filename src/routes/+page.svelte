@@ -47,7 +47,7 @@
     <hr />
     
     <Button class="text-white text-base font-semibold">Get Started</Button>
-    <LinkButton href="/">Get Started</LinkButton>
+    <LinkButton href="/" class="text-white text-base font-semibold">Get Started</LinkButton>
 
     <button type="submit" class="bg-green-500 p-2 rounded-primary">Submit</button>
 </form>
