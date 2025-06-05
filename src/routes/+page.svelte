@@ -80,7 +80,7 @@
 
         <div class="flex flex-row gap-4 items-center">
             <p>Hamburger Menu &amp; Top Drawer</p>
-            <HamburgerMenu ariaLabel="Toggle Vertical Menu" bind:open={menuVerticalOpen} onclick={()=> {menuVerticalOpen = !menuVerticalOpen}} />
+            <HamburgerMenu ariaLabel="Toggle Vertical Menu" bind:open={menuVerticalOpen} onclick={()=> {menuVerticalOpen = !menuVerticalOpen}} useCloseBtn={false} />
             <Drawer bind:open={menuVerticalOpen} position="top" />
         </div>
     </div>

@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.7.0
+
+### Minor Changes
+
+- feat: Adding close button state to hamburger menu
+
 ## 0.6.1
 
 ### Patch Changes
