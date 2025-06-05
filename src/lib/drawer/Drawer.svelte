@@ -12,7 +12,7 @@
       ariaLabel?: string;
       transitionDuration?: number;
       transitionDistance?: number;
-      transitionPosition?: "left" | "right" | "top" | "bottom";
+      position?: "left" | "right" | "top" | "bottom";
       overlayClasses?: string;
       children?: Snippet;
       class?: ClassNameValue;
@@ -21,11 +21,11 @@
 </script>
 
 <script lang="ts">  
-  let {open=$bindable(false), escapeKeyClose=true, disableBodyScroll=true, ariaLabel="Drawer", transitionPosition="left", transitionDuration=200, transitionDistance=240, overlayClasses="", children, ...props}: DrawerProps = $props();
+  let {open=$bindable(false), escapeKeyClose=true, disableBodyScroll=true, ariaLabel="Drawer", position="left", transitionDuration=200, transitionDistance=240, overlayClasses="", children, ...props}: DrawerProps = $props();
 
   const transitionProperties = {
-    x: transitionPosition == "left" ? -transitionDistance : transitionPosition == "right" ? transitionDistance : 0,
-    y: transitionPosition == "top" ? -transitionDistance : transitionPosition == "bottom" ? transitionDistance : 0,
+    x: position == "left" ? -transitionDistance : position == "right" ? transitionDistance : 0,
+    y: position == "top" ? -transitionDistance : position == "bottom" ? transitionDistance : 0,
     duration: transitionDuration
   };
 
@@ -73,7 +73,7 @@
 <div transition:fade={{duration: transitionDuration}} class={twMerge("fixed inset-0 bg-overlay-primary", overlayClasses)} role="presentation" onclick={() => open = false}></div>
 
 <div role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex="{open ? 0 : -1}" aria-hidden="{!open}" 
-  class={twMerge("fixed flex flex-col items-center gap-2 bg-white outline-0 focus:outline-0 active:outline-focus-primary focus:outline-focus-primary overflow-y-auto", postionClasses[transitionPosition], props.class)}
+  class={twMerge("fixed flex flex-col items-center gap-2 bg-white outline-0 focus:outline-0 active:outline-focus-primary focus:outline-focus-primary overflow-y-auto", postionClasses[position], props.class)}
   in:fly={transitionProperties}
   out:fly={transitionProperties}>
   {@render children?.()}

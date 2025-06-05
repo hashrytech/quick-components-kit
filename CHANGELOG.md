@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.6.1
+
+### Patch Changes
+
+- fix: renaming transitionPosition property for drawer to position
+
 ## 0.6.0
 
 ### Minor Changes
