@@ -4,6 +4,6 @@
 	let { children } = $props();
 </script>
 
-<div class="container mx-auto flex flex-col gap-10">
+<div class="container mx-auto flex flex-col gap-10 mb-20">
 {@render children()}
 </div>
