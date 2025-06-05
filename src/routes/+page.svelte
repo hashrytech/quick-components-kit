@@ -75,13 +75,13 @@
         <div class="flex flex-row gap-4 items-center">
             <p>Hamburger Menu &amp; Left Drawer</p>
             <HamburgerMenu ariaLabel="Toggle Horizontal Menu" bind:open={menuHorizontalOpen} onclick={()=> {menuHorizontalOpen = !menuHorizontalOpen}} />
-            <Drawer bind:open={menuHorizontalOpen} transitionPosition="left" />
+            <Drawer bind:open={menuHorizontalOpen} position="left" />
         </div>
 
         <div class="flex flex-row gap-4 items-center">
             <p>Hamburger Menu &amp; Top Drawer</p>
             <HamburgerMenu ariaLabel="Toggle Vertical Menu" bind:open={menuVerticalOpen} onclick={()=> {menuVerticalOpen = !menuVerticalOpen}} />
-            <Drawer bind:open={menuVerticalOpen} transitionPosition="top" />
+            <Drawer bind:open={menuVerticalOpen} position="top" />
         </div>
     </div>
 
