@@ -19,7 +19,7 @@
      * @prop {string} [value] - The bound value of the input.
      * @prop {string} [placeholder] - Placeholder text.
      * @prop {string} [labelText] - Optional label text.
-     * @prop {ClassNameValue} [inputStyle] - Additional Tailwind classes to apply to the input. Example: "border-red-500 text-green-600"
+     * @prop {ClassNameValue} [inputClasses] - Additional Tailwind classes to apply to the input. Example: "border-red-500 text-green-600"
      * @prop {TextInputSize} [size] - Size variant ("sm", "md", "lg") with predefined Tailwind styles.
      *        - "sm": h-[2.05rem] text-sm placeholder:text-sm
      *        - "md": h-[2.375rem] text-sm placeholder:text-sm
@@ -35,7 +35,7 @@
         type?: TextInputType;
         placeholder?: string;
         labelText?: string;        
-        inputStyle?: ClassNameValue;
+        inputClasses?: ClassNameValue;
         size?: TextInputSize;
         disabled?: boolean;
         required?: boolean;
@@ -52,7 +52,7 @@
 <script lang="ts">
     import { twMerge } from 'tailwind-merge';
     
-    let { id, type="text", name="", value="", placeholder="", labelText, size="md", inputStyle="", disabled=false, required=false, error, onchange, onmouseup, label, icon}: TextInputProps = $props();
+    let { id, type="text", name="", value="", placeholder="", labelText, size="md", inputClasses="", disabled=false, required=false, error, onchange, onmouseup, label, icon}: TextInputProps = $props();
 
     /**
      * Predefined size classes for the TextBox input.
@@ -76,7 +76,7 @@
             class={twMerge("rounded-primary border-neutral-300 focus:border-primary-500 focus:ring-primary-500 placeholder:opacity-50 disabled:bg-neutral-300/30 disabled:border-gray-300/30",
             error ? "bg-red-50 border-red-300 ring-red-300" : "", 
             icon ? "pl-10" : "",
-            sizeStyle[size], inputStyle)}
+            sizeStyle[size], inputClasses)}
         />
     </div>
     {#if error}

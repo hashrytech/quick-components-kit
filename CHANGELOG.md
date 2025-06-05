@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.5.0
+
+### Minor Changes
+
+- feat: adding navbar and nad-aside
+
 ## 0.4.1
 
 ### Patch Changes

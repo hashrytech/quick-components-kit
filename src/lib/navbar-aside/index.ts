@@ -1,0 +1,1 @@
+export { default as NavBarAside } from './NavBarAside.svelte';
