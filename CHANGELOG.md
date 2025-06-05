@@ -1,5 +1,18 @@
 # @hashrytech/quick-components-kit
 
+## 0.6.0
+
+### Minor Changes
+
+- feat: adding modal component
+- feat: adding checkbox component
+- feat: Adding drawer component
+- feat: adding radio button component
+
+### Patch Changes
+
+- fix: removing navbar-aside component
+
 ## 0.5.0
 
 ### Minor Changes

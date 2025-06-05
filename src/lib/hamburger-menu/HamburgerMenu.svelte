@@ -19,7 +19,7 @@
 
 </script>
 
-<button class={twMerge("p-2 rounded focus:outline-none focus:ring-2 focus:ring-focus-primary cursor-pointer relative w-fit", props.class)} aria-label={ariaLabel} {onclick}>
+<button class={twMerge("p-2 rounded focus:outline-none focus:ring-2 focus:ring-focus-primary cursor-pointer w-fit", props.class)} aria-label={ariaLabel} {onclick}>
     <!-- Icon -->
     <div class="space-y-2">
       {#each Array(numberOfLines) as _}

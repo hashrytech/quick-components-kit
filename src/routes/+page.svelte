@@ -2,10 +2,16 @@
     import { TextInput} from "$lib/text-input/index.js";
     import Button from "$lib/button/Button.svelte";
 	import LinkButton from "$lib/link-button/LinkButton.svelte";
-	import HamburgerMenu from "$lib/hamburger-menu/HamburgerMenu.svelte";
-	import NavBarAside from "$lib/navbar-aside/NavBarAside.svelte";
+	import HamburgerMenu from "$lib/hamburger-menu/HamburgerMenu.svelte";	
+	import Drawer from "$lib/drawer/Drawer.svelte";	
+    import Modal from "$lib/modal/Modal.svelte";
+	import Checkbox from "$lib/checkbox/Checkbox.svelte";
+	import Radio from "$lib/radio/Radio.svelte";
 
-    let menuOpen = $state(false);
+    let menuVerticalOpen = $state(false);
+    let menuHorizontalOpen = $state(false);
+    let modalOpen = $state(false);
+    let radioValue = $state("Apple");
 </script>
 
 <h1 class="mt-4 text-center bg-primary-600 p-2 rounded-lg text-white font-semibold text-xl mx-2">Quick Components Kit</h1>
@@ -31,8 +37,8 @@
 </div>
 
 <form class="w-full flex flex-col gap-4">
-    <div class="flex w-full max-w-lg gap-2">
-        <TextInput id="Apple" placeholder="Small..." labelText="Small" inputClasses="" size="sm" required={true} type="text">
+    <div class="flex flex-wrap w-full max-w-lg gap-2">
+        <TextInput id="Small" placeholder="Small..." labelText="Small" inputClasses="" size="sm" required={true} type="text">
             {#snippet icon()}
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                 class="lucide lucide-anvil-icon lucide-anvil">
@@ -44,8 +50,8 @@
             </svg>
             {/snippet}
         </TextInput>
-        <TextInput id="Apple" placeholder="Medium..." labelText="Medium" inputClasses="" size="md" disabled={true} />
-        <TextInput id="Apple" placeholder="Large..." labelText="Large" inputClasses="" size="lg" error="A name is required." />
+        <TextInput id="Medium" placeholder="Medium..." labelText="Medium" inputClasses="" size="md" disabled={true} />
+        <TextInput id="Large" placeholder="Large..." labelText="Large" inputClasses="" size="lg" error="A name is required." />
     </div>
     <button type="submit" class="bg-green-500 p-2 rounded-primary">Submit</button>
 </form>
@@ -65,8 +71,50 @@
 
     <hr />
 
-    <HamburgerMenu ariaLabel="Toggle Menu" bind:open={menuOpen} onclick={()=> {menuOpen = !menuOpen}} />
-    <NavBarAside bind:open={menuOpen} transitionPosition="right-0" transitionDistance={240} />
+    <div class="flex flex-row flex-wrap gap-10 items-center">
+        <div class="flex flex-row gap-4 items-center">
+            <p>Hamburger Menu &amp; Left Drawer</p>
+            <HamburgerMenu ariaLabel="Toggle Horizontal Menu" bind:open={menuHorizontalOpen} onclick={()=> {menuHorizontalOpen = !menuHorizontalOpen}} />
+            <Drawer bind:open={menuHorizontalOpen} transitionPosition="left" />
+        </div>
+
+        <div class="flex flex-row gap-4 items-center">
+            <p>Hamburger Menu &amp; Top Drawer</p>
+            <HamburgerMenu ariaLabel="Toggle Vertical Menu" bind:open={menuVerticalOpen} onclick={()=> {menuVerticalOpen = !menuVerticalOpen}} />
+            <Drawer bind:open={menuVerticalOpen} transitionPosition="top" />
+        </div>
+    </div>
+
+    <hr />
+    
+    <div class="flex flex-row gap-10 items-center">
+        <div class="flex flex-row gap-4 items-center">
+            <p>Modal</p>
+            <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> modalOpen=true}>Show Modal</Button>
+        </div>
+
+        <Modal bind:open={modalOpen} class="">
+            <div class="p-4 hidden">
+                <h2 class="text-lg font-semibold mb-2">Modal Title</h2>
+                <p class="mb-4">This is a simple modal dialog. You can put any content here.</p>
+                <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Close Modal</Button>
+            </div>
+        </Modal>
+    </div>
+
+    <hr />
+    
+    <div class="flex flex-row gap-10 items-center">
+        <div class="flex flex-row gap-4 items-center">
+            <Checkbox id="checkbox1" label="Check Box Active" checked={true} />
+        </div>
+
+        <div class=" inline-flex gap-4 items-center">
+            <Radio id="radio1" label="Radio Button 1" name="fruit" value="Apple" bind:group={radioValue} />
+            <Radio id="radio2" label="Radio Button 2" name="fruit" value="Banana" bind:group={radioValue} />            
+        </div>
+    </div>
+    
 
     
 
