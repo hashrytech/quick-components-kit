@@ -5,7 +5,7 @@
 		"type": "git",
 		"url": "git+https://github.com/hashrytech/quick-components-kit.git"
 	},
-	"version": "0.4.1",
+	"version": "0.5.0",
 	"license": "MIT",
 	"author": "Hashry Tech",
 	"scripts": {

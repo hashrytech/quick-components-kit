@@ -2,6 +2,10 @@
     import { TextInput} from "$lib/text-input/index.js";
     import Button from "$lib/button/Button.svelte";
 	import LinkButton from "$lib/link-button/LinkButton.svelte";
+	import HamburgerMenu from "$lib/hamburger-menu/HamburgerMenu.svelte";
+	import NavBarAside from "$lib/navbar-aside/NavBarAside.svelte";
+
+    let menuOpen = $state(false);
 </script>
 
 <h1 class="mt-4 text-center bg-primary-600 p-2 rounded-lg text-white font-semibold text-xl mx-2">Quick Components Kit</h1>
@@ -28,7 +32,7 @@
 
 <form class="w-full flex flex-col gap-4">
     <div class="flex w-full max-w-lg gap-2">
-        <TextInput id="Apple" placeholder="Small..." labelText="Small" inputStyle="" size="sm" required={true} type="text">
+        <TextInput id="Apple" placeholder="Small..." labelText="Small" inputClasses="" size="sm" required={true} type="text">
             {#snippet icon()}
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                 class="lucide lucide-anvil-icon lucide-anvil">
@@ -40,14 +44,29 @@
             </svg>
             {/snippet}
         </TextInput>
-        <TextInput id="Apple" placeholder="Medium..." labelText="Medium" inputStyle="" size="md" disabled={true} />
-        <TextInput id="Apple" placeholder="Large..." labelText="Large" inputStyle="" size="lg" error="A name is required." />
+        <TextInput id="Apple" placeholder="Medium..." labelText="Medium" inputClasses="" size="md" disabled={true} />
+        <TextInput id="Apple" placeholder="Large..." labelText="Large" inputClasses="" size="lg" error="A name is required." />
     </div>
-    
-    <hr />
-    
-    <Button class="text-white text-base font-semibold">Get Started</Button>
-    <LinkButton href="/" class="text-white text-base font-semibold">Get Started</LinkButton>
-
     <button type="submit" class="bg-green-500 p-2 rounded-primary">Submit</button>
 </form>
+    <hr />
+    
+    <div class="flex flex-row gap-10 items-center">
+        <div class="flex flex-row gap-4 items-center">
+            <p>Button</p>
+            <Button class="text-white text-base font-semibold">Get Started</Button>
+        </div>
+
+        <div class="flex flex-row gap-4 items-center">
+            <p>Link Button</p>
+            <LinkButton href="/" class="text-white text-base font-semibold">Get Started</LinkButton>
+        </div>
+    </div>
+
+    <hr />
+
+    <HamburgerMenu ariaLabel="Toggle Menu" bind:open={menuOpen} onclick={()=> {menuOpen = !menuOpen}} />
+    <NavBarAside bind:open={menuOpen} transitionPosition="right-0" transitionDistance={240} />
+
+    
+
