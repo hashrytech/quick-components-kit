@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.8.4
+
+### Patch Changes
+
+- fix: Removing open and close for overlay component
+
 ## 0.8.3
 
 ### Patch Changes
