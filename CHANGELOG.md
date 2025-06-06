@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.8.3
+
+### Patch Changes
+
+- fix: Updating class properties of overlay component
+
 ## 0.8.2
 
 ### Patch Changes
