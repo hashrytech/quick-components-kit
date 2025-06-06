@@ -1,5 +1,5 @@
 <script lang="ts" module>    
-	  import { type Snippet } from 'svelte';
+	  import { onDestroy, onMount, type Snippet } from 'svelte';
     import type { ClassNameValue } from 'tailwind-merge';
     import { fade } from 'svelte/transition';
     import {twMerge} from 'tailwind-merge';
@@ -21,9 +21,13 @@
   const lockScroll = () => document.body.style.overflow = 'hidden';
   const unlockScroll = () => document.body.style.overflow = '';
 
-  $effect(() => {
-		if (disableBodyScroll) lockScroll(); else unlockScroll();
+  onMount(() => {
+		lockScroll();
 	});
+
+  onDestroy(() => {
+    unlockScroll();
+  });
 
 </script>
 
