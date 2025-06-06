@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.8.0
+
+### Minor Changes
+
+- feat: Adding overlay component
+
 ## 0.7.0
 
 ### Minor Changes
