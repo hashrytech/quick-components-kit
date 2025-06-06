@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.8.2
+
+### Patch Changes
+
+- fix: fixing type for onclick overlay
+
 ## 0.8.1
 
 ### Patch Changes

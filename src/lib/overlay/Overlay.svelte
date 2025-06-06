@@ -14,6 +14,7 @@
       overlayClasses?: string;
       children?: Snippet;
       class?: ClassNameValue;
+      onclick?: (event: MouseEvent) => void;
     };
 
 </script>
