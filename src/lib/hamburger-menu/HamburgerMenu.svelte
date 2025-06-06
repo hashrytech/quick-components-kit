@@ -6,6 +6,7 @@
         useCloseBtn?: boolean;
         ariaLabel: string;
         linesClasses?: string;
+        linesParentClasses?: string;
         onclick?: (event: MouseEvent) => void;
         class?: ClassNameValue;
     };
@@ -15,7 +16,7 @@
 <script lang="ts">
   import {twMerge} from 'tailwind-merge';
   
-  let { open=$bindable(true), ariaLabel, linesClasses, useCloseBtn=true, onclick, ...props }: HamburgerProps = $props();
+  let { open=$bindable(true), ariaLabel, linesClasses, linesParentClasses, useCloseBtn=true, onclick, ...props }: HamburgerProps = $props();
 
 </script>
 
@@ -37,8 +38,8 @@
 </button>
 -->
 
-<button aria-label={ariaLabel} class={twMerge("p-2 rounded focus:outline-none focus:ring-2 focus:ring-focus-primary cursor-pointer w-fit", props.class)} {onclick}>
-  <div class="flex flex-col items-center justify-center size-7 transition-all gap-2">
+<button aria-label={ariaLabel} class={twMerge("px-1 py-0.5 rounded focus:outline-none focus:ring-2 focus:ring-focus-primary cursor-pointer w-fit", props.class)} {onclick}>
+  <div class={twMerge("flex flex-col items-center justify-center size-7 transition-all gap-2", linesParentClasses)}>
     <!-- Top bar -->
     <span class={twMerge("h-0.5 w-7 bg-button-primary transition-transform duration-300 origin-center", open && useCloseBtn ? "rotate-45 translate-y-2.5" : "", linesClasses)}></span>
 
