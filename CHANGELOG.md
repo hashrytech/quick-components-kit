@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.8.5
+
+### Patch Changes
+
+- fix: scroll disable fix for overlay component
+
 ## 0.8.4
 
 ### Patch Changes
