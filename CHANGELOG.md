@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.11.0
+
+### Minor Changes
+
+- feat: Adding scroll to action
+
 ## 0.10.0
 
 ### Minor Changes
