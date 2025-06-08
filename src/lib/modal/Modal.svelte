@@ -27,8 +27,8 @@
     open = false;
   };
 
-  function handleKeydown (event: { key: string; }) {
-    if(open && escapeKeyClose && event.key === "Escape") {
+  function handleKeydown() {
+    if(open && escapeKeyClose){
       closeModal();
     }
   };
