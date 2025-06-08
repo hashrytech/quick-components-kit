@@ -8,5 +8,8 @@ export * from './drawer/index.js';
 export * from './modal/index.js';
 export * from './overlay/index.js';
 
+export * from './actions/disable-scroll.js';
+export * from './actions/on-keydown.js';
+
 
 // Add more components here...
