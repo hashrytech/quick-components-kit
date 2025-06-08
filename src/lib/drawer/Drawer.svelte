@@ -1,9 +1,10 @@
 <script lang="ts" module>    
-	  import { onDestroy, onMount, type Snippet } from 'svelte';
+	  import { type Snippet } from 'svelte';
     import type { ClassNameValue } from 'tailwind-merge';
-    import { fade, fly } from 'svelte/transition';
+    import { fly } from 'svelte/transition';
     import {twMerge} from 'tailwind-merge';
-	  import { browser } from '$app/environment';
+    import Overlay from '$lib/overlay/Overlay.svelte';
+    import { onKeydown } from '$lib/actions/on-keydown.js';
     
     export type DrawerProps = {
       open?: boolean;
@@ -36,46 +37,26 @@
     bottom: "bottom-0 left-0 right-0 h-60",
   };
 
-  const lockScroll = () => document.body.style.overflow = 'hidden';
-  const unlockScroll = () => document.body.style.overflow = '';
-
-  $effect(() => {
-		if (open && disableBodyScroll) lockScroll(); else unlockScroll();
-	});
-
-  onMount(() => {
-    if(browser){
-      window.addEventListener('keydown', handleKeydown);
-    }
-  });
-
-  onDestroy(() => {
-    if(browser){
-      window.removeEventListener('keydown', handleKeydown);
-    }
-  });
-  
-
-  export function closeDrawer() {
-    open = false;
-  };
-
   function handleKeydown (event: { key: string; }) {
-    if(open && escapeKeyClose && event.key === "Escape") {
+    if(open && escapeKeyClose) {
       closeDrawer();
     }
   };
 
+  export function closeDrawer() {
+    open = false;
+  };  
+
 </script>
 
 {#if open}
-<!-- Overlay -->
-<div transition:fade={{duration: transitionDuration}} class={twMerge("fixed inset-0 bg-overlay-primary", overlayClasses)} role="presentation" onclick={() => open = false}></div>
+<Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={() => open = false} />
 
 <div role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex="{open ? 0 : -1}" aria-hidden="{!open}" 
   class={twMerge("fixed flex flex-col items-center gap-2 bg-white outline-0 focus:outline-0 active:outline-focus-primary focus:outline-focus-primary overflow-y-auto", postionClasses[position], props.class)}
   in:fly={transitionProperties}
-  out:fly={transitionProperties}>
+  out:fly={transitionProperties}
+  use:onKeydown={{key: "Escape", callback: handleKeydown}}>
   {@render children?.()}
 </div>
 {/if}

@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.9.0
+
+### Minor Changes
+
+- feat: Adding new disable scroll and onkeyboard actions along with updates to Modal, Drawer and Overlay
+
 ## 0.8.5
 
 ### Patch Changes

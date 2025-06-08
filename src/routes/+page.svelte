@@ -6,7 +6,7 @@
 	import Drawer from "$lib/drawer/Drawer.svelte";	
     import Modal from "$lib/modal/Modal.svelte";
 	import Checkbox from "$lib/checkbox/Checkbox.svelte";
-	import Radio from "$lib/radio/Radio.svelte";
+	import Radio from "$lib/radio/Radio.svelte";    
 
     let menuVerticalOpen = $state(false);
     let menuHorizontalOpen = $state(false);
@@ -36,7 +36,7 @@
     </div>
 </div>
 
-<form class="w-full flex flex-col gap-4">
+<form class="flex flex-col gap-4">
     <div class="flex flex-wrap w-full max-w-lg gap-2">
         <TextInput id="Small" placeholder="Small..." labelText="Small" inputClasses="" size="sm" required={true} type="text">
             {#snippet icon()}
@@ -55,66 +55,66 @@
     </div>
     <button type="submit" class="bg-green-500 p-2 rounded-primary">Submit</button>
 </form>
-    <hr />
+<hr />
     
-    <div class="flex flex-row gap-10 items-center">
-        <div class="flex flex-row gap-4 items-center">
-            <p>Button</p>
-            <Button class="text-white text-base font-semibold">Get Started</Button>
-        </div>
-
-        <div class="flex flex-row gap-4 items-center">
-            <p>Link Button</p>
-            <LinkButton href="/" class="text-white text-base font-semibold">Get Started</LinkButton>
-        </div>
+<div class="flex flex-row gap-10 items-center">
+    <div class="flex flex-row gap-4 items-center">
+        <p>Button</p>
+        <Button class="text-white text-base font-semibold">Get Started</Button>
     </div>
 
-    <hr />
+    <div class="flex flex-row gap-4 items-center">
+        <p>Link Button</p>
+        <LinkButton href="/" class="text-white text-base font-semibold">Get Started</LinkButton>
+    </div>
+</div>
 
-    <div class="flex flex-row flex-wrap gap-10 items-center">
-        <div class="flex flex-row gap-4 items-center">
-            <p>Hamburger Menu &amp; Left Drawer</p>
-            <HamburgerMenu ariaLabel="Toggle Horizontal Menu" bind:open={menuHorizontalOpen} onclick={()=> {menuHorizontalOpen = !menuHorizontalOpen}} />
-            <Drawer bind:open={menuHorizontalOpen} position="left" />
-        </div>
+<hr />
 
-        <div class="flex flex-row gap-4 items-center">
-            <p>Hamburger Menu &amp; Top Drawer</p>
-            <HamburgerMenu ariaLabel="Toggle Vertical Menu" bind:open={menuVerticalOpen} onclick={()=> {menuVerticalOpen = !menuVerticalOpen}} useCloseBtn={false} />
-            <Drawer bind:open={menuVerticalOpen} position="top" />
-        </div>
+<div class="flex flex-row flex-wrap gap-10 items-center">
+    <div class="flex flex-row gap-4 items-center">
+        <p>Hamburger Menu &amp; Left Drawer</p>
+        <HamburgerMenu ariaLabel="Toggle Horizontal Menu" bind:open={menuHorizontalOpen} onclick={()=> {menuHorizontalOpen = !menuHorizontalOpen}} />
+        <Drawer bind:open={menuHorizontalOpen} position="left" />
     </div>
 
-    <hr />
-    
-    <div class="flex flex-row gap-10 items-center">
-        <div class="flex flex-row gap-4 items-center">
-            <p>Modal</p>
-            <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> modalOpen=true}>Show Modal</Button>
-        </div>
+    <div class="flex flex-row gap-4 items-center">
+        <p>Hamburger Menu &amp; Top Drawer</p>
+        <HamburgerMenu ariaLabel="Toggle Vertical Menu" bind:open={menuVerticalOpen} onclick={()=> {menuVerticalOpen = !menuVerticalOpen}} useCloseBtn={false} />
+        <Drawer bind:open={menuVerticalOpen} position="top" />
+    </div>
+</div>
 
-        <Modal bind:open={modalOpen} class="">
-            <div class="p-4 hidden">
-                <h2 class="text-lg font-semibold mb-2">Modal Title</h2>
-                <p class="mb-4">This is a simple modal dialog. You can put any content here.</p>
-                <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Close Modal</Button>
-            </div>
-        </Modal>
+<hr />
+
+<div class="flex flex-row gap-10 items-center">
+    <div class="flex flex-row gap-4 items-center">
+        <p>Modal</p>
+        <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> modalOpen=true}>Show Modal</Button>
     </div>
 
-    <hr />
-    
-    <div class="flex flex-row gap-10 items-center">
-        <div class="flex flex-row gap-4 items-center">
-            <Checkbox id="checkbox1" label="Check Box Active" checked={true} />
+    <Modal bind:open={modalOpen} class="">
+        <div class="p-4 hidden">
+            <h2 class="text-lg font-semibold mb-2">Modal Title</h2>
+            <p class="mb-4">This is a simple modal dialog. You can put any content here.</p>
+            <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Close Modal</Button>
         </div>
+    </Modal>
+</div>
 
-        <div class=" inline-flex gap-4 items-center">
-            <Radio id="radio1" label="Radio Button 1" name="fruit" value="Apple" bind:group={radioValue} />
-            <Radio id="radio2" label="Radio Button 2" name="fruit" value="Banana" bind:group={radioValue} />            
-        </div>
+<hr />
+
+<div class="flex flex-row gap-10 items-center">
+    <div class="flex flex-row gap-4 items-center">
+        <Checkbox id="checkbox1" label="Check Box Active" checked={true} />
     </div>
-    
 
-    
+    <div class=" inline-flex gap-4 items-center">
+        <Radio id="radio1" label="Radio Button 1" name="fruit" value="Apple" bind:group={radioValue} />
+        <Radio id="radio2" label="Radio Button 2" name="fruit" value="Banana" bind:group={radioValue} />            
+    </div>
+</div>
+
+
+
 
