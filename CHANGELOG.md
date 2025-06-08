@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.11.1
+
+### Patch Changes
+
+- fix: Adding missing imports for lock scroll and scroll to
+
 ## 0.11.0
 
 ### Minor Changes

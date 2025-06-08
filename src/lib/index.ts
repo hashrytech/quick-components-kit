@@ -10,6 +10,8 @@ export * from './overlay/index.js';
 
 export * from './actions/disable-scroll.js';
 export * from './actions/on-keydown.js';
+export * from './actions/lock-scroll.js';
+export * from './actions/scroll-to.js';
 
 
 // Add more components here...
