@@ -1,5 +1,17 @@
 # @hashrytech/quick-components-kit
 
+## 0.10.0
+
+### Minor Changes
+
+- feat: Adding lock-scroll action
+
+## 0.9.1
+
+### Patch Changes
+
+- fix: disable scroll on Overlay component control properly enabled and disabled
+
 ## 0.9.0
 
 ### Minor Changes

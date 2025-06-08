@@ -37,7 +37,7 @@
     bottom: "bottom-0 left-0 right-0 h-60",
   };
 
-  function handleKeydown (event: { key: string; }) {
+  function handleKeydown() {
     if(open && escapeKeyClose) {
       closeDrawer();
     }
