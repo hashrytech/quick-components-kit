@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.5
+
+### Patch Changes
+
+- fix: returning a 503 instead of 0 on fetch failed
+
 ## 0.12.4
 
 ### Patch Changes
