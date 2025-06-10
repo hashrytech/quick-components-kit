@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.0
+
+### Minor Changes
+
+- feat: Adding api-client, api-proxy, crypto and problem-details modules
+
 ## 0.11.1
 
 ### Patch Changes
