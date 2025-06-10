@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.2
+
+### Patch Changes
+
+- fix: Adding bindable to text input value
+
 ## 0.12.1
 
 ### Patch Changes

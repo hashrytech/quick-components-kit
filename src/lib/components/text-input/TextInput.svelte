@@ -52,7 +52,7 @@
 <script lang="ts">
     import { twMerge } from 'tailwind-merge';
     
-    let { id, type="text", name="", value="", placeholder="", labelText, size="md", inputClasses="", disabled=false, required=false, error, onchange, onmouseup, label, icon}: TextInputProps = $props();
+    let { id, type="text", name="", value=$bindable(""), placeholder="", labelText, size="md", inputClasses="", disabled=false, required=false, error, onchange, onmouseup, label, icon}: TextInputProps = $props();
 
     /**
      * Predefined size classes for the TextBox input.
