@@ -11,6 +11,13 @@
  * built-in request/response interception via SvelteKit's `handleFetch` hook).
  */
 
+export type ApiResponse<T> = {
+    ok: boolean;
+    status: number;
+    data?: T;
+    error?: string;
+};
+
 // Define configuration options for the API client
 export interface ApiClientConfig {
     /** The base URL for your API (e.g., 'https://api.yourapi.com/v1'). */
@@ -222,7 +229,7 @@ export class ApiClient {
      * @returns The parsed response data or the raw `Response` object.
      * @throws `ApiError` if the response status is not OK (2xx).
      */
-    private async processResponse<T>(response: Response, options: RequestOptions): Promise<T | Response> {
+    private async processResponse<T>(response: Response, options: RequestOptions): Promise<T> {
         // Apply response interceptors sequentially
         for (const interceptor of this.responseInterceptors) {
             response = await Promise.resolve(interceptor(response));
@@ -237,9 +244,7 @@ export class ApiClient {
             try {
                 // Attempt to parse a more descriptive error message from JSON response
                 errorJson = await errorResponseClone.json();
-                errorMessage = (errorJson as { message?: string }).message
-                    || (errorJson as { error?: string }).error
-                    || JSON.stringify(errorJson);
+                errorMessage = (errorJson as { message?: string }).message || (errorJson as { error?: string }).error || JSON.stringify(errorJson);
             } catch (e) {
                 // If response is not JSON, use default status text or log parsing error
                 console.warn('API Client: Failed to parse error response as JSON.', e);
@@ -254,8 +259,7 @@ export class ApiClient {
                 return (await response.blob()) as T;
             case 'arrayBuffer':
                 return (await response.arrayBuffer()) as T;
-            case 'raw':
-                return response as T; // Return the raw Response object
+            case 'raw': return response as unknown as T;
             case 'json':
             default:
                 // Handle 204 No Content (or other non-body responses)
@@ -300,21 +304,33 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response data or raw Response/Blob.
      * @template T - Expected type of the response data.
      */
-    async request<T>(endpoint: string, method: string, body: BodyInit | object | null | undefined, options: RequestOptions = {}): Promise<T | Response> {
-        // Use the provided fetchInstance or fallback to global fetch
+    async request<T>(endpoint: string, method: string, body: BodyInit | object | null | undefined, options: RequestOptions = {}): Promise<ApiResponse<T>> {
         const currentFetch = options.fetchInstance || fetch;
 
         try {
             const request = await this.processRequest(endpoint, method, body, options);
             const response = await currentFetch(request);
-            return await this.processResponse<T>(response, options);
-        } catch (error: unknown) { // Use unknown for safety
-            // Process error with registered handlers
+            const parsed = await this.processResponse<T>(response, options);
+
+            return {
+                ok: true,
+                status: response.status,
+                data: parsed as T
+            };
+        } catch (error: unknown) {
             await this.handleError(error);
-            // Re-throw the error so the consumer can handle it if needed
-            throw error; // Re-throw the original unknown error
+
+            const status = error instanceof ApiError ? error.status : 500;
+            const message = error instanceof Error ? error.message : 'Unknown error';
+
+            return {
+                ok: false,
+                status,
+                error: message
+            };
         }
     }
+
 
     // --- HTTP Method Shorthands ---
 
@@ -326,7 +342,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response.
      */
-    get<T>(endpoint: string, options?: RequestOptions): Promise<T | Response> {
+    get<T>(endpoint: string, options?: RequestOptions): Promise<ApiResponse<T>> {
         return this.request<T>(endpoint, 'GET', undefined, options);
     }
 
@@ -339,7 +355,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response.
      */
-    post<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<T | Response> {
+    post<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<ApiResponse<T>> {
         return this.request<T>(endpoint, 'POST', data, options);
     }
 
@@ -353,7 +369,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response.
      */
-    put<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<T | Response> {
+    put<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<ApiResponse<T>> {
         return this.request<T>(endpoint, 'PUT', data, options);
     }
 
@@ -367,7 +383,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response.
      */
-    patch<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<T | Response> {
+    patch<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<ApiResponse<T>> {
         return this.request<T>(endpoint, 'PATCH', data, options);
     }
 
@@ -379,7 +395,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response (if any).
      */
-    delete<T>(endpoint: string, options?: RequestOptions): Promise<T | Response> {
+    delete<T>(endpoint: string, options?: RequestOptions): Promise<ApiResponse<T>> {
         // 'delete' is a reserved keyword, but acceptable as a method name in classes.
         // If you encounter issues with specific environments, you could rename to 'del' or 'remove'.
         return this.request<T>(endpoint, 'DELETE', undefined, options);
@@ -396,7 +412,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response data.
      * @template T - Expected type of the response data after upload.
      */
-    uploadFile<T>(endpoint: string, file: File | Blob | FormData, fieldName: string = 'file', options?: RequestOptions): Promise<T | Response> {
+    uploadFile<T>(endpoint: string, file: File | Blob | FormData, fieldName: string = 'file', options?: RequestOptions): Promise<ApiResponse<T>> {
         let uploadBody: FormData;
         if (file instanceof File || file instanceof Blob) {
             uploadBody = new FormData();
@@ -521,15 +537,18 @@ export class ApiClient {
      * @returns A Promise that resolves to a Blob containing the downloaded file.
      */
 	async downloadWithProgress(endpoint: string, onProgress: (percent: number) => void, options?: RequestOptions): Promise<Blob> {
-        const res = await this.request<Response>(endpoint, 'GET', undefined, {
-            ...options,
-            responseType: 'raw'
-        });
+        const res = await this.request<Response>(endpoint, 'GET', undefined, {...options, responseType: 'raw' });
 
-        const contentLengthHeader = res.headers.get('Content-Length');
+        if (!res.ok || !res.data) {
+            throw new Error(`Download failed: ${res.error ?? 'Unknown error'}`);
+        }
+
+        const response = res.data; // This is the raw Response object
+
+        const contentLengthHeader = response.headers.get('Content-Length');
         const contentLength = contentLengthHeader ? parseInt(contentLengthHeader, 10) : 0;
 
-        const reader = res.body?.getReader();
+        const reader = response.body?.getReader();
         if (!reader) throw new Error('Failed to get reader from response body.');
 
         const chunks: Uint8Array[] = [];
@@ -539,16 +558,17 @@ export class ApiClient {
             const { done, value } = await reader.read();
             if (done) break;
             if (value) {
-                chunks.push(value);
-                loaded += value.length;
-                if (contentLength) {
-                    onProgress(Math.round((loaded / contentLength) * 100));
-                }
+            chunks.push(value);
+            loaded += value.length;
+            if (contentLength) {
+                onProgress(Math.round((loaded / contentLength) * 100));
+            }
             }
         }
 
         return new Blob(chunks);
     }
+
 
 	/**
      * Executes multiple request functions concurrently and infers their return types.

@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.1
+
+### Patch Changes
+
+- refactor: Using a typed wrapper approach for API Client
+
 ## 0.12.0
 
 ### Minor Changes
