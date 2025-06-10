@@ -4,8 +4,8 @@
     import { fade } from 'svelte/transition';
     import {twMerge} from 'tailwind-merge';
 	  import { browser } from '$app/environment';
-	import Overlay from '$lib/overlay/Overlay.svelte';
-	import { onKeydown } from '$lib/actions/on-keydown.js';
+	  import Overlay from '$lib/components/overlay/Overlay.svelte';
+	  import { onKeydown } from '$lib/actions/on-keydown.js';
     
     export type ModalProps = {
       open?: boolean;

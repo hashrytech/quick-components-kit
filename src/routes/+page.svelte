@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { TextInput} from "$lib/text-input/index.js";
-    import Button from "$lib/button/Button.svelte";
-	import LinkButton from "$lib/link-button/LinkButton.svelte";
-	import HamburgerMenu from "$lib/hamburger-menu/HamburgerMenu.svelte";	
-	import Drawer from "$lib/drawer/Drawer.svelte";	
-    import Modal from "$lib/modal/Modal.svelte";
-	import Checkbox from "$lib/checkbox/Checkbox.svelte";
-	import Radio from "$lib/radio/Radio.svelte";    
+    import { TextInput} from "$lib/components/text-input/index.js";
+    import Button from "$lib/components/button/Button.svelte";
+	import LinkButton from "$lib/components/link-button/LinkButton.svelte";
+	import HamburgerMenu from "$lib/components/hamburger-menu/HamburgerMenu.svelte";	
+	import Drawer from "$lib/components/drawer/Drawer.svelte";	
+    import Modal from "$lib/components/modal/Modal.svelte";
+	import Checkbox from "$lib/components/checkbox/Checkbox.svelte";
+	import Radio from "$lib/components/radio/Radio.svelte";    
 
     let menuVerticalOpen = $state(false);
     let menuHorizontalOpen = $state(false);

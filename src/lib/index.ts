@@ -1,17 +1,24 @@
 // Reexport your entry components here
 // lib/index.js
-export * from './text-input/index.js';
-export * from './button/index.js';
-export * from './link-button/index.js';
-export * from './hamburger-menu/index.js';
-export * from './drawer/index.js';
-export * from './modal/index.js';
-export * from './overlay/index.js';
+export * from './components/text-input/index.js';
+export * from './components/button/index.js';
+export * from './components/link-button/index.js';
+export * from './components/hamburger-menu/index.js';
+export * from './components/drawer/index.js';
+export * from './components/modal/index.js';
+export * from './components/overlay/index.js';
+export * from './components/radio/index.js';
+export * from './components/checkbox/index.js';
 
 export * from './actions/disable-scroll.js';
 export * from './actions/on-keydown.js';
 export * from './actions/lock-scroll.js';
 export * from './actions/scroll-to.js';
+
+export * from './modules/api-client.js';
+export * from './modules/api-proxy.js';
+export * from './modules/crypto.js';
+export * from './modules/problem-details.js';
 
 
 // Add more components here...

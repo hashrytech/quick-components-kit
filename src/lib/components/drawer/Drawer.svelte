@@ -3,7 +3,7 @@
     import type { ClassNameValue } from 'tailwind-merge';
     import { fly } from 'svelte/transition';
     import {twMerge} from 'tailwind-merge';
-    import Overlay from '$lib/overlay/Overlay.svelte';
+    import Overlay from '$lib/components/overlay/Overlay.svelte';
     import { onKeydown } from '$lib/actions/on-keydown.js';
     
     export type DrawerProps = {
