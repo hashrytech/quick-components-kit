@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.3
+
+### Patch Changes
+
+- fix: Display error message prop for text input
+
 ## 0.12.2
 
 ### Patch Changes

@@ -80,6 +80,6 @@
         />
     </div>
     {#if error}
-    <p class="text-sm text-red-500 mt-0.5 bg-red-100/30 px-2 rounded-primary">This is a an error message that is larger and bigger.</p>
+    <p class="text-sm text-red-500 mt-0.5 bg-red-100/30 px-2 rounded-primary">{error}</p>
     {/if}
 </div>
