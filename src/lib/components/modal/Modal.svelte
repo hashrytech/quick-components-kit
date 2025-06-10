@@ -1,9 +1,7 @@
 <script lang="ts" module>    
-	  import { onDestroy, onMount, type Snippet } from 'svelte';
-    import type { ClassNameValue } from 'tailwind-merge';
-    import { fade } from 'svelte/transition';
+	  import { type Snippet } from 'svelte';
+    import type { ClassNameValue } from 'tailwind-merge';    
     import {twMerge} from 'tailwind-merge';
-	  import { browser } from '$app/environment';
 	  import Overlay from '$lib/components/overlay/Overlay.svelte';
 	  import { onKeydown } from '$lib/actions/on-keydown.js';
     

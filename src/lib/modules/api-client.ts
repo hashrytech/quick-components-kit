@@ -321,7 +321,7 @@ export class ApiClient {
             await this.handleError(error);
 
             const isApiError = error instanceof ApiError;
-            const status = isApiError ? error.status : 0; // 0 = network error or unknown
+            const status = isApiError ? error.status : 503; // // Service Unavailable fallback
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
 
             return {
