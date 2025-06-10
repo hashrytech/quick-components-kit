@@ -72,7 +72,7 @@
     {#if label}{@render label()}{:else}{#if labelText}<label for={id} class="text-sm font-medium text-neutral-600 ml-1">{labelText}</label>{/if}{/if}
     <div class="relative">
         {#if icon}<div class="absolute inset-y-0 left-0 flex items-center justify-center rounded-l-primary m-0.5 w-10">{@render icon()}</div>{/if}
-        <input {disabled} {required} {type} {id} {name} {placeholder} {onchange} {onmouseup} bind:value 
+        <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {onchange} {onmouseup} bind:value 
             class={twMerge("rounded-primary border-border-primary focus:border-primary-500 focus:ring-primary-500 placeholder:opacity-50 disabled:bg-neutral-300/30 disabled:border-gray-300/30",
             error ? "bg-red-50 border-red-300 ring-red-300" : "", 
             icon ? "pl-10" : "",
