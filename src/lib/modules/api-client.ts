@@ -292,7 +292,7 @@ export class ApiClient {
         }
         // Re-throw the error if it hasn't been "handled" by a handler (e.g., by redirecting)
         // This ensures the calling context can still catch and react to the error.
-        throw err;
+        //throw err; //Not rethrowing the error here, as we want to return ApiResponse with error details.
     }
 
     /**
@@ -320,8 +320,9 @@ export class ApiClient {
         } catch (error: unknown) {
             await this.handleError(error);
 
-            const status = error instanceof ApiError ? error.status : 500;
-            const message = error instanceof Error ? error.message : 'Unknown error';
+            const isApiError = error instanceof ApiError;
+            const status = isApiError ? error.status : 0; // 0 = network error or unknown
+            const message = error instanceof Error ? error.message : 'Unexpected error occurred';
 
             return {
                 ok: false,

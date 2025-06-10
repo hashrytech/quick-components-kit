@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.4
+
+### Patch Changes
+
+- refactor: Not rethrowing request error
+
 ## 0.12.3
 
 ### Patch Changes
