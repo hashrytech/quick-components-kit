@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.8
+
+### Patch Changes
+
+- fix: api client small issue fix
+
 ## 0.12.7
 
 ### Patch Changes
