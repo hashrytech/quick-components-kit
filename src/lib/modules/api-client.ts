@@ -325,7 +325,7 @@ export class ApiClient {
             const isApiError = error instanceof ApiError;
             const status = isApiError ? error.status : 503; // // Service Unavailable fallback
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
-            const errorObj = getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: [message] });
+            const errorObj = getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: message });
             
             return {
                 ok: false,
