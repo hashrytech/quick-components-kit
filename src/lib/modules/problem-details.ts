@@ -41,4 +41,63 @@ export class ProblemDetailError extends Error {
       [field]: [field_error]
     };
   }
+
+  /**
+   * Converts the ProblemDetailError instance into a plain dictionary object,
+   * suitable for serializing to JSON in HTTP responses (e.g., conforming to RFC 7807).
+   *
+   * @returns A plain object containing the structured error details.
+   */
+  toDict(): Record<string, string | string[] | number | Record<string, string[]>> {
+    return {
+      // The HTTP status code associated with the error (e.g., 400, 404)
+      status: this.status,
+
+      // A short, human-readable summary of the problem
+      title: this.message,
+
+      // A URI identifier for the type of error
+      type: this.type,
+
+      // A detailed human-readable explanation of the error
+      detail: this.detail,
+
+      // Field-specific validation errors (uncomment if needed)
+      errors: this.errors
+    };
+  }
+}
+
+export interface ProblemDetail {
+  status: number;
+  title: string;
+  detail: string;
+  type: string;  
+  error?: Record<string, string | string[] | number | boolean>;
+  [key: string]: unknown | unknown[];
+}
+
+
+/**
+ * Constructs a structured problem detail object (RFC 7807-style),
+ * with support for arbitrary key-value pairs (e.g., field-level error messages).
+ *
+ * @param input - An object with optional status, title, detail, and type,
+ *                plus any additional field-specific errors as key-value strings.
+ *
+ * @returns A `ProblemDetail` object suitable for use in APIs.
+ */
+export function getProblemDetail(input: { status?: number; title?: string; detail?: string; type?: string; [key: string]: string | number | undefined;}): ProblemDetail {
+  const { status = 400, title = "Bad Request", detail = "Your request contained invalid input.",  type = "/exceptions/bad-request/",  ...extraFields } = input;
+
+  const problem: ProblemDetail = { status, title, detail, type };
+
+  // Attach arbitrary string fields (e.g., email, password)
+  for (const [key, value] of Object.entries(extraFields)) {
+    if (typeof value === 'string' || typeof value === 'number') {
+      problem[key] = [value];
+    }
+  }
+
+  return problem;
 }
