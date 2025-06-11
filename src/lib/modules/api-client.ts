@@ -1,6 +1,6 @@
 // src/lib/api/client.ts
 
-import { getProblemDetail, type ProblemDetail } from "./problem-details";
+import { getProblemDetail, type ProblemDetail } from "./problem-details.js";
 
 /**
  * @file This module defines a generic REST API client for SvelteKit applications.
@@ -325,7 +325,7 @@ export class ApiClient {
             const isApiError = error instanceof ApiError;
             const status = isApiError ? error.status : 503; // // Service Unavailable fallback
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
-            const errorObj = getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", error: { server: [message] }});
+            const errorObj = getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: [message] });
             
             return {
                 ok: false,
