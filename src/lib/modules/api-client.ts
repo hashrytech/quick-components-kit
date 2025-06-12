@@ -1,5 +1,4 @@
 // src/lib/api/client.ts
-
 import { getProblemDetail, type ProblemDetail } from "./problem-details.js";
 
 /**
@@ -66,12 +65,16 @@ export type ErrorHandler = (error: Error) => Promise<void> | void;
  */
 export class ApiError extends Error {
     status: number;
-    constructor(message: string, status: number) {
+    json?: object;
+
+    constructor(message: string, status: number, json?: object) {
         super(message);
         this.name = 'ApiError';
         this.status = status;
+        this.json = json;
     }
 }
+
 
 export interface ApiClientEvents {
 	onRequest?: (request: Request) => void;
@@ -208,7 +211,6 @@ export class ApiClient {
             }
         }
 
-
         let request = new Request(url.toString(), {
             method: method,
             headers: requestHeaders,
@@ -247,11 +249,12 @@ export class ApiClient {
                 // Attempt to parse a more descriptive error message from JSON response
                 errorJson = await errorResponseClone.json();
                 errorMessage = (errorJson as { message?: string }).message || (errorJson as { error?: string }).error || JSON.stringify(errorJson);
-            } catch (e) {
+            } 
+            catch (e) {
                 // If response is not JSON, use default status text or log parsing error
                 console.warn('API Client: Failed to parse error response as JSON.', e);
             }
-            throw new ApiError(errorMessage, response.status);
+            throw new ApiError(errorMessage, response.status, errorJson);
         }
 
         switch (options.responseType) {
@@ -283,7 +286,7 @@ export class ApiClient {
      */
     private async handleError(error: unknown): Promise<void> {
         // Log the error by default
-        console.error("API Client encountered an error:", error);
+        //console.error("API Client encountered an error:", error);
 
         // Cast to Error for common properties, or handle specifically
         const err = error instanceof Error ? error : new Error(String(error));
@@ -319,13 +322,14 @@ export class ApiClient {
                 status: response.status,
                 data: parsed as T
             };
-        } catch (error: unknown) {            
+        } catch (error: unknown) {
             await this.handleError(error);
             
             const isApiError = error instanceof ApiError;
-            const status = isApiError ? error.status : 503; // // Service Unavailable fallback
+            const status = isApiError ? error.status : 503; // Service Unavailable fallback
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
-            const errorObj = getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: message });
+            const errorObj = isApiError && error.json ? error.json as ProblemDetail : getProblemDetail({ status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: message });
+            //const errorObj = status != 503 ? message : getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: message });
             
             return {
                 ok: false,
