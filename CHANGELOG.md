@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.9
+
+### Patch Changes
+
+- fix: ApiClient updating error object
+
 ## 0.12.8
 
 ### Patch Changes
