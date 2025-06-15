@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.11
+
+### Patch Changes
+
+- patch: adding data-sveltekit-reload attribute to linkbutton
+
 ## 0.12.10
 
 ### Patch Changes
