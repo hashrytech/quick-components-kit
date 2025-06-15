@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.12.10
+
+### Patch Changes
+
+- patch: allow prelaod data disable
+
 ## 0.12.9
 
 ### Patch Changes

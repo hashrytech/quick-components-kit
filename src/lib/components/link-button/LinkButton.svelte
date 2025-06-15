@@ -3,10 +3,11 @@
     import type { ClassNameValue } from 'tailwind-merge';
     
     export type ButtonProps = {
+      preload?: boolean;
       href: string;
-        children?: Snippet;
-        icon?: Snippet;
-        class?: ClassNameValue;
+      children?: Snippet;
+      icon?: Snippet;
+      class?: ClassNameValue;
     };
 
 </script>
@@ -14,11 +15,11 @@
 <script lang="ts">
   import {twMerge} from 'tailwind-merge';
   
-  let {href, children, icon, ...props}: ButtonProps = $props();
+  let {href, preload=true, children, icon, ...props}: ButtonProps = $props();
 
 </script>
 
-<a {href} class={twMerge("flex flex-row items-center gap-2 px-4 py-2 bg-button-primary hover:bg-button-primary-hover rounded-primary w-fit cursor-pointer text-white focus:outline-focus-primary", props.class)}>
+<a {href} data-sveltekit-preload-data={preload ? 'hover' : false} class={twMerge("flex flex-row items-center gap-2 px-4 py-2 bg-button-primary hover:bg-button-primary-hover rounded-primary w-fit cursor-pointer text-white focus:outline-focus-primary", props.class)}>
   {#if icon}<span class="w-10">{@render icon()}</span>{/if}
   {@render children?.()}
 </a>
