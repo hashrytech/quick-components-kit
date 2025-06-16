@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.13.2
+
+### Patch Changes
+
+- patch: Adding an object level fetch to the ApiClient class
+
 ## 0.13.1
 
 ### Patch Changes
