@@ -103,7 +103,8 @@ export class ApiClient {
     // otherwise relies on getAccessTokenFromStore or SvelteKit's `handleFetch`.
     private clientAuthToken: string | undefined;
     private getAccessTokenFromStore: (() => string | undefined) | undefined;
-    
+    private fetchInstance?: typeof fetch;
+
     private requestInterceptors: RequestInterceptor[] = [];
     private responseInterceptors: ResponseInterceptor[] = [];
     private errorHandlers: ErrorHandler[] = [];
@@ -127,6 +128,16 @@ export class ApiClient {
     setAuthToken(token: string | undefined): void {
         this.clientAuthToken = token;
     }
+
+    /**
+     * Sets a custom fetch implementation globally for all requests made by this client.
+     * Useful for passing enhanced `fetch` from SvelteKit's load functions.
+     * @param fetchFn - The fetch function to use.
+     */
+    setFetchInstance(fetchFn: typeof fetch): void {
+        this.fetchInstance = fetchFn;
+    }
+
 
     /**
      * Adds a request interceptor. Interceptors can modify the `Request` object before it's sent.
@@ -310,7 +321,8 @@ export class ApiClient {
      * @template T - Expected type of the response data.
      */
     async request<T>(endpoint: string, method: string, body: BodyInit | object | null | undefined, options: RequestOptions = {}): Promise<ApiResponse<T>> {
-        const currentFetch = options.fetchInstance || fetch;
+        
+        const currentFetch = options.fetchInstance || this.fetchInstance || fetch; // Use provided fetch first then the class instance fetch or the global fetch if not specified.
 
         try {
             const request = await this.processRequest(endpoint, method, body, options);
