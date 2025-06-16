@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.13.1
+
+### Patch Changes
+
+- fix for export tab navigation
+
 ## 0.13.0
 
 ### Minor Changes
