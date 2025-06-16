@@ -7,6 +7,7 @@
     import Modal from "$lib/components/modal/Modal.svelte";
 	import Checkbox from "$lib/components/checkbox/Checkbox.svelte";
 	import Radio from "$lib/components/radio/Radio.svelte";    
+	import TabNavigation from "$lib/components/tab-navigation/TabNavigation.svelte";
 
     let menuVerticalOpen = $state(false);
     let menuHorizontalOpen = $state(false);
@@ -114,6 +115,18 @@
         <Radio id="radio2" label="Radio Button 2" name="fruit" value="Banana" bind:group={radioValue} />            
     </div>
 </div>
+
+<hr />
+
+<div class="flex flex-row gap-10 items-center">
+    <TabNavigation class="hover:border-lime-500" 
+         links={[
+        { text: "Tab 1", href: "/", active: true },
+        { text: "Tab 2", href: "#tab2", active: false },
+        { text: "Tab 3", href: "#tab3", active: false }
+    ]} />
+</div>
+
 
 
 

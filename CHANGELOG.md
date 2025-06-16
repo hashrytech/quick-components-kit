@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.13.0
+
+### Minor Changes
+
+- feat: Adding tab navigation component
+
 ## 0.12.11
 
 ### Patch Changes
