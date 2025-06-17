@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.13.3
+
+### Patch Changes
+
+- patch: updating disabled state for button
+
 ## 0.13.2
 
 ### Patch Changes

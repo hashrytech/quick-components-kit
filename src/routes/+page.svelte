@@ -65,6 +65,11 @@
     </div>
 
     <div class="flex flex-row gap-4 items-center">
+        <p>Button Disabled</p>
+        <Button disabled={true} class="text-white text-base font-semibold">Get Started</Button>
+    </div>
+
+    <div class="flex flex-row gap-4 items-center">
         <p>Link Button</p>
         <LinkButton href="/" class="text-white text-base font-semibold">Get Started</LinkButton>
     </div>
