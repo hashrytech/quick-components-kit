@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.13.4
+
+### Patch Changes
+
+- refactor: changing inputClasses prop for TextInput to just class
+
 ## 0.13.3
 
 ### Patch Changes
