@@ -39,7 +39,7 @@
 
 <form class="flex flex-col gap-4">
     <div class="flex flex-wrap w-full max-w-lg gap-2">
-        <TextInput id="Small" placeholder="Small..." labelText="Small" inputClasses="" size="sm" required={true} type="text">
+        <TextInput id="Small" placeholder="Small..." labelText="Small" class="" size="sm" required={true} type="text">
             {#snippet icon()}
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                 class="lucide lucide-anvil-icon lucide-anvil">
@@ -51,8 +51,8 @@
             </svg>
             {/snippet}
         </TextInput>
-        <TextInput id="Medium" placeholder="Medium..." labelText="Medium" inputClasses="" size="md" disabled={true} />
-        <TextInput id="Large" placeholder="Large..." labelText="Large" inputClasses="" size="lg" error="A name is required." />
+        <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={true} />
+        <TextInput id="Large" placeholder="Large..." labelText="Large" class="" size="lg" error="A name is required." />
     </div>
     <button type="submit" class="bg-green-500 p-2 rounded-primary">Submit</button>
 </form>
