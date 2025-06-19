@@ -1,5 +1,7 @@
 // src/lib/api/client.ts
+import { redirect } from "@sveltejs/kit";
 import { getProblemDetail, type ProblemDetail } from "./problem-details.js";
+import { browser } from "$app/environment";
 
 /**
  * @file This module defines a generic REST API client for SvelteKit applications.
@@ -11,6 +13,13 @@ import { getProblemDetail, type ProblemDetail } from "./problem-details.js";
  * and API routes) to automatically benefit from its enhancements (e.g., cookie forwarding,
  * built-in request/response interception via SvelteKit's `handleFetch` hook).
  */
+
+export interface AutoRedirectRule {
+    status: number;
+    errorKey: string;
+    errorValue?: string;
+    redirectTo: string;
+}
 
 export type ApiResponse<T> = {
     ok: boolean;
@@ -31,6 +40,7 @@ export interface ApiClientConfig {
      * handled by `src/hooks.server.ts` via `handleFetch`.
      */
     getAccessToken?: () => string | undefined;
+    autoRedirects?: AutoRedirectRule[];
 }
 
 // Define options for individual API requests
@@ -104,6 +114,7 @@ export class ApiClient {
     private clientAuthToken: string | undefined;
     private getAccessTokenFromStore: (() => string | undefined) | undefined;
     private fetchInstance?: typeof fetch;
+    private autoRedirects: AutoRedirectRule[] = [];
 
     private requestInterceptors: RequestInterceptor[] = [];
     private responseInterceptors: ResponseInterceptor[] = [];
@@ -118,6 +129,7 @@ export class ApiClient {
         this.baseURL = config.baseURL;
         this.defaultHeaders = config.defaultHeaders || { 'Content-Type': 'application/json' };
         this.getAccessTokenFromStore = config.getAccessToken;
+        this.autoRedirects = config.autoRedirects || [];
     }
 
     /**
@@ -342,6 +354,8 @@ export class ApiClient {
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
             const errorObj = isApiError && error.json ? error.json as ProblemDetail : getProblemDetail({ status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: message });
             //const errorObj = status != 503 ? message : getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: message });
+
+            this.evaluateRedirect(errorObj, status);
             
             return {
                 ok: false,
@@ -350,6 +364,25 @@ export class ApiClient {
             };
         }
     }
+
+    private evaluateRedirect(errorObj: Record<string, unknown>, status: number): void {
+        for (const rule of this.autoRedirects) {
+            // Checks if the error matches the redirect rule value can be undefined to match if no value is specified.
+            if (status === rule.status && rule.errorKey in errorObj && (rule.errorValue === undefined || errorObj[rule.errorKey] === rule.errorValue)) { 
+                if (browser) {
+                    // Client-side redirect
+                    import('$app/navigation').then(({ goto }) => {
+                        goto(rule.redirectTo, { replaceState: true });
+                    });
+                } else {
+                    // Server-side redirect
+                    throw redirect(303, rule.redirectTo);
+                }
+                break;
+            }
+        }
+    }
+
 
 
     // --- HTTP Method Shorthands ---
