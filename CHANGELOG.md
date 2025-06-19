@@ -1,5 +1,13 @@
 # @hashrytech/quick-components-kit
 
+## 0.13.5
+
+### Patch Changes
+
+- refactor: setting placeholder text size to text-base default
+- refactor: set text size for lg TextInput to text-base
+- patch: adding evaluation of redirect rule to apiclient
+
 ## 0.13.4
 
 ### Patch Changes

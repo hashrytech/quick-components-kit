@@ -63,7 +63,7 @@
     let sizeStyle: Record<TextInputSize, string> = {
         sm: "h-[2.05rem] text-sm placeholder:text-sm",
         md: "h-[2.375rem] text-sm placeholder:text-sm",
-        lg: "h-[2.8rem] text-lg placeholder:text-lg"
+        lg: "h-[2.8rem] text-base placeholder:text-base"
     };
 
 </script>
