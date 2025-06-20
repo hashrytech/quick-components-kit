@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.14.0
+
+### Minor Changes
+
+- refactor: Changing the setAuthToken method to setAccessToken and removing the getAccessToken method
+
 ## 0.13.5
 
 ### Patch Changes

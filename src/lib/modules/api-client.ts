@@ -34,12 +34,7 @@ export interface ApiClientConfig {
     baseURL: string;
     /** Default headers to be sent with every request. */
     defaultHeaders?: HeadersInit;
-    /** A function that returns the current access token. This is useful for client-side
-     * operations where you might store the token in a Svelte store or similar.
-     * For server-side operations using SvelteKit's `fetch`, the token is typically
-     * handled by `src/hooks.server.ts` via `handleFetch`.
-     */
-    getAccessToken?: () => string | undefined;
+    /** Specified redirects if the response matches the specified rules. */
     autoRedirects?: AutoRedirectRule[];
 }
 
@@ -109,13 +104,9 @@ export interface ApiClientEvents {
 export class ApiClient {
     private baseURL: string;
     private defaultHeaders: HeadersInit;
-    // This token is primarily for explicit client-side setting if needed,
-    // otherwise relies on getAccessTokenFromStore or SvelteKit's `handleFetch`.
-    private clientAuthToken: string | undefined;
-    private getAccessTokenFromStore: (() => string | undefined) | undefined;
+    private accessToken: string | undefined;
     private fetchInstance?: typeof fetch;
     private autoRedirects: AutoRedirectRule[] = [];
-
     private requestInterceptors: RequestInterceptor[] = [];
     private responseInterceptors: ResponseInterceptor[] = [];
     private errorHandlers: ErrorHandler[] = [];
@@ -128,17 +119,15 @@ export class ApiClient {
     constructor(config: ApiClientConfig & { events?: ApiClientEvents }) {
         this.baseURL = config.baseURL;
         this.defaultHeaders = config.defaultHeaders || { 'Content-Type': 'application/json' };
-        this.getAccessTokenFromStore = config.getAccessToken;
         this.autoRedirects = config.autoRedirects || [];
     }
 
     /**
      * Sets the Bearer token for client-side requests.
-     * This will override `getAccessToken` for subsequent requests using this client instance.
      * @param token - The access token string, or undefined to clear it.
      */
-    setAuthToken(token: string | undefined): void {
-        this.clientAuthToken = token;
+    setAccessToken(token: string | undefined): void {
+        this.accessToken = token;
     }
 
     /**
@@ -203,12 +192,8 @@ export class ApiClient {
         }
 
         // Add auth token unless skipped
-        if (!options.skipAuth) {
-            // Priority: Explicit clientAuthToken > getAccessTokenFromStore
-            const token = this.clientAuthToken || (this.getAccessTokenFromStore ? this.getAccessTokenFromStore() : undefined);
-            if (token) {
-                requestHeaders.set('Authorization', `Bearer ${token}`);
-            }
+        if (!options.skipAuth && this.accessToken) {
+            requestHeaders.set('Authorization', `Bearer ${this.accessToken}`);
         }
 
         let processedBody: BodyInit | null | undefined = undefined;
@@ -518,7 +503,7 @@ export class ApiClient {
         const formData = new FormData();
         formData.append(fieldName, file);
 
-        const token = this.clientAuthToken || this.getAccessTokenFromStore?.();
+        const token = this.accessToken;
         const headers = new Headers(this.defaultHeaders);
 
         // Merge user-supplied headers
