@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.14.1
+
+### Patch Changes
+
+- fix: fix for sending requests without a baseurl
+
 ## 0.14.0
 
 ### Minor Changes

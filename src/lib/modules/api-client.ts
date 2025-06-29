@@ -178,7 +178,7 @@ export class ApiClient {
      * @returns A processed `Request` object ready for `fetch`.
      */
     private async processRequest(endpoint: string, method: string, body: BodyInit | object | null | undefined, options: RequestOptions): Promise<Request> {
-        const url = new URL(endpoint, this.baseURL); // Resolve endpoint relative to baseURL
+        const url = this.baseURL ? new URL(endpoint, this.baseURL).toString() : endpoint; // Resolve endpoint relative to baseURL
 
         const requestHeaders = new Headers(this.defaultHeaders);
 
@@ -219,7 +219,7 @@ export class ApiClient {
             }
         }
 
-        let request = new Request(url.toString(), {
+        let request = new Request(url, {
             method: method,
             headers: requestHeaders,
             body: processedBody,
@@ -267,11 +267,11 @@ export class ApiClient {
 
         switch (options.responseType) {
             case 'text':
-                return (await response.text()) as T;
+                return await response.text() as T;
             case 'blob':
-                return (await response.blob()) as T;
+                return await response.blob() as T;
             case 'arrayBuffer':
-                return (await response.arrayBuffer()) as T;
+                return await response.arrayBuffer() as T;
             case 'raw': return response as unknown as T;
             case 'json':
             default:
@@ -280,7 +280,7 @@ export class ApiClient {
                     return {} as T; // Return an empty object for no content
                 }
                 try {
-                    return (await response.json()) as T;
+                    return await response.json() as T;
                 } catch {
                     throw new Error('Failed to parse response as JSON. Response was OK, but not valid JSON.');
                 }
