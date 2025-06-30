@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.14.3
+
+### Patch Changes
+
+- patch: Adding debug and append slash to proxy
+
 ## 0.14.2
 
 ### Patch Changes
