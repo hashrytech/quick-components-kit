@@ -7,6 +7,8 @@ import { error } from '@sveltejs/kit';
 export interface RestApiProxyConfig {
 	/** Your API HOST URL (e.g. 'https://api.example.com') */
 	host: string;
+	/** Optional flag to append a trailing slash to the path */
+    appendSlash?: boolean; 
 	/** Optional array of allowed path prefixes to restrict access to downstream paths. Example: v1/products */
 	allowedPaths?: string[];
 	/** Optional extra headers to forward from the request */
@@ -15,6 +17,8 @@ export interface RestApiProxyConfig {
 	safeResponseHeaders?: string[];
 	/** Optional function to extract token from session */
 	extractToken?: (locals: App.Locals) => string | undefined;
+	/** Optional flag to enable debug logging */
+	debug?: boolean;
 }
 
 
@@ -25,17 +29,22 @@ export const defaultResponseHeaders = ['content-type', 'content-length', 'cache-
  * Creates a set of SvelteKit request handlers for proxying API calls securely.
  */
 export function createProxyHandlers(config: RestApiProxyConfig): Record<string, RequestHandler> {
+	
+	if(config.debug) console.debug("Creating proxy handlers with config:", config);
 
 	async function handler(event: Parameters<RequestHandler>[0]): Promise<Response> {
 		const path = event.params.path;
 		const queryString = event.url.searchParams.toString();
-		const fullPath = `/${path}${queryString ? `?${queryString}` : ''}`;
+		const slash = config.appendSlash ? '/' : '';
+        const fullPath = `/${path}${slash}${queryString ? `?${queryString}` : ''}`;
 		const url = `${config.host}${fullPath}`;
+
+		if(config.debug) console.debug(`Proxying request to: ${url}`);
 
 		// Validate the path against allowed prefixes if specified
 		if(config.allowedPaths && config.allowedPaths.length > 0){
 			const isAllowed = config.allowedPaths.some((prefix) => path?.startsWith(prefix));
-			if (!isAllowed) throw error(403, 'Forbidden: This API path is not allowed.');
+			if (!isAllowed) throw error(403, 'Forbidden: This proxy API path is not allowed.');
 		}
 
 		let headers = new Headers(event.request.headers);
