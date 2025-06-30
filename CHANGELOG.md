@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.15.2
+
+### Patch Changes
+
+- chore: more log updates
+
 ## 0.15.1
 
 ### Patch Changes
