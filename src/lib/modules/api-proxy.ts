@@ -30,7 +30,7 @@ export const defaultResponseHeaders = ['content-type', 'content-length', 'cache-
  */
 export function createProxyHandlers(config: RestApiProxyConfig): Record<string, RequestHandler> {
 	
-	if(config.debug) console.debug("Creating proxy handlers with config:", config);
+	if(config.debug) console.debug("API Proxy: Creating proxy handlers with config:", config);
 
 	async function handler(event: Parameters<RequestHandler>[0]): Promise<Response> {
 		const path = event.params.path;
@@ -39,7 +39,7 @@ export function createProxyHandlers(config: RestApiProxyConfig): Record<string, 
         const fullPath = `/${path}${slash}${queryString ? `?${queryString}` : ''}`;
 		const url = `${config.host}${fullPath}`;
 
-		if(config.debug) console.debug(`Proxying request to: ${url}`);
+		if(config.debug) console.debug(`API Proxy: Proxying ${event.request.method} request to: ${url}`);
 
 		// Validate the path against allowed prefixes if specified
 		if(config.allowedPaths && config.allowedPaths.length > 0){
