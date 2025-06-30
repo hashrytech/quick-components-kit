@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.15.0
+
+### Minor Changes
+
+- refactor: Renaming ApiClient to FetchClient
+
 ## 0.14.3
 
 ### Patch Changes

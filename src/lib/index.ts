@@ -16,7 +16,7 @@ export * from './actions/on-keydown.js';
 export * from './actions/lock-scroll.js';
 export * from './actions/scroll-to.js';
 
-export * from './modules/api-client.js';
+export * from './modules/fetch-client.js';
 export * from './modules/api-proxy.js';
 export * from './modules/crypto.js';
 export * from './modules/problem-details.js';

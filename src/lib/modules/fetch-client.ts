@@ -21,7 +21,7 @@ export interface AutoRedirectRule {
     redirectTo: string;
 }
 
-export type ApiResponse<T> = {
+export type FetchResponse<T> = {
     ok: boolean;
     status: number;
     data?: T;
@@ -29,13 +29,15 @@ export type ApiResponse<T> = {
 };
 
 // Define configuration options for the API client
-export interface ApiClientConfig {
+export interface FetchClientConfig {
     /** The base URL for your API (e.g., 'https://api.yourapi.com/v1'). */
     baseURL: string;
     /** Default headers to be sent with every request. */
     defaultHeaders?: HeadersInit;
     /** Specified redirects if the response matches the specified rules. */
     autoRedirects?: AutoRedirectRule[];
+    /** Optional flag to enable debug logging */
+	debug?: boolean;
 }
 
 // Define options for individual API requests
@@ -68,20 +70,20 @@ export type ErrorHandler = (error: Error) => Promise<void> | void;
  * Custom error class for API responses.
  * Provides access to the HTTP status code.
  */
-export class ApiError extends Error {
+export class FetchError extends Error {
     status: number;
     json?: object;
 
     constructor(message: string, status: number, json?: object) {
         super(message);
-        this.name = 'ApiError';
+        this.name = 'FetchError';
         this.status = status;
         this.json = json;
     }
 }
 
 
-export interface ApiClientEvents {
+export interface FetchClientEvents {
 	onRequest?: (request: Request) => void;
 	onResponse?: (response: Response) => void;
 	onError?: (error: Error) => void;
@@ -101,8 +103,9 @@ export interface ApiClientEvents {
  * - Supports file downloads (returns Blob).
  * - Integrates with SvelteKit's `fetch` for server-side benefits.
  */
-export class ApiClient {
+export class FetchClient {
     private baseURL: string;
+    private debug: boolean = false;
     private defaultHeaders: HeadersInit;
     private accessToken: string | undefined;
     private fetchInstance?: typeof fetch;
@@ -110,16 +113,17 @@ export class ApiClient {
     private requestInterceptors: RequestInterceptor[] = [];
     private responseInterceptors: ResponseInterceptor[] = [];
     private errorHandlers: ErrorHandler[] = [];
-    private events: ApiClientEvents = {};
+    private events: FetchClientEvents = {};
 
     /**
      * Creates an instance of ApiClient.
      * @param config - Configuration for the API client.
      */
-    constructor(config: ApiClientConfig & { events?: ApiClientEvents }) {
+    constructor(config: FetchClientConfig & { events?: FetchClientEvents }) {
         this.baseURL = config.baseURL;
         this.defaultHeaders = config.defaultHeaders || { 'Content-Type': 'application/json' };
         this.autoRedirects = config.autoRedirects || [];
+        this.debug = config.debug || false;
     }
 
     /**
@@ -165,7 +169,7 @@ export class ApiClient {
         this.errorHandlers.push(handler);
     }
 
-    setEventHooks(events: Partial<ApiClientEvents>) {
+    setEventHooks(events: Partial<FetchClientEvents>) {
 		Object.assign(this.events, events);
 	}
 
@@ -179,6 +183,7 @@ export class ApiClient {
      */
     private async processRequest(endpoint: string, method: string, body: BodyInit | object | null | undefined, options: RequestOptions): Promise<Request> {
         const url = this.baseURL ? new URL(endpoint, this.baseURL).toString() : endpoint; // Resolve endpoint relative to baseURL
+        if (this.debug) console.debug(`Fetch Client: Processing request to ${url} with method ${method}`);
 
         const requestHeaders = new Headers(this.defaultHeaders);
 
@@ -262,7 +267,7 @@ export class ApiClient {
                 // If response is not JSON, use default status text or log parsing error
                 console.warn('API Client: Failed to parse error response as JSON.', e);
             }
-            throw new ApiError(errorMessage, response.status, errorJson);
+            throw new FetchError(errorMessage, response.status, errorJson);
         }
 
         switch (options.responseType) {
@@ -317,8 +322,8 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response data or raw Response/Blob.
      * @template T - Expected type of the response data.
      */
-    async request<T>(endpoint: string, method: string, body: BodyInit | object | null | undefined, options: RequestOptions = {}): Promise<ApiResponse<T>> {
-        
+    async request<T>(endpoint: string, method: string, body: BodyInit | object | null | undefined, options: RequestOptions = {}): Promise<FetchResponse<T>> {
+        if (this.debug) console.debug(`Fetch Client: ${options.fetchInstance || this.fetchInstance ? "Using sveltekit fetch instance..." : "Using default fetch instance"}`);
         const currentFetch = options.fetchInstance || this.fetchInstance || fetch; // Use provided fetch first then the class instance fetch or the global fetch if not specified.
 
         try {
@@ -332,9 +337,10 @@ export class ApiClient {
                 data: parsed as T
             };
         } catch (error: unknown) {
+            if (this.debug) console.debug(`Fetch Client: Error occurred while processing request to ${endpoint} with method ${method}`, error);
             await this.handleError(error);
             
-            const isApiError = error instanceof ApiError;
+            const isApiError = error instanceof FetchError;
             const status = isApiError ? error.status : 503; // Service Unavailable fallback
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
             const errorObj = isApiError && error.json ? error.json as ProblemDetail : getProblemDetail({ status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: message });
@@ -354,6 +360,7 @@ export class ApiClient {
         for (const rule of this.autoRedirects) {
             // Checks if the error matches the redirect rule value can be undefined to match if no value is specified.
             if (status === rule.status && rule.errorKey in errorObj && (rule.errorValue === undefined || errorObj[rule.errorKey] === rule.errorValue)) { 
+                if (this.debug) console.debug(`Fetch Client: Redirecting to ${rule.redirectTo} for status ${status} with error key "${rule.errorKey}" and value "${rule.errorValue}"`);
                 if (browser) {
                     // Client-side redirect
                     import('$app/navigation').then(({ goto }) => {
@@ -380,7 +387,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response.
      */
-    get<T>(endpoint: string, options?: RequestOptions): Promise<ApiResponse<T>> {
+    get<T>(endpoint: string, options?: RequestOptions): Promise<FetchResponse<T>> {
         return this.request<T>(endpoint, 'GET', undefined, options);
     }
 
@@ -393,7 +400,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response.
      */
-    post<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<ApiResponse<T>> {
+    post<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<FetchResponse<T>> {
         return this.request<T>(endpoint, 'POST', data, options);
     }
 
@@ -407,7 +414,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response.
      */
-    put<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<ApiResponse<T>> {
+    put<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<FetchResponse<T>> {
         return this.request<T>(endpoint, 'PUT', data, options);
     }
 
@@ -421,7 +428,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response.
      */
-    patch<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<ApiResponse<T>> {
+    patch<T>(endpoint: string, data?: BodyInit | object | null, options?: RequestOptions): Promise<FetchResponse<T>> {
         return this.request<T>(endpoint, 'PATCH', data, options);
     }
 
@@ -433,7 +440,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response or raw Response object.
      * @template T - Expected shape of the JSON response (if any).
      */
-    delete<T>(endpoint: string, options?: RequestOptions): Promise<ApiResponse<T>> {
+    delete<T>(endpoint: string, options?: RequestOptions): Promise<FetchResponse<T>> {
         // 'delete' is a reserved keyword, but acceptable as a method name in classes.
         // If you encounter issues with specific environments, you could rename to 'del' or 'remove'.
         return this.request<T>(endpoint, 'DELETE', undefined, options);
@@ -450,7 +457,7 @@ export class ApiClient {
      * @returns A Promise resolving to the parsed response data.
      * @template T - Expected type of the response data after upload.
      */
-    uploadFile<T>(endpoint: string, file: File | Blob | FormData, fieldName: string = 'file', options?: RequestOptions): Promise<ApiResponse<T>> {
+    uploadFile<T>(endpoint: string, file: File | Blob | FormData, fieldName: string = 'file', options?: RequestOptions): Promise<FetchResponse<T>> {
         let uploadBody: FormData;
         if (file instanceof File || file instanceof Blob) {
             uploadBody = new FormData();
@@ -551,7 +558,7 @@ export class ApiClient {
                         resolve(xhr.responseText as unknown as T);
                     }
                 } else {
-                    reject(new ApiError(xhr.statusText, xhr.status));
+                    reject(new FetchError(xhr.statusText, xhr.status));
                 }
             };
 
