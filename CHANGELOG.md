@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.14.2
+
+### Patch Changes
+
+- patch: Updating api-proxy to work with sensible defaults
+
 ## 0.14.1
 
 ### Patch Changes
