@@ -206,6 +206,7 @@ export class FetchClient {
         if (body instanceof FormData) {
             requestHeaders.delete('Content-Type'); // Important: Let browser set Content-Type for FormData
             processedBody = body;
+            if (this.debug) console.debug(`Fetch Client: Removed Content-Type header since FormData is being used for body in request to ${url}`);
         } else if (body !== undefined && body !== null) {
             const contentType = requestHeaders.get('Content-Type');
             // If Content-Type is JSON or it's a plain object (and not a Blob/File/Stream type of BodyInit), stringify it.
