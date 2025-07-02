@@ -6,7 +6,8 @@
  * @param {Record<string, any>} obj - The object to convert to FormData.
  * @returns {FormData} - The resulting FormData object.
  */
-export function objectToFormData(obj: Record<string, unknown>): FormData {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function objectToFormData(obj: any): FormData {
   const formData = new FormData();
 
   const replacer = (key: string, value: unknown) => {

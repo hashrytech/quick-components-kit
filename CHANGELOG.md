@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.15.4
+
+### Patch Changes
+
+- patch: easing constraints on objectToFormData
+
 ## 0.15.3
 
 ### Patch Changes
