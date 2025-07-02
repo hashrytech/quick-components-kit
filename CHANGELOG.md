@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.15.3
+
+### Patch Changes
+
+- update: Adding objectToFormData function
+
 ## 0.15.2
 
 ### Patch Changes
