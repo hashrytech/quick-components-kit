@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.15.5
+
+### Patch Changes
+
+- fix: Updating objectToFormData
+
 ## 0.15.4
 
 ### Patch Changes

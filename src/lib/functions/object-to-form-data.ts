@@ -6,42 +6,35 @@
  * @param {Record<string, any>} obj - The object to convert to FormData.
  * @returns {FormData} - The resulting FormData object.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function objectToFormData(obj: any): FormData {
+export function objectToFormData(obj: Record<string, unknown>): FormData {
   const formData = new FormData();
 
-  const replacer = (key: string, value: unknown) => {
-    if (key === 'object') return undefined;
-    return value;
-  };
+  const replacer = (key: string, value: unknown) =>
+    key === 'object' ? undefined : value;
 
   for (const key in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
 
     const value = obj[key];
 
-    if (value === undefined) continue;
+    if (value === undefined || value === null) continue;
 
     if (value instanceof Blob || value instanceof File) {
       formData.append(key, value);
-    } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    } else if (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean'
+    ) {
       formData.append(key, value.toString());
     } else if (Array.isArray(value)) {
-      value.forEach((item, index) => {
-        if (item === undefined) return;
-
-        if (typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean') {
-          formData.append(`${key}[${index}]`, item.toString());
-        } else if (typeof item === 'object' && item !== null) {
-          formData.append(`${key}[${index}]`, JSON.stringify(item, replacer));
-        } else {
-          console.warn(`Skipped unsupported array item at ${key}[${index}]:`, item);
-        }
-      });
-    } else if (typeof value === 'object' && value !== null) {
+      if (value.length > 0) {
+        formData.append(key, JSON.stringify(value, replacer));
+      }
+    } else if (typeof value === 'object') {
       formData.append(key, JSON.stringify(value, replacer));
     } else {
-      console.warn(`Skipped unsupported value for key "${key}":`, value);
+      console.warn(`Skipped unsupported value for key "${key}"`, value);
     }
   }
 
