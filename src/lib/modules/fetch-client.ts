@@ -506,11 +506,9 @@ export class FetchClient {
      * @returns A Promise resolving to the typed response from the server.
      * @template T - Expected shape of the server's JSON response.
      */
-    async uploadFileWithProgress<T>(endpoint: string, file: File | Blob, onProgress: (percent: number) => void, fieldName = 'file', options: RequestOptions = {}): Promise<T> {
-        const url = new URL(endpoint, this.baseURL).toString();
-        const formData = new FormData();
-        formData.append(fieldName, file);
-
+    async uploadFileWithProgress<T>(endpoint: string, data: FormData, method: "POST" | "PATCH" = "POST", onProgress?: (percent: number) => void, options: RequestOptions = {}): Promise<T> {
+        //const url = new URL(endpoint, this.baseURL).toString();
+        const url = this.baseURL ? new URL(endpoint, this.baseURL).toString() : endpoint; // Resolve endpoint relative to baseURL
         const token = this.accessToken;
         const headers = new Headers(this.defaultHeaders);
 
@@ -522,8 +520,7 @@ export class FetchClient {
 
         return new Promise<T>((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-
-            xhr.open('POST', url, true);
+            xhr.open(method, url, true);
 
             // Add Authorization if not skipped
             if (!options.skipAuth && token) {
@@ -540,7 +537,7 @@ export class FetchClient {
 
             xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) {
-                    onProgress(Math.round((event.loaded / event.total) * 100));
+                    onProgress?.(Math.round((event.loaded / event.total) * 100));
                 }
             };
 
@@ -563,9 +560,8 @@ export class FetchClient {
                 }
             };
 
-
             xhr.onerror = () => reject(new Error('Upload failed'));
-            xhr.send(formData);
+            xhr.send(data);
         });
     }
 
