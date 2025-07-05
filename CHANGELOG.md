@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.15.7
+
+### Patch Changes
+
+- refactor: uploadFileWithProgress updated
+
 ## 0.15.6
 
 ### Patch Changes
