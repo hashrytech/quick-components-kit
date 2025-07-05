@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.15.6
+
+### Patch Changes
+
+- chore: changing log levels
+
 ## 0.15.5
 
 ### Patch Changes
