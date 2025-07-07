@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.16.1
+
+### Patch Changes
+
+- patch: disable-scroll patch to not add a scrollbar if one is not present to start with
+
 ## 0.16.0
 
 ### Minor Changes
