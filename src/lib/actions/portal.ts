@@ -30,7 +30,7 @@ export type PortalOptions = {
 	prepend?: boolean;
 };
 
-export function portal(node: HTMLElement, { target = browser ? document.body : undefined, prepend = true }: PortalOptions = {}) {
+export function portalAction(node: HTMLElement, { target = browser ? document.body : undefined, prepend = true }: PortalOptions = {}) {
 	if (prepend) {
 		target?.prepend(node);
 	} else {
