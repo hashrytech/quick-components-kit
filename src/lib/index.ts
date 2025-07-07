@@ -17,6 +17,7 @@ export * from './actions/on-keydown.js';
 export * from './actions/lock-scroll.js';
 export * from './actions/scroll-to.js';
 export * from './actions/stop-interaction.js';
+export * from './actions/portal.js';
 
 
 export * from './modules/fetch-client.js';

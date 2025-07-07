@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.16.2
+
+### Patch Changes
+
+- addition: portal action
+
 ## 0.16.1
 
 ### Patch Changes
