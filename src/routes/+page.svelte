@@ -81,7 +81,11 @@
     <div class="flex flex-row gap-4 items-center">
         <p>Hamburger Menu &amp; Left Drawer</p>
         <HamburgerMenu ariaLabel="Toggle Horizontal Menu" bind:open={menuHorizontalOpen} onclick={()=> {menuHorizontalOpen = !menuHorizontalOpen}} />
-        <Drawer bind:open={menuHorizontalOpen} position="left" />
+        <Drawer bind:open={menuHorizontalOpen} position="left">
+            <p>Hello</p>
+            <p>This is a left drawer.</p>
+            <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> menuHorizontalOpen=false}>Close Drawer</Button>
+        </Drawer>
     </div>
 
     <div class="flex flex-row gap-4 items-center">

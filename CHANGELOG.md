@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.16.0
+
+### Minor Changes
+
+- refactor: Drawer, Overlay and adding Portal component
+
 ## 0.15.7
 
 ### Patch Changes
