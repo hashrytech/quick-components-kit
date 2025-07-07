@@ -10,11 +10,14 @@ export * from './components/overlay/index.js';
 export * from './components/radio/index.js';
 export * from './components/checkbox/index.js';
 export * from './components/tab-navigation/index.js';
+export * from './components/portal/index.js';
 
 export * from './actions/disable-scroll.js';
 export * from './actions/on-keydown.js';
 export * from './actions/lock-scroll.js';
 export * from './actions/scroll-to.js';
+export * from './actions/stop-interaction.js';
+
 
 export * from './modules/fetch-client.js';
 export * from './modules/api-proxy.js';
