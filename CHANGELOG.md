@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.16.7
+
+### Patch Changes
+
+- fix: reverting last change and remove smooth scroll to get back to original position for disable scroll
+
 ## 0.16.6
 
 ### Patch Changes
