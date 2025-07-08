@@ -26,12 +26,18 @@ export function disableScroll(node: HTMLElement, enabled = true) {
 	}
 
 	function removeLock() {
+		const originalScrollBehavior = document.documentElement.style.scrollBehavior;
 		document.body.style.position = originalBodyPosition;
 		document.body.style.width = originalBodyWidth;
 		document.body.style.top = originalTop;
-		document.documentElement.style.overflowY = originalOverflow;
-		// Instantly restore scroll position without animation
-		window.scrollTo({ top: scrollTop, behavior: 'auto' });
+		document.documentElement.style.overflowY = originalOverflow;		
+		document.documentElement.style.scrollBehavior = 'auto';
+		window.scrollTo(0, scrollTop);
+
+		// Restore scroll behavior without causing a jump
+		requestAnimationFrame(() => {
+			document.documentElement.style.scrollBehavior = originalScrollBehavior;
+		});
 	}
 
 	if (node && enabled) applyLock();

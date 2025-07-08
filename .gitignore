@@ -137,3 +137,5 @@ dist
 
 # Sveltekit
 .svelte-kit/
+
+package_local_dist.json

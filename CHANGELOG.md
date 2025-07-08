@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.16.8
+
+### Patch Changes
+
+- fix: Fix for scroll jump after disable-scroll ends
+
 ## 0.16.7
 
 ### Patch Changes
