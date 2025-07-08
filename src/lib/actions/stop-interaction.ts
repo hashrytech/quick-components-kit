@@ -14,15 +14,7 @@
  * @example
  * ```svelte
  * <div use:stopInteraction />
- * ```
- *
- * @example
- * ```svelte
  * <div use:stopInteraction={{ prevent: true }} />
- * ```
- *
- * @example
- * ```svelte
  * <div use:stopInteraction={{ stop: true, prevent: true, events: ['click', 'touchstart'] }} />
  * ```
  */
@@ -33,19 +25,33 @@ export type StopInteractionOptions = {
 	events?: string[];
 };
 
-export function stopInteraction(node: HTMLElement, options: StopInteractionOptions = { stop: true, prevent: false }) {
-	const { stop = true, prevent = false, events = ['click'] } = options;
+export function stopInteraction(node: HTMLElement, options: StopInteractionOptions = {}) {
+	let cleanups: (() => void)[] = [];
 
-	const cleanups = events.map((event) => {
-		const handler = (e: Event) => {
-			if (stop) e.stopPropagation();
-			if (prevent) e.preventDefault();
-		};
-		node.addEventListener(event, handler, true); // capture
-		return () => node.removeEventListener(event, handler, true);
-	});
+	function apply(options: StopInteractionOptions) {
+		// Remove old listeners
+		cleanups.forEach((fn) => fn());
+
+		// Normalize options
+		const { stop = true, prevent = false, events = ['clicka', 'mousedown', 'mouseup', 'touchstart'] } =
+			typeof options === 'object' && options !== null ? options : {};
+
+		cleanups = events.map((event) => {
+			const handler = (e: Event) => {
+				if (stop) e.stopPropagation();
+				if (prevent) e.preventDefault();
+			};
+			node.addEventListener(event, handler, true); // capture phase
+			return () => node.removeEventListener(event, handler, true);
+		});
+	}
+
+	apply(options);
 
 	return {
+		update(newOptions: StopInteractionOptions) {
+			apply(newOptions);
+		},
 		destroy() {
 			cleanups.forEach((fn) => fn());
 		}

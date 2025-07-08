@@ -84,7 +84,7 @@
         <Drawer bind:open={menuHorizontalOpen} position="left">
             <p>Hello</p>
             <p>This is a left drawer.</p>
-            <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> menuHorizontalOpen=false}>Close Drawer</Button>
+            <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> { menuHorizontalOpen=false; console.log("MENU: ", menuHorizontalOpen)}}>Close Drawer</Button>
         </Drawer>
     </div>
 

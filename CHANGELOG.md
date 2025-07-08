@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.16.4
+
+### Patch Changes
+
+- patch: update for drawer
+
 ## 0.16.3
 
 ### Patch Changes
