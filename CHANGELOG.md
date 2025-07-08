@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.16.6
+
+### Patch Changes
+
+- refactor: Going back to previous approach for disable-scroll
+
 ## 0.16.5
 
 ### Patch Changes
