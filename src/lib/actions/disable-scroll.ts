@@ -1,6 +1,6 @@
 /**
  * Svelte action to disable page scroll (commonly used for modals, drawers, or mobile menus).
- * 
+ *
  * It locks the scroll position by applying `position: fixed` to the `<body>` and
  * preserving the current scroll offset. This approach prevents visual jumps and maintains scroll state.
  *
@@ -14,9 +14,13 @@ export function disableScroll(node: HTMLElement, enabled = true) {
 	const originalTop = document.body.style.top;
 	const originalOverflow = document.documentElement.style.overflowY;
 
+	const hasVerticalScrollbar = document.documentElement.scrollHeight > document.documentElement.clientHeight;
+
 	function applyLock() {
 		document.body.style.top = `-${scrollTop}px`;
-		document.documentElement.style.overflowY = 'scroll';
+		if (hasVerticalScrollbar) {
+			document.documentElement.style.overflowY = 'scroll'; // ensure layout doesn't shift
+		}
 		document.body.style.position = 'fixed';
 		document.body.style.width = '100%';
 	}
@@ -26,20 +30,21 @@ export function disableScroll(node: HTMLElement, enabled = true) {
 		document.body.style.width = originalBodyWidth;
 		document.body.style.top = originalTop;
 		document.documentElement.style.overflowY = originalOverflow;
-		window.scrollTo(0, scrollTop);
+		// Instantly restore scroll position without animation
+		window.scrollTo({ top: scrollTop, behavior: 'auto' });
 	}
 
 	if (node && enabled) applyLock();
 
 	return {
 		update(newValue: boolean) {
-			if(enabled){
+			if (enabled) {
 				if (newValue) applyLock();
 				else removeLock();
 			}
 		},
 		destroy() {
-			if (enabled){
+			if (enabled) {
 				removeLock();
 			}
 		}
