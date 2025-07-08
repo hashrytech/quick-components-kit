@@ -103,14 +103,16 @@ The `<Overlay>` component is used to darken the background and optionally block 
 </script>
 
 {#if open}
-<Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={() => open = false} />
+<div class="fixed inset-0 flex items-center justify-center" role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex="{open ? 0 : -1}" aria-hidden="{!open}">
+  
+  <Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={() => open = false} />
 
-<div role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex="{open ? 0 : -1}" aria-hidden="{!open}" use:stopInteraction={{ stop: true, prevent: true, events: [''] }}
-  class={twMerge("fixed flex flex-col items-center gap-2 bg-white outline-0 focus:outline-0 active:outline-focus-primary focus:outline-focus-primary overflow-y-auto z-50", postionClasses[position], props.class)}
-  in:fly={transitionProperties}
-  out:fly={transitionProperties}
-  use:onKeydown={{key: "Escape", callback: handleKeydown}}>
-  {@render children?.()}
+  <div class={twMerge("fixed flex flex-col items-center gap-2 bg-white outline-0 focus:outline-0 active:outline-focus-primary focus:outline-focus-primary overflow-y-auto z-50", postionClasses[position], props.class)}
+    in:fly={transitionProperties}
+    out:fly={transitionProperties}
+    use:onKeydown={{key: "Escape", callback: handleKeydown}}>
+    {@render children?.()}
+  </div>
 </div>
 {/if}
 
