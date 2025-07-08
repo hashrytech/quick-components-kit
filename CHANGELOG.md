@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.16.5
+
+### Patch Changes
+
+- fix: Fix props for drawer ally
+
 ## 0.16.4
 
 ### Patch Changes
