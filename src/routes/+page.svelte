@@ -144,7 +144,7 @@
         { id: 1, name: "John Doe", age: 30 },
         { id: 2, name: "Jane Smith", age: 25 },
         { id: 3, name: "Alice Johnson", age: 28 }]} 
-        getKey={(u) => u.id.toString()} showMultiSelect={true}
+        getKey={(u) => u.id.toString()} showMultiSelect={true} checkboxClass="border-neutral-300"
     >
     {#snippet headings()}
     <TableTd>ID</TableTd>

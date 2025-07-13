@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.2
+
+### Patch Changes
+
+- patch: adding styling for checkbox on table
+
 ## 0.17.1
 
 ### Patch Changes
