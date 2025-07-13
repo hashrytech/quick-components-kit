@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.1
+
+### Patch Changes
+
+- fix: adding export for table
+
 ## 0.17.0
 
 ### Minor Changes
