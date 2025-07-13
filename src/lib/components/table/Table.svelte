@@ -30,6 +30,12 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 - `tableRowMobile?: Snippet<[T]>`  
   Optional. Enables mobile view by rendering one `<td>` with stacked content.
 
+- `multiSelectTh?: Snippet`  
+  Custom markup for the multi-select checkbox `<th>`.
+
+- `multiSelectTd?: Snippet<[T]>`
+  Custom markup for the multi-select checkbox `<td>` in desktop view.
+
 - `class?: ClassNameValue`  
   Tailwind classes to apply to the `<table>` element.
 
@@ -39,6 +45,12 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 - `headingsRowClass?: ClassNameValue`  
   Tailwind classes for the table heading `<tr>`.
 
+- `multiSelectThClass?: Snippet`  
+  Tailwind classes for the multi-select checkbox `<th>`.
+
+- `multiSelectTdClass?: Snippet<[T]>`  
+  Tailwind classes for the multi-select checkbox `<td>` in desktop view.
+
 - `tableRowClass?: ClassNameValue`  
   Tailwind classes for each row in desktop view.
 
@@ -47,6 +59,9 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 
 - `tableMobileTdClass?: ClassNameValue`  
   Tailwind classes for the mobile row's single `<td>` cell.
+
+- `checkboxClass?: ClassNameValue`
+  Tailwind classes for the multi-select checkbox.
 
 ## Features
 
@@ -142,6 +157,10 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 
         /** Class for the <td> cell in mobile view */
         tableMobileTdClass?: ClassNameValue;
+        
+        /** Class for the multi-select checkbox */
+        checkboxClass?: ClassNameValue;
+        
     };
 </script>
 
@@ -150,7 +169,7 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
   import {Checkbox} from '$lib/components/checkbox/index.js';
 
   let { showMultiSelect=$bindable(false), selected=$bindable([]), rows=$bindable([]), getKey, headings, tableRow, tableRowMobile, multiSelectTh, multiSelectTd,
-    tableMobileTdClass, outerDivClass, headingsRowClass, multiSelectThClass, tableRowClass, multiSelectTdClass, tableRowMobileClass, ...props }: TableProps<T> = $props();
+    tableMobileTdClass, outerDivClass, headingsRowClass, multiSelectThClass, tableRowClass, multiSelectTdClass, tableRowMobileClass, checkboxClass, ...props }: TableProps<T> = $props();
 
   function addSelected(rowkey: string){
       if(selected.includes(rowkey)){
@@ -183,7 +202,7 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
                   {@render multiSelectTh()}
                 {:else}
                 <th class={twMerge("w-12 px-4 py-2 text-center bg-inherit", multiSelectThClass)}>
-                    <Checkbox id="header-multiselect-checkbox" onchange={handleSelectAll} checked={ rows ? selected.length === rows.length: false} />
+                    <Checkbox id="header-multiselect-checkbox" onchange={handleSelectAll} checked={ rows ? selected.length === rows.length: false} class={checkboxClass} />
                 </th>
                 {/if}
 				        {/if}
@@ -204,7 +223,7 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
                   {@render multiSelectTd(row)}
                   {:else}
                   <td class={twMerge("text-center px-4 py-2 bg-inherit", multiSelectTdClass )}>
-                      <Checkbox id={"checkbox-" + rowKey} value={rowKey} checked={isSelected} onchange={()=>{addSelected(rowKey)}} />
+                      <Checkbox id={"checkbox-" + rowKey} value={rowKey} checked={isSelected} onchange={()=>{addSelected(rowKey)}} class={checkboxClass} />
                   </td>
                   {/if}
                 {/if}
