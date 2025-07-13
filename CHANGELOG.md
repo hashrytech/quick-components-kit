@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.0
+
+### Minor Changes
+
+- refactor: Updating theme variables for each component and adding table component
+
 ## 0.16.8
 
 ### Patch Changes

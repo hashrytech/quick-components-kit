@@ -8,6 +8,7 @@
 	import Checkbox from "$lib/components/checkbox/Checkbox.svelte";
 	import Radio from "$lib/components/radio/Radio.svelte";    
 	import TabNavigation from "$lib/components/tab-navigation/TabNavigation.svelte";
+    import { Table, TableTh, TableTd } from "$lib/components/table/index.js";
 
     let menuVerticalOpen = $state(false);
     let menuHorizontalOpen = $state(false);
@@ -54,11 +55,11 @@
         <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={true} />
         <TextInput id="Large" placeholder="Large..." labelText="Large" class="" size="lg" error="A name is required." />
     </div>
-    <button type="submit" class="bg-green-500 p-2 rounded-primary">Submit</button>
+    <button type="submit" class="bg-green-500 p-2 rounded-primary w-full">Submit</button>
 </form>
 <hr />
     
-<div class="flex flex-row gap-10 items-center">
+<div class="flex flex-row flex-wrap gap-10 items-center">
     <div class="flex flex-row gap-4 items-center">
         <p>Button</p>
         <Button class="text-white text-base font-semibold">Get Started</Button>
@@ -128,12 +129,43 @@
 <hr />
 
 <div class="flex flex-row gap-10 items-center">
-    <TabNavigation class="hover:border-lime-500" 
+    <TabNavigation class="hover:border-lime-500/40" 
          links={[
         { text: "Tab 1", href: "/", active: true },
         { text: "Tab 2", href: "#tab2", active: false },
         { text: "Tab 3", href: "#tab3", active: false }
     ]} />
+</div>
+
+<hr />
+
+<div class="flex flex-row gap-10 items-center">
+    <Table rows={[
+        { id: 1, name: "John Doe", age: 30 },
+        { id: 2, name: "Jane Smith", age: 25 },
+        { id: 3, name: "Alice Johnson", age: 28 }]} 
+        getKey={(u) => u.id.toString()} showMultiSelect={true}
+    >
+    {#snippet headings()}
+    <TableTd>ID</TableTd>
+    <TableTd>Name</TableTd>
+    <TableTd>Age</TableTd>        
+    {/snippet}
+
+    {#snippet tableRow(row)}
+    <TableTd>{row.id}</TableTd>
+    <TableTd>{row.name}</TableTd>
+    <TableTd>{row.age}</TableTd>        
+    {/snippet}
+
+    {#snippet tableRowMobile(row)}
+    <div class="flex flex-col gap-2">
+        <p class="font-semibold">ID: {row.id}</p>
+        <p class="font-semibold">Name: {row.name}</p>
+        <p class="font-semibold">Age: {row.age}</p>
+    </div>        
+    {/snippet}
+    </Table>
 </div>
 
 

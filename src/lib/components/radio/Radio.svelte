@@ -33,9 +33,11 @@
 
 </script>
 
-<label for={id} class="inline-flex items-center gap-2 cursor-pointer select-none">
+<label for={id} class="flex items-center gap-2 cursor-pointer select-none">
   {#if labelPosition === "left"}<span class={twMerge("text-sm", labelClass)}>{label}</span>{/if}
-  <input {id} name={name ? name : id} type="radio" bind:value bind:group {disabled} class={twMerge("border-border-primary focus:ring-2 ring-focus-primary text-button-primary accent-button-primary cursor-pointer", 
-    sizeMap[size], props.class)} />
+  <input {id} name={name ? name : id} type="radio" {value} bind:group {disabled} 
+    class={twMerge("focus:ring-2 ring-primary-focus text-primary-input-accent accent-primary-input-accent cursor-pointer",
+    group === value ? "border-primary-input-accent" : "border-primary-input-border",
+    sizeMap[size], props.class)} {onclick} />
   {#if labelPosition === "right"}<span class={twMerge("text-sm", labelClass)}>{label}</span>{/if}
 </label>

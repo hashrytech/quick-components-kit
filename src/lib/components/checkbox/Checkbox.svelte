@@ -4,26 +4,28 @@
     import {twMerge} from 'tailwind-merge';
     
     export type CheckBoxProps = {
-        id: string;
-        name?: string;
-        label?: string;
-        disabled?: boolean;
-        checked?: boolean;
-        group?: any[];
-        labelPosition?: "left" | "right";
-        size?: "sm" | "md" | "lg";
-        children?: Snippet;
-        icon?: Snippet;
-        onclick?: (event: MouseEvent) => void;
-        labelClass?: ClassNameValue;
-        class?: ClassNameValue;
+      id: string;
+      name?: string;
+      label?: string;
+      disabled?: boolean;
+      checked?: boolean;
+      value?: any;
+      group?: any[];
+      labelPosition?: "left" | "right";
+      size?: "sm" | "md" | "lg";
+      children?: Snippet;
+      icon?: Snippet;
+      onclick?: (event: Event) => void;
+      onchange?: (event: Event) => void;
+      labelClass?: ClassNameValue;
+      class?: ClassNameValue;
     };
 
 </script>
 
 <script lang="ts"> 
 
-  let {id, name, label="", labelPosition="right", checked=$bindable(true), group=$bindable(), size="md", disabled=$bindable(false), onclick, labelClass, ...props}: CheckBoxProps = $props();
+  let {id, name, label="", labelPosition="right", checked=$bindable(false), value, group=$bindable(), size="md", disabled=$bindable(false), onclick, onchange, labelClass, ...props}: CheckBoxProps = $props();
 
   const sizeMap = {
     sm: 'w-4 h-4',
@@ -33,9 +35,9 @@
 
 </script>
 
-<label for={id} class="inline-flex items-center gap-2 cursor-pointer select-none">
+<label for={id} class="flex items-center gap-2 cursor-pointer select-none">
   {#if labelPosition === "left"}<span class={twMerge("text-sm", labelClass)}>{label}</span>{/if}
-  <input {id} name={name ? name : id} type="checkbox" bind:checked bind:group {disabled} class={twMerge("rounded border-border-primary focus:ring-2 ring-focus-primary text-button-primary accent-button-primary cursor-pointer", 
-    sizeMap[size], props.class)} />
+  <input {id} name={name ? name : id} type="checkbox" bind:checked {group} {disabled} {value} class={twMerge("rounded focus:ring-2 ring-primary-focus text-primary-input-accent accent-primary-input-accent cursor-pointer", 
+    checked === true ? "border-primary-input-accent" : "border-primary-input-border", sizeMap[size], props.class)} {onclick} {onchange} />
   {#if labelPosition === "right"}<span class={twMerge("text-sm", labelClass)}>{label}</span>{/if}
 </label>

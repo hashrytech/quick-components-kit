@@ -21,7 +21,7 @@
 </script>
 
 <a {href} data-sveltekit-reload={reload} data-sveltekit-preload-data={preload ? 'hover' : false} 
-  class={twMerge("flex flex-row items-center gap-2 px-4 py-2 bg-button-primary hover:bg-button-primary-hover rounded-primary w-fit cursor-pointer text-white focus:outline-focus-primary", props.class)}>
+  class={twMerge("flex flex-row items-center gap-2 px-4 py-2 bg-primary-button hover:bg-primary-button-hover rounded-primary w-fit cursor-pointer text-white focus:outline-focus-primary", props.class)}>
   {#if icon}<span class="w-10">{@render icon()}</span>{/if}
   {@render children?.()}
 </a>

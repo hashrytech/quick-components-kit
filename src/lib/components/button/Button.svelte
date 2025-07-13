@@ -20,8 +20,8 @@
 
 </script>
 
-<button {disabled} class={twMerge("flex flex-row items-center gap-2 px-4 py-2 bg-button-primary hover:bg-button-primary-hover rounded-primary w-fit cursor-pointer text-white focus:outline-focus-primary", 
-  "disabled:bg-button-primary/60 disabled:cursor-default", props.class)}
+<button {disabled} class={twMerge("flex flex-row items-center gap-2 px-4 py-2 bg-primary-button hover:bg-primary-button-hover rounded-primary w-fit cursor-pointer text-white focus:outline-focus-primary", 
+  "disabled:bg-primary-button/60 disabled:cursor-default", props.class)}
   {onclick}>
   {#if icon}<span class="w-10">{@render icon()}</span>{/if}
   {#if loadingIcon}<span class="w-10">{@render loadingIcon()}</span>{/if}
