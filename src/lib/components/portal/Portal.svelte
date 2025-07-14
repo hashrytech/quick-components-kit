@@ -1,12 +1,12 @@
 <!--
 @component Portal
 
-A utility component that renders its children outside the current DOM hierarchy by prepending them into a target DOM element (e.g., `document.body`). Useful for modals, drawers, toasts, and overlays to avoid z-index and layout conflicts.
+A utility component that renders its children outside the current DOM hierarchy by appending or prepending them into a target DOM element (e.g., `document.body`). Useful for modals, drawers, toasts, and overlays to avoid z-index and layout conflicts.
 
 ## Props
 
 - `target?`: `HTMLElement` — The DOM node to render the content into. Defaults to `document.body` if not provided. Useful for directing content to a specific container.
-- `prepend?: boolean` — If true (default), the portal will be prepended to the target node. If false, it will be appended. This controls the render order of layered content.
+- `append?: boolean` — If true (default), the portal will be appended to the end of the target node. If false, it will be prepended to the begining. This controls the render order of layered content.
 - `children?`: `Snippet` — The Svelte children content to render inside the portal. Use `{@render}` to render dynamic fragments.
 - `class?`: `ClassNameValue` — Tailwind CSS or custom classes applied to the outer container div.
 
@@ -43,7 +43,7 @@ A utility component that renders its children outside the current DOM hierarchy 
     
     export type PortalProps = {
       target?: HTMLElement;
-      prepend?: boolean;    
+      append?: boolean;    
       children?: Snippet;
       class?: ClassNameValue;
     };
@@ -51,15 +51,15 @@ A utility component that renders its children outside the current DOM hierarchy 
 </script>
 
 <script lang="ts">
-  let { target = browser ? document.body : undefined, prepend = true, children, ...props }: PortalProps = $props();  
+  let { target = browser ? document.body : undefined, append = true, children, ...props }: PortalProps = $props();  
   let el: HTMLDivElement;
 
   onMount(() => {    
     if (!browser || !el) return;
-    if(prepend)
-        target?.prepend(el);
-    else
+    if(append)
         target?.append(el);
+    else        
+      target?.prepend(el);
   });
 
   onDestroy(() => {

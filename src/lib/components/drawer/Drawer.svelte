@@ -1,65 +1,60 @@
 <!--
 @component Drawer
 
-A flexible slide-in drawer component built with Svelte 5 and Tailwind CSS. Supports positional rendering (`left`, `right`, `top`, `bottom`), transition control, accessibility, and optional background overlay. Typically used for side menus, filters, or modal-like panels.
+A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS and transitions. Includes focus trapping, overlay support, inert background, and escape key handling.
 
 ## Props
 
 - `open?`: `boolean` — Whether the drawer is visible. Bindable.
-- `escapeKeyClose?`: `boolean` — If true, pressing Escape closes the drawer. Default: `true`.
-- `disableBodyScroll?`: `boolean` — Prevents body scrolling when drawer is open. Default: `true`.
-- `ariaLabel?`: `string` — Accessibility label for the drawer. Default: `"Drawer"`.
-- `position?`: `"left" | "right" | "top" | "bottom"` — Direction the drawer slides from. Default: `"left"`.
-- `transitionDuration?`: `number` — Duration of fly transition in milliseconds. Defaults to `config.transitionDuration`.
-- `transitionDistance?`: `number` — Distance the drawer slides in from. Default: `240`.
-- `overlayClasses?`: `string` — Additional classes passed to the background overlay.
-- `class?`: `ClassNameValue` — Tailwind classes for the drawer content container.
-- `children?`: `Snippet` — Svelte fragment rendered inside the drawer content.
-
-## Slots
-
-This component uses `children` as a rendered snippet via `{@render}`.
-
-## Overlay
-
-The `<Overlay>` component is used to darken the background and optionally block interaction. It is clickable and will trigger the drawer to close unless stopped by event propagation. You can customize its styling using the `overlayClasses` prop.
+- `escapeKeyClose?`: `boolean` — If `true`, allows closing the drawer via the Escape key. Default: `true`.
+- `disableBodyScroll?`: `boolean` — Prevents body scroll while drawer is open. Default: `true`.
+- `inertId?`: `string` — DOM element ID to set `inert` while the drawer is open (for accessibility).
+- `ariaLabel?`: `string` — ARIA label for screen readers. Default: `"Drawer"`.
+- `position?`: `"left" | "right" | "top" | "bottom"` — Drawer slide direction. Default: `"left"`.
+- `transitionDuration?`: `number` — Drawer animation duration in milliseconds.
+- `transitionDistance?`: `number` — Distance the drawer flies in from (px).
+- `overlayClasses?`: `string` — Custom Tailwind classes for the backdrop overlay.
+- `class?`: `ClassNameValue` — Classes passed to the drawer container.
+- `children?`: `Snippet` — Svelte content rendered inside the drawer.
 
 ## Usage
 
 ```svelte
 <script>
-  import Drawer from '@hashrytech/quick-components-kit';
-  let isOpen = false;
+  import { Drawer } from '@your-lib';
+  let open = false;
 </script>
 
-<Drawer bind:open={isOpen} position="right" ariaLabel="Menu" transitionDuration={300}>
+<Drawer bind:open={open} position="right" inertId="main-content">
   <p class="p-4">Drawer content goes here</p>
 </Drawer>
 ```
 -->
 
 <script lang="ts" module>
-	  import { type Snippet } from 'svelte';
-    import type { ClassNameValue } from 'tailwind-merge';
-    import { fly } from 'svelte/transition';
-    import {twMerge} from 'tailwind-merge';
-    import Overlay from '$lib/components/overlay/Overlay.svelte';
-    import { onKeydown } from '$lib/actions/on-keydown.js';
-    import { stopInteraction } from '$lib/actions/stop-interaction.js';
-    import { config } from '$lib/configs/config.js';
+  import { type Snippet } from 'svelte';
+  import type { ClassNameValue } from 'tailwind-merge';
+  import { fly } from 'svelte/transition';
+  import { twMerge } from 'tailwind-merge';
+  import { Overlay } from '$lib/components/overlay/index.js';
+  import { onKeydown } from '$lib/actions/on-keydown.js';
+  import { config } from '$lib/configs/config.js';	
+	import { Portal } from "$lib/components/portal/index.js";
+  import { trapFocus } from '$lib/actions/trap-focus.js';
     
-    export type DrawerProps = {
-      open?: boolean;
-      escapeKeyClose?: boolean;
-      disableBodyScroll?: boolean;
-      ariaLabel?: string;
-      transitionDuration?: number;
-      transitionDistance?: number;
-      position?: "left" | "right" | "top" | "bottom";
-      overlayClasses?: string;
-      children?: Snippet;
-      class?: ClassNameValue;
-    };
+  export type DrawerProps = {
+    open?: boolean;
+    escapeKeyClose?: boolean;
+    disableBodyScroll?: boolean;
+    inertId?: string;
+    ariaLabel?: string;
+    transitionDuration?: number;
+    transitionDistance?: number;
+    position?: "left" | "right" | "top" | "bottom";
+    overlayClasses?: string;
+    children?: Snippet;
+    class?: ClassNameValue;
+  };
 
 </script>
 
@@ -68,6 +63,7 @@ The `<Overlay>` component is used to darken the background and optionally block 
     open=$bindable(false), 
     escapeKeyClose=true, 
     disableBodyScroll=true, 
+    inertId,
     ariaLabel="Drawer", 
     position="left", 
     transitionDuration=config.transitionDuration, 
@@ -76,6 +72,8 @@ The `<Overlay>` component is used to darken the background and optionally block 
     children, 
     ...props
   }: DrawerProps = $props();
+
+  let drawerElement: HTMLDivElement | undefined = $state();
 
   const transitionProperties = {
     x: position == "left" ? -transitionDistance : position == "right" ? transitionDistance : 0,
@@ -90,6 +88,15 @@ The `<Overlay>` component is used to darken the background and optionally block 
     bottom: "bottom-0 left-0 right-0 h-60",
   };
 
+  $effect(() => {
+    if (open && drawerElement) {
+      if(inertId)
+        document.getElementById(inertId)?.setAttribute("inert", "true");
+      drawerElement?.focus();
+      
+    }
+  });
+
   function handleKeydown() {
     if(open && escapeKeyClose) {
       closeDrawer();
@@ -97,21 +104,23 @@ The `<Overlay>` component is used to darken the background and optionally block 
   };
 
   export function closeDrawer() {
-    open = false;
+    if(inertId)
+      document.getElementById(inertId)?.removeAttribute("inert");
+    open = false;    
   };  
 
 </script>
 
 {#if open}
-<div class="fixed inset-0">
-  <Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={() => open = false} />
-  <div role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex="{open ? 0 : -1}" aria-hidden="{!open}"
-    class={twMerge("fixed flex flex-col items-center gap-2 bg-white outline-0 focus:outline-0 active:outline-focus-primary focus:outline-focus-primary overflow-y-auto z-50", postionClasses[position], props.class)}
+<Portal>
+  <Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={closeDrawer} />
+  <div bind:this={drawerElement} use:trapFocus role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex={open ? 0 : -1} aria-hidden={!open}
+    class={twMerge("fixed bg-white overflow-y-auto focus:outline-none", postionClasses[position], props.class)}
     in:fly={transitionProperties}
     out:fly={transitionProperties}
     use:onKeydown={{key: "Escape", callback: handleKeydown}}>
     {@render children?.()}
   </div>
-</div>
+</Portal>
 {/if}
 

@@ -16,4 +16,4 @@
 
 </script>
 
-<th scope="col" class={twMerge("p-3 text-left uppercase font-semibold", props.class)}>{@render children?.()}</th>
+<th scope="col" class={twMerge("p-3 text-left uppercase font-semibold bg-inherit", props.class)}>{@render children?.()}</th>

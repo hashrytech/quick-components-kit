@@ -11,7 +11,7 @@
       ariaLabel?: string;
       transitionDuration?: number;
       children?: Snippet;
-      onclick?: (event: MouseEvent) => void;
+      onclick?: (event: Event) => void;
       class?: ClassNameValue;
     };
 
@@ -21,7 +21,7 @@
   let { disableBodyScroll=true, transitionDuration=config.transitionDuration, ariaLabel="Overlay", onclick, children, ...props }: OverlayProps = $props();
 </script>
 
-<div transition:fade={{duration: transitionDuration}} class={twMerge("fixed top-0 left-0 right-0 bottom-0 bg-primary-overlay z-40", props.class)} role="presentation" {onclick} use:disableScroll={disableBodyScroll}>
+<div  transition:fade={{duration: transitionDuration}} class={twMerge("fixed inset-0 bg-primary-overlay", props.class)} role="presentation" {onclick} use:disableScroll={disableBodyScroll} >
   {@render children?.()}
 </div>
 
