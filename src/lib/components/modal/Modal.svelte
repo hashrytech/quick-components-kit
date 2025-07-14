@@ -53,7 +53,7 @@
 </script>
 
 {#if open}
-<Portal>
+<Portal class="fixed z-50">
   <Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={closeModal} />
   <div bind:this={modalElement} use:trapFocus role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex={open ? 0 : -1} aria-hidden={!open}
     class={twMerge("fixed w-full max-w-2xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-6/12 overflow-y-auto focus:outline-none bg-white rounded-primary", props.class)}
@@ -61,7 +61,7 @@
     in:fly={{y: 150, duration: transitionDuration}}
     out:fly={{y: 150, duration: transitionDuration}}>       
     
-      {@render children?.()}    
+      {@render children?.()}
 
   </div>
 </Portal>

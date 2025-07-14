@@ -144,7 +144,7 @@
 
 <hr />
 
-<div class="flex flex-col gap-10 items-center">
+<div class="flex flex-col gap-10 items-center z-10">
     <Button class="text-white text-base font-semibold bg-blue-500" onclick={()=> showMultiSelect = !showMultiSelect}>
         Toggle Multi Select
     </Button>
