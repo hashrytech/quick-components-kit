@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.4
+
+### Patch Changes
+
+- patch: adding higher z-index for modal and drawer
+
 ## 0.17.3
 
 ### Patch Changes

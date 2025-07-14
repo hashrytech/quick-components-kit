@@ -36,17 +36,17 @@ A utility component that renders its children outside the current DOM hierarchy 
 
 <script lang="ts" module>    
 	import { type Snippet } from 'svelte';
-    import type { ClassNameValue } from 'tailwind-merge';    
-    import {twMerge} from 'tailwind-merge';
-    import { onMount, onDestroy } from 'svelte';
-    import { browser } from '$app/environment';
-    
-    export type PortalProps = {
-      target?: HTMLElement;
-      append?: boolean;    
-      children?: Snippet;
-      class?: ClassNameValue;
-    };
+  import type { ClassNameValue } from 'tailwind-merge';    
+  import {twMerge} from 'tailwind-merge';
+  import { onMount, onDestroy } from 'svelte';
+  import { browser } from '$app/environment';
+  
+  export type PortalProps = {
+    target?: HTMLElement;
+    append?: boolean;    
+    children?: Snippet;
+    class?: ClassNameValue;
+  };
 
 </script>
 
