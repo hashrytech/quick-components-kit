@@ -21,20 +21,20 @@
  * @param node - The HTML element to be portaled.
  * @param options - Optional config:
  *   - `target`: The DOM node to portal into (defaults to `document.body`)
- *   - `prepend`: Whether to insert at the beginning instead of appending (default: true)
+ *   - `append`: Whether to insert at the end instead of appending to the begining (default: true)
  */
 import { browser } from '$app/environment';
 
 export type PortalOptions = {
 	target?: HTMLElement;
-	prepend?: boolean;
+	append?: boolean;
 };
 
-export function portalAction(node: HTMLElement, { target = browser ? document.body : undefined, prepend = true }: PortalOptions = {}) {
-	if (prepend) {
-		target?.prepend(node);
+export function portalAction(node: HTMLElement, { target = browser ? document.body : undefined, append = true }: PortalOptions = {}) {
+	if (append) {
+		target?.appendChild(node);		
 	} else {
-		target?.appendChild(node);
+		target?.prepend(node);		
 	}
 
 	return {

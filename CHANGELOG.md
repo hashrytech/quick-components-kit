@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.3
+
+### Patch Changes
+
+- refactor: Drawers, Modals, Tables, trap focus etc
+
 ## 0.17.2
 
 ### Patch Changes

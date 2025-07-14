@@ -14,6 +14,7 @@
     let menuHorizontalOpen = $state(false);
     let modalOpen = $state(false);
     let radioValue = $state("Apple");
+    let showMultiSelect = $state(true);
 </script>
 
 <h1 class="mt-4 text-center bg-primary-600 p-2 rounded-lg text-white font-semibold text-xl mx-2">Quick Components Kit</h1>
@@ -85,7 +86,10 @@
         <Drawer bind:open={menuHorizontalOpen} position="left">
             <p>Hello</p>
             <p>This is a left drawer.</p>
-            <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> { menuHorizontalOpen=false; console.log("MENU: ", menuHorizontalOpen)}}>Close Drawer</Button>
+            <div class="flex flex-col gap-4 w-full">
+                <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> { menuHorizontalOpen=false; console.log("MENU: ", menuHorizontalOpen)}}>Close Drawer</Button>
+                <Button class="text-white text-base font-semibold bg-red-500">Test Trap</Button>
+            </div>
         </Drawer>
     </div>
 
@@ -105,10 +109,11 @@
     </div>
 
     <Modal bind:open={modalOpen} class="">
-        <div class="p-4 hidden">
+        <div class="p-4">
             <h2 class="text-lg font-semibold mb-2">Modal Title</h2>
             <p class="mb-4">This is a simple modal dialog. You can put any content here.</p>
             <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Close Modal</Button>
+            <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Test Modal</Button>
         </div>
     </Modal>
 </div>
@@ -139,32 +144,34 @@
 
 <hr />
 
-<div class="flex flex-row gap-10 items-center">
+<div class="flex flex-col gap-10 items-center">
+    <Button class="text-white text-base font-semibold bg-blue-500" onclick={()=> showMultiSelect = !showMultiSelect}>
+        Toggle Multi Select
+    </Button>
     <Table rows={[
         { id: 1, name: "John Doe", age: 30 },
         { id: 2, name: "Jane Smith", age: 25 },
-        { id: 3, name: "Alice Johnson", age: 28 }]} 
-        getKey={(u) => u.id.toString()} showMultiSelect={true} checkboxClass="border-neutral-300"
-    >
-    {#snippet headings()}
-    <TableTd>ID</TableTd>
-    <TableTd>Name</TableTd>
-    <TableTd>Age</TableTd>        
-    {/snippet}
+        { id: 3, name: "Alice Johnson", age: 28 }]}
+        getKey={(u) => u.id.toString()} bind:showMultiSelect checkboxClass="border-neutral-300">
+        {#snippet headings()}
+        <TableTh class="w-[30rem]">DLDJHDLJLKDLDJDLKJDL</TableTh>
+        <TableTh class="w-[30rem]">Name</TableTh>
+        <TableTh class="w-[30rem]">Age</TableTh>
+        {/snippet}
 
-    {#snippet tableRow(row)}
-    <TableTd>{row.id}</TableTd>
-    <TableTd>{row.name}</TableTd>
-    <TableTd>{row.age}</TableTd>        
-    {/snippet}
+        {#snippet tableRow(row)}
+        <TableTd>{row.id}</TableTd>
+        <TableTd>{row.name}</TableTd>
+        <TableTd>{row.age}</TableTd>        
+        {/snippet}
 
-    {#snippet tableRowMobile(row)}
-    <div class="flex flex-col gap-2">
-        <p class="font-semibold">ID: {row.id}</p>
-        <p class="font-semibold">Name: {row.name}</p>
-        <p class="font-semibold">Age: {row.age}</p>
-    </div>        
-    {/snippet}
+        {#snippet tableRowMobile(row)}
+        <div class="flex flex-col gap-2">
+            <p class="font-semibold">ID: {row.id}</p>
+            <p class="font-semibold">Name: {row.name}</p>
+            <p class="font-semibold">Age: {row.age}</p>
+        </div>
+        {/snippet}
     </Table>
 </div>
 

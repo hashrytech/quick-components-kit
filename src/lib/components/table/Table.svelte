@@ -99,7 +99,7 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 -->
   
 <script lang="ts" module>
-    import type { Snippet } from 'svelte';
+    import { onMount, type Snippet } from 'svelte';
     import type { ClassNameValue } from 'tailwind-merge';    
 
     /**
@@ -171,6 +171,8 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
   let { showMultiSelect=$bindable(false), selected=$bindable([]), rows=$bindable([]), getKey, headings, tableRow, tableRowMobile, multiSelectTh, multiSelectTd,
     tableMobileTdClass, outerDivClass, headingsRowClass, multiSelectThClass, tableRowClass, multiSelectTdClass, tableRowMobileClass, checkboxClass, ...props }: TableProps<T> = $props();
 
+  let tableElement: HTMLTableElement | undefined = $state();
+
   function addSelected(rowkey: string){
       if(selected.includes(rowkey)){
           selected = selected.filter((item) => item !== rowkey);
@@ -181,27 +183,48 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 
   function handleSelectAll(event: any){
       if (event.target.checked) {
-          for(let i = 0; i < rows.length; i++){
-              selected.push(getKey(rows[i]));
-          }
+        for(let i = 0; i < rows.length; i++){
+            selected.push(getKey(rows[i]));
+        }
       }
       else{
           selected = [];
       }
   }
 
+  /*function applyStickyToSecondColumn(table: HTMLTableElement) {
+    if (!table) return;
+
+    const toAdd = showMultiSelect ? 'left-[3rem]' : "left-0"; // 3 rem is the width of the checkbox column
+    const toRemove = showMultiSelect ? 'left-0' : "left-[3rem]";
+
+    // thead > tr > th:nth-child(2)
+    const headCells = table.querySelectorAll('thead tr > th:nth-child(2)');
+    for (const cell of headCells) {
+      cell.classList.remove(toRemove);
+      cell.classList.add('sticky', toAdd);
+    }
+
+    // tbody > tr > td:nth-child(2)
+    const bodyCells = table.querySelectorAll('tbody tr > td:nth-child(2)');
+    for (const cell of bodyCells) {
+      cell.classList.remove(toRemove);
+      cell.classList.add('sticky', toAdd);
+    }
+  }*/
+
 </script>
 
 
 <div class={twMerge("rounded-lg border-primary-table-border w-full overflow-x-auto", tableRowMobile ? "border-0 md:border bg-transparent" : "border bg-white",  outerDivClass)}>
-    <table class={twMerge("table-fixed w-full text-sm", tableRowMobile ? "border-separate border-spacing-y-2 md:border-collapse md:border-spacing-y-0": "", props.class)} cellpadding="10px">
+    <table bind:this={tableElement} class={twMerge("table-fixed w-full text-sm", tableRowMobile ? "border-separate border-spacing-y-2 md:border-collapse md:border-spacing-y-0": "", props.class)} cellpadding="10px">
         <thead class={twMerge("bg-primary-table-heading", tableRowMobile ? "hidden md:table-header-group" : "")}>
             <tr class={twMerge("text-xs text-primary-table-heading-text whitespace-nowrap bg-inherit", headingsRowClass)}>
                 {#if showMultiSelect}
                 {#if multiSelectTh}
                   {@render multiSelectTh()}
                 {:else}
-                <th class={twMerge("w-12 px-4 py-2 text-center bg-inherit", multiSelectThClass)}>
+                <th class={twMerge("w-12 px-4 py-2 text-center bg-inherit sticky left-0", multiSelectThClass)}>
                     <Checkbox id="header-multiselect-checkbox" onchange={handleSelectAll} checked={ rows ? selected.length === rows.length: false} class={checkboxClass} />
                 </th>
                 {/if}
@@ -222,7 +245,7 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
                   {#if multiSelectTd}
                   {@render multiSelectTd(row)}
                   {:else}
-                  <td class={twMerge("text-center px-4 py-2 bg-inherit", multiSelectTdClass )}>
+                  <td class={twMerge("text-center px-4 py-2 bg-inherit sticky left-0", multiSelectTdClass )}>
                       <Checkbox id={"checkbox-" + rowKey} value={rowKey} checked={isSelected} onchange={()=>{addSelected(rowKey)}} class={checkboxClass} />
                   </td>
                   {/if}
