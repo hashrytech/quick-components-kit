@@ -6,7 +6,7 @@
         disabled?: boolean;
         children?: Snippet;
         icon?: Snippet;
-        loadingIcon?: Snippet;
+        activeIcon?: Snippet;
         onclick?: (event: MouseEvent) => void;
         class?: ClassNameValue;
     };
@@ -16,15 +16,18 @@
 <script lang="ts">
   import {twMerge} from 'tailwind-merge';
   
-  let { disabled=$bindable(), children, icon, loadingIcon, onclick, ...props }: ButtonProps = $props();
+  let { disabled=$bindable(), children, icon, activeIcon, onclick, ...props }: ButtonProps = $props();
 
 </script>
 
-<button {disabled} class={twMerge("flex flex-row items-center gap-2 px-4 py-2 focus:outline-primary-focus bg-primary-button hover:bg-primary-button-hover rounded-primary w-fit cursor-pointer text-white focus:ring-primary-focus focus:ring", 
+<button {disabled} class={twMerge("flex flex-row items-center gap-2 px-4 py-2 focus:outline-primary-focus bg-primary-button hover:bg-primary-button-hover rounded-primary cursor-pointer focus:ring-primary-focus focus:ring", 
   "disabled:bg-primary-button/60 disabled:cursor-default", props.class)}
   {onclick}>
-  {#if icon}<span class="w-10">{@render icon()}</span>{/if}
-  {#if loadingIcon}<span class="w-10">{@render loadingIcon()}</span>{/if}
+  {#if activeIcon}
+  <span>{@render activeIcon()}</span>
+  {:else if icon}
+  <span>{@render icon()}</span>
+  {/if}
   {@render children?.()}
 </button>
 

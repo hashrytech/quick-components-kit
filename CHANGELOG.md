@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.5
+
+### Patch Changes
+
+- patch: refactoring button
+
 ## 0.17.4
 
 ### Patch Changes
