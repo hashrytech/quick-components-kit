@@ -152,7 +152,7 @@
         <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> modalOpen=true}>Show Modal</Button>
     </div>
 
-    <Modal bind:open={modalOpen} class="">
+    <Modal bind:open={modalOpen} class="!rounded-none">
         <div class="p-4">
             <h2 class="text-lg font-semibold mb-2">Modal Title</h2>
             <p class="mb-4">This is a simple modal dialog. You can put any content here.</p>

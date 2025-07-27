@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.6
+
+### Patch Changes
+
+- patch: modal remove default overflow-y-auto
+
 ## 0.17.5
 
 ### Patch Changes
