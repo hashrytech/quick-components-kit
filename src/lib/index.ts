@@ -8,6 +8,7 @@ export * from './components/drawer/index.js';
 export * from './components/modal/index.js';
 export * from './components/overlay/index.js';
 export * from './components/radio/index.js';
+export * from './components/select/index.js';
 export * from './components/checkbox/index.js';
 export * from './components/tab-navigation/index.js';
 export * from './components/portal/index.js';

@@ -73,7 +73,7 @@
     <div class="relative">
         {#if icon}<div class="absolute inset-y-0 left-0 flex items-center justify-center rounded-l-primary m-0.5 w-10">{@render icon()}</div>{/if}
         <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {onchange} {onmouseup} bind:value 
-            class={twMerge("rounded-primary border-primary-input-border focus:border-primary-focus focus:ring-primary-focus placeholder:opacity-50 disabled:bg-neutral-300/30 disabled:border-neutral-300/30",
+            class={twMerge("rounded-primary border border-primary-input-border focus:border-primary-focus focus:ring-primary-focus placeholder:opacity-50 disabled:bg-neutral-300/30 disabled:border-neutral-300/30",
             error ? "bg-red-50 border-red-300" : "", 
             icon ? "pl-10" : "",
             sizeStyle[size], props.class)}
