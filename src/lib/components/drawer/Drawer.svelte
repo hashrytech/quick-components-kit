@@ -123,7 +123,7 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
 <Portal class="fixed z-50">
   <Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={handleOverlayClick} />
   <div bind:this={drawerElement} use:trapFocus role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex={open ? 0 : -1} aria-hidden={!open}
-    class={twMerge("fixed bg-white overflow-y-auto focus:outline-none", postionClasses[position], props.class)}
+    class={twMerge("fixed bg-white focus:outline-none", postionClasses[position], props.class)}
     in:fly={transitionProperties}
     out:fly={transitionProperties}
     use:onKeydown={{key: "Escape", callback: handleKeydown}}>

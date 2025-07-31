@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.8
+
+### Patch Changes
+
+- patch: removing overflow-y-auto from drawer
+
 ## 0.17.7
 
 ### Patch Changes
