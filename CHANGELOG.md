@@ -1,5 +1,12 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.7
+
+### Patch Changes
+
+- patch: adding clickOutsideClose property to Modal
+- patch: adding clickoutside close property to Drawer
+
 ## 0.17.6
 
 ### Patch Changes

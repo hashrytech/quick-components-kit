@@ -45,6 +45,7 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
   export type DrawerProps = {
     open?: boolean;
     escapeKeyClose?: boolean;
+    clickOutsideClose?: boolean;
     disableBodyScroll?: boolean;
     inertId?: string;
     ariaLabel?: string;
@@ -61,7 +62,8 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
 <script lang="ts">  
   let {
     open=$bindable(false), 
-    escapeKeyClose=true, 
+    escapeKeyClose=true,
+    clickOutsideClose=true, 
     disableBodyScroll=true, 
     inertId,
     ariaLabel="Drawer", 
@@ -107,13 +109,19 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
     if(inertId)
       document.getElementById(inertId)?.removeAttribute("inert");
     open = false;    
-  };  
+  };
+
+  function handleOverlayClick() {
+    if(clickOutsideClose) {
+      closeDrawer();
+    }
+  }
 
 </script>
 
 {#if open}
 <Portal class="fixed z-50">
-  <Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={closeDrawer} />
+  <Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={handleOverlayClick} />
   <div bind:this={drawerElement} use:trapFocus role="dialog" aria-modal="true" aria-label={ariaLabel} tabindex={open ? 0 : -1} aria-hidden={!open}
     class={twMerge("fixed bg-white overflow-y-auto focus:outline-none", postionClasses[position], props.class)}
     in:fly={transitionProperties}
