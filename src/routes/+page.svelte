@@ -9,12 +9,14 @@
 	import Radio from "$lib/components/radio/Radio.svelte";    
 	import TabNavigation from "$lib/components/tab-navigation/TabNavigation.svelte";
     import { Table, TableTh, TableTd } from "$lib/components/table/index.js";
+	import Select from "$lib/components/select/Select.svelte";
 
     let menuVerticalOpen = $state(false);
     let menuHorizontalOpen = $state(false);
     let modalOpen = $state(false);
     let radioValue = $state("Apple");
     let showMultiSelect = $state(true);
+    let selectValue = $state("apple");
 </script>
 
 <h1 class="mt-4 text-center bg-primary-600 p-2 rounded-lg text-white font-semibold text-xl mx-2">Quick Components Kit</h1>
@@ -219,7 +221,10 @@
     </Table>
 </div>
 
-
+<div class="flex flex-col gap-10 items-start justify-start">
+    <Select labelPosition="right" id="select1" label="Select Example" options={[{ value: "apple", label: "Apple", disabled: false }, { value: "banana", label: "Banana", disabled: true }, { value: "cherry", label: "Cherry" }]} 
+        bind:value={selectValue} size="md" class="w-64" />
+</div>
 
 
 

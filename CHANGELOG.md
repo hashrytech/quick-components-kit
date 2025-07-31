@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.18.0
+
+### Minor Changes
+
+- feat: Adding select componennt
+
 ## 0.17.9
 
 ### Patch Changes
