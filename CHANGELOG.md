@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.17.9
+
+### Patch Changes
+
+- fix: removing console.log from Modal
+
 ## 0.17.8
 
 ### Patch Changes

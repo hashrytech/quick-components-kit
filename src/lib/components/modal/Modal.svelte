@@ -52,8 +52,7 @@
   };
 
   function handleOverlayClick() {
-    if(clickOutsideClose) {
-      console.log("click outside close");
+    if(clickOutsideClose) {      
       closeModal();
     }
   }
