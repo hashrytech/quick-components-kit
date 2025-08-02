@@ -20,6 +20,7 @@
     class?: ClassNameValue;
     labelClass?: ClassNameValue;
     optionsClass?: ClassNameValue;
+    parentDivClass?: ClassNameValue;
     icon?: Snippet;
     onchange?: (event: Event) => void;
   };
@@ -28,7 +29,7 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
 
-  let { id, name, label = "", labelPosition = "top", value = $bindable(), options=$bindable([]), size = "md", disabled = $bindable(false), labelClass, optionsClass, onchange, ...restProps}: SelectProps = $props();
+  let { id, name, label = "", labelPosition = "top", value = $bindable(), options=$bindable([]), size = "md", disabled = $bindable(false), labelClass, parentDivClass, optionsClass, onchange, ...restProps}: SelectProps = $props();
 
   const sizeMap = {
     sm: "text-sm py-1 px-2 h-8",
@@ -44,7 +45,7 @@
   };
 </script>
 
-<div class={twMerge("flex", directionClass[labelPosition] ?? directionClass.top)}>
+<div class={twMerge("flex", directionClass[labelPosition] ?? directionClass.top, parentDivClass)}>
   {#if label}
     <label for={id} class={twMerge("text-sm font-medium text-primary-label-text ml-1", labelClass)}>{label}</label>
   {/if}
