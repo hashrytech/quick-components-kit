@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.18.1
+
+### Patch Changes
+
+- patch: parentDivClass for select
+
 ## 0.18.0
 
 ### Minor Changes
