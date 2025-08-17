@@ -4,7 +4,7 @@
     export type HamburgerProps = {
         open?: boolean;
         useCloseBtn?: boolean;
-        ariaLabel: string;
+        ariaLabel?: string;
         linesClasses?: string;
         linesParentClasses?: string;
         onclick?: (event: MouseEvent) => void;
@@ -16,7 +16,7 @@
 <script lang="ts">
   import {twMerge} from 'tailwind-merge';
   
-  let { open=$bindable(true), ariaLabel, linesClasses, linesParentClasses, useCloseBtn=true, onclick, ...props }: HamburgerProps = $props();
+  let { open=$bindable(true), ariaLabel="menu button", linesClasses, linesParentClasses, useCloseBtn=true, onclick, ...props }: HamburgerProps = $props();
 
 </script>
 
