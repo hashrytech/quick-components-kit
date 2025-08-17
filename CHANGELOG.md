@@ -5,6 +5,11 @@
 ### Minor Changes
 
 - Update: adding ui components and refactoring textbox and select components
+## 0.18.1
+
+### Patch Changes
+
+- patch: parentDivClass for select
 
 ## 0.18.0
 
