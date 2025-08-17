@@ -20,8 +20,9 @@
 </script>
 
 <h1 class="mt-4 text-center bg-primary-600 p-2 rounded-lg text-white font-semibold text-xl mx-2">Quick Components Kit</h1>
+<a href="/quick-store">Go to Quick Store</a>
 
-<div class="flex flex-row gap-10 w-full py-5 bg-gray-50 rounded">
+<div class="flex flex-row gap-10 w-full bg-gray-50 rounded">
     <div class="flex flex-col gap-1 px-2 w-full">
         <p class="font-medium">Primary</p>
         <div class="flex flex-row gap-0.5 justify-center items-center w-full">
@@ -44,7 +45,7 @@
 <form class="flex flex-col gap-4">
     <div class="flex flex-wrap w-full max-w-lg gap-2">
         <TextInput id="Small" placeholder="Small..." labelText="Small" class="" size="sm" required={true} type="text">
-            {#snippet icon()}
+            {#snippet leftIcon()}
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                 class="lucide lucide-anvil-icon lucide-anvil">
                 <path d="M7 10H6a4 4 0 0 1-4-4 1 1 0 0 1 1-1h4"/>
@@ -57,6 +58,29 @@
         </TextInput>
         <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={true} />
         <TextInput id="Large" placeholder="Large..." labelText="Large" class="" size="lg" error="A name is required." />
+        <TextInput id="searchBox" value="search box" placeholder="Product search...">
+        
+        {#snippet leftIcon()}
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-neutral-400" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 
+                6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 
+                12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z">
+            </path>
+        </svg>
+        {/snippet}
+
+        {#snippet rightIcon()}
+        <button aria-label="clear search">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-neutral-400" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 
+                  22ZM12 10.5858L9.17157 7.75736L7.75736 9.17157L10.5858 12L7.75736 14.8284L9.17157 16.2426L12 13.4142L14.8284 
+                  16.2426L16.2426 14.8284L13.4142 12L16.2426 9.17157L14.8284 7.75736L12 10.5858Z">
+              </path>
+          </svg>
+        </button>
+        {/snippet}
+
+      </TextInput>
     </div>
     <button type="submit" class="bg-green-500 p-2 rounded-primary w-full">Submit</button>
 </form>
@@ -98,7 +122,7 @@
                     </path>
                 </svg>
             {/snippet}
-            {#snippet activeIcon()}
+            {#snippet loadingIcon()}
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#000000" viewBox="0 0 256 256" class="animate-spin">
                     <path d="M185.33,114.21l29.14-27.42.17-.17a32,32,0,0,0-45.26-45.26c0,.06-.11.11-.17.17L141.79,70.67l-83-30.2a8,8,0,0,0-8.39,1.86l-24,24a8,8,0,0,0,1.22,
                     12.31l63.89,42.59L76.69,136H56a8,8,0,0,0-5.65,2.34l-24,24A8,8,0,0,0,29,175.42l36.82,14.73,14.7,36.75.06.16a8,8,0,0,0,13.18,2.47l23.87-23.88A8,8,0,0,0,120,
@@ -222,7 +246,7 @@
 </div>
 
 <div class="flex flex-col gap-10 items-start justify-start">
-    <Select labelPosition="right" id="select1" label="Select Example" options={[{ value: "apple", label: "Apple", disabled: false }, { value: "banana", label: "Banana", disabled: true }, { value: "cherry", label: "Cherry" }]} 
+    <Select labelPosition="right" id="select1" labelText="Select Example" options={[{ value: "apple", label: "Apple", disabled: false }, { value: "banana", label: "Banana", disabled: true }, { value: "cherry", label: "Cherry" }]} 
         bind:value={selectValue} size="md" class="w-64" />
 </div>
 

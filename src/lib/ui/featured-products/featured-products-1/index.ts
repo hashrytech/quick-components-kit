@@ -1,0 +1,1 @@
+export { default as FeaturedProducts1 } from './FeaturedProducts1.svelte';

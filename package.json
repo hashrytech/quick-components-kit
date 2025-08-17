@@ -5,7 +5,7 @@
 		"type": "git",
 		"url": "git+https://github.com/hashrytech/quick-components-kit.git"
 	},
-	"version": "0.18.0",
+	"version": "0.19.0",
 	"license": "MIT",
 	"author": "Hashry Tech",
 	"scripts": {
@@ -91,6 +91,7 @@
 		"storybook": "^9.0.0",
 		"svelte": "^5.33.5",
 		"svelte-check": "^4.2.1",
+		"svelte-remixicon": "^2.7.0",
 		"tailwindcss": "^4.1.8",
 		"typescript": "^5.8.3",
 		"typescript-eslint": "^8.33.0",
