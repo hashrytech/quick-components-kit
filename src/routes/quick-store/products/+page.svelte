@@ -40,7 +40,13 @@
             ]
         }
     ]);
-    
+
+    let sortOptions: { key: string; value: string }[] = [
+        { key: "Relevance", value: "relevance" },
+        { key: "Price: Low to High", value: "price-asc" },
+        { key: "Price: High to Low", value: "price-desc" }
+    ];
+
     let products: {uid: string, title: string, description?: string, price: string, price_compare: string, image: string, badges?: string[], swatches?: string[]}[] = [];
 
     for(let i = 0; i < 8; i++)
@@ -88,7 +94,7 @@
             { text: "About", href: "/about" },
             { text: "Contact", href: "/contact" }
         ]}
-        cartLink="/cart" accountLink="/account" />
+        cartLink="/quick-store/cart" accountLink="/quick-store/account" />
 
     <main class="flex flex-col gap-2 flex-1">
         <div class="w-[98%] mx-auto md:w-full bg-primary-500 py-0.5 px-0.5">
@@ -120,14 +126,7 @@
                     </div>
                     {/if}
                     
-                    <Select id="sortProducts" class="text-sm">
-                        {#snippet optionsSnippet()}
-                        <option value="price-asc">Price: Low to High</option>
-                        <option value="price-desc">Price: High to Low</option>
-                        <option value="rating-asc">Rating: Low to High</option>
-                        <option value="rating-desc">Rating: High to Low</option>
-                        {/snippet}
-                    </Select>
+                    <Select id="sortProducts" class="text-sm" options={sortOptions} />
                 </div>
             </div>
         </div>
