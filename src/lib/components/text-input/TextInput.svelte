@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Snippet } from 'svelte';
-	import type { FullAutoFill } from 'svelte/elements';
+	import type { FullAutoFill, HTMLAttributes } from 'svelte/elements';
     import type { ClassNameValue } from 'tailwind-merge';
 
     /**
@@ -11,6 +11,7 @@
     */
     export type TextInputSize = "sm" | "md" | "lg";
     export type TextInputType = "text" | "password" | "number" | "email" | "tel" | "url" | "search";
+    export type InputMode = "none" | "text" | "decimal" | "numeric" | "tel" | "search" | "email" | "url";
 
     /**
      * Props for the TextBox component.
@@ -32,7 +33,7 @@
     export type TextInputProps = {
         id: string;        
         name?: string;
-        value?: string;
+        value?: string|number;
         type?: TextInputType;
         placeholder?: string;
         labelText?: string;
@@ -46,8 +47,11 @@
         secondDivClass?: ClassNameValue;        
         thirdDivClass?: ClassNameValue;
         autocomplete?: FullAutoFill | null;
+        inputmode?: InputMode;
+        min?: number;
+        max?: number;
         debounceDelay?: number;
-        onInput?: (value: string) => void;
+        onInput?: (value: string|number) => void;
         onchange?: (event: Event) => void;
         onmouseup?: () => void;
         label?: Snippet;
@@ -79,6 +83,9 @@
         secondDivClass,
         thirdDivClass,
         autocomplete, 
+        inputmode,
+        min,
+        max,
         debounceDelay=300, //ms
         onchange,
         onInput,
@@ -140,7 +147,7 @@
             
             {#if leftIcon}<div class="h-full flex flex-col items-center justify-center">{@render leftIcon()}</div>{/if}
             
-            <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {onmouseup} bind:value {autocomplete} oninput={handleInput}
+            <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {onmouseup} bind:value {autocomplete} {inputmode} {min} {max} oninput={handleInput}
                 class={twMerge("border-0 focus:border-0 focus:ring-0 active:border-0 outline-none p-0 bg-transparent placeholder:text-neutral-600/50 h-full w-full", sizeStyle[size], restProps.class)} />
 
             {#if rightIcon}<div class="h-full flex flex-col items-center justify-center">{@render rightIcon()}</div>{/if}

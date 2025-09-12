@@ -53,7 +53,7 @@
             { text: "About", href: "/about" },
             { text: "Contact", href: "/contact" }
         ]}
-        cartLink="/cart" accountLink="/account" />
+        cartLink="/quick-store/cart" accountLink="/quick-store/account" />
 
     <main class="flex flex-col gap-10 flex-1">        
         <Banner1 image="https://placehold.co/150x150" class="bg-white bg-cover bg-no-repeat" mainText="Welcome to Quick Store" subText="Your one-stop shop for all your needs" primaryButtonText="Shop Now" primaryButtonLink="/shop" secondaryButtonText="Learn More" secondaryButtonLink="/about" />

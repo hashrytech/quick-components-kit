@@ -4,7 +4,7 @@
 
   export type Option = {
     value: string | number;
-    label: string;
+    key: string;
     disabled?: boolean;
   };
 
@@ -83,7 +83,7 @@
       {@render optionsSnippet?.()}
       {#each options as option}
         <option value={option.value} disabled={option.disabled} class={twMerge("", optionsClass)}>
-          {option.label}
+          {option.key}
         </option>
       {/each}
     </select>
