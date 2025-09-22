@@ -17,6 +17,8 @@ export interface RestApiProxyConfig {
 	safeResponseHeaders?: string[];
 	/** Optional function to extract token from session */
 	extractToken?: (locals: App.Locals) => string | undefined;
+	/** Optional path to prepend to the proxied path */
+	prependPath?: string;
 	/** Optional flag to enable debug logging */
 	debug?: boolean;
 }
@@ -36,7 +38,9 @@ export function createProxyHandlers(config: RestApiProxyConfig): Record<string, 
 		const path = event.params.path;
 		const queryString = event.url.searchParams.toString();
 		const slash = config.appendSlash ? '/' : '';
-        const fullPath = `/${path}${slash}${queryString ? `?${queryString}` : ''}`;
+		const prepend = config.prependPath ? `/${config.prependPath}/` : '/';
+        const fullPath = `${prepend}${path}${slash}${queryString ? `?${queryString}` : ''}`;
+		console.log("Full Path:", fullPath);
 		const url = `${config.host}${fullPath}`;
 
 		if(config.debug) console.debug(`API Proxy: Proxying ${event.request.method} request to: ${url}`);

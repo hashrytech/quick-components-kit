@@ -15,6 +15,12 @@ or via yarn:
 yarn add @hashrytech/quick-components-kit
 ```
 
+## To Update Version
+```bash
+npm run change
+npm run version
+```
+
 ## Configurations
 Set default theme values for primary and secondary variables:
 - Color gradient

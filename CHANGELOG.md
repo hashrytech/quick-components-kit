@@ -1,10 +1,17 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.1
+
+### Patch Changes
+
+- fix padding for TextInput and add prepend for api proxy
+
 ## 0.19.0
 
 ### Minor Changes
 
 - Update: adding ui components and refactoring textbox and select components
+
 ## 0.18.1
 
 ### Patch Changes

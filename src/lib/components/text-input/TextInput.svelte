@@ -108,9 +108,9 @@
     };
 
     let textBoxStyle: Record<TextInputSize, string> = {
-        sm: "h-[2.05rem] pl-2 pr-1.5",
-        md: "h-[2.375rem]",
-        lg: "h-[2.8rem] pl-3 pr-2"
+        sm: "h-[2.05rem] px-2.5",
+        md: "h-[2.375rem] px-2.5",
+        lg: "h-[2.8rem] px-3"
     };
 
     const directionClass = {

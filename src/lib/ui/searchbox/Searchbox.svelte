@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import TextInput from '$lib/components/text-input/TextInput.svelte';	
-    import type { ClassNameValue } from 'tailwind-merge';
+  import type { ClassNameValue } from 'tailwind-merge';
 
   export type ProductListNavigation1Props = {
     searchTerm?: string;
@@ -9,7 +9,7 @@
     thirdDivClass?: string;
     class?: ClassNameValue;
     onclick?: (event: Event) => void;
-    onInput?: (value: string) => void;
+    onInput?: (value: string|number) => void
   };
 
 </script>
