@@ -102,15 +102,15 @@
      * - "lg": h-[2.8rem] text-lg placeholder:text-lg
      */
     let sizeStyle: Record<TextInputSize, string> = {
-        sm: "text-sm placeholder:text-sm",
-        md: "text-sm placeholder:text-sm",
-        lg: "text-base placeholder:text-base"
+        sm: "text-sm placeholder:text-sm px-2.5",
+        md: "text-sm placeholder:text-sm px-2.5",
+        lg: "text-base placeholder:text-base px-3"
     };
 
     let textBoxStyle: Record<TextInputSize, string> = {
-        sm: "h-[2.05rem] px-2.5",
-        md: "h-[2.375rem] px-2.5",
-        lg: "h-[2.8rem] px-3"
+        sm: "h-[2.05rem]",
+        md: "h-[2.375rem]",
+        lg: "h-[2.8rem]"
     };
 
     const directionClass = {
@@ -142,15 +142,15 @@
         {#if !label && labelText}<label for={id} class={twMerge("text-sm font-medium text-primary-label-text ml-1", labelClass)}>{labelText}</label>{/if}
 
         <!-- Text Box -->
-        <div class={twMerge("flex flex-row items-center rounded-primary border border-primary-input-border gap-2 focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30", 
+        <div class={twMerge("flex flex-row items-center rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30", 
             error ? "bg-red-50 border-red-300" : "", textBoxStyle[size], thirdDivClass)}>
             
-            {#if leftIcon}<div class="h-full flex flex-col items-center justify-center">{@render leftIcon()}</div>{/if}
+            {#if leftIcon}<div class="h-full flex flex-col items-center justify-center pl-2">{@render leftIcon()}</div>{/if}
             
             <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {onmouseup} bind:value {autocomplete} {inputmode} {min} {max} oninput={handleInput}
                 class={twMerge("border-0 focus:border-0 focus:ring-0 active:border-0 outline-none p-0 bg-transparent placeholder:text-neutral-600/50 h-full w-full", sizeStyle[size], restProps.class)} />
 
-            {#if rightIcon}<div class="h-full flex flex-col items-center justify-center">{@render rightIcon()}</div>{/if}
+            {#if rightIcon}<div class="h-full flex flex-col items-center justify-center pr-2">{@render rightIcon()}</div>{/if}
         </div>
         
     </div>
