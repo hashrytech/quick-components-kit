@@ -54,9 +54,9 @@
     ...restProps}: SelectProps = $props();
 
   const sizeMap = {
-    sm: "text-sm py-1 h-[2.05rem]",
-    md: "text-base py-2 h-[2.375rem]",
-    lg: "text-lg py-3 h-[2.8rem]",
+    sm: "text-sm h-[2.05rem]",
+    md: "text-base h-[2.375rem]",
+    lg: "text-lg h-[2.8rem]",
   };
 
   const directionClass = {
@@ -78,7 +78,7 @@
     {/if}
 
     <select {id} name={name ?? id} bind:value {disabled} onchange={onchange} 
-      class={twMerge("rounded-primary border border-primary-input-border focus:border-primary-focus focus:ring-primary-focus placeholder:opacity-50 disabled:bg-neutral-300/30 disabled:border-neutral-300/30",
+      class={twMerge("rounded-primary border border-primary-input-border focus:border-primary-focus focus:ring-primary-focus placeholder:opacity-50 disabled:bg-neutral-300/30 disabled:border-neutral-300/30 py-0",
       sizeMap[size], error ? "bg-red-50 border-red-300" : "", restProps.class)}>
       {@render optionsSnippet?.()}
       {#each options as option}
