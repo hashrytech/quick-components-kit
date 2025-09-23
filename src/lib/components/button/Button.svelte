@@ -27,7 +27,7 @@
   {#if loadingIcon && loading}
   <span class="shrink-0 animate-spin font-semibold">{@render loadingIcon()}</span>
   {:else if icon}
-  <span>{@render icon()}</span>
+  {@render icon()}
   {/if}
   {@render children?.()}
 </button>
