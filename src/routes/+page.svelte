@@ -10,6 +10,7 @@
 	import TabNavigation from "$lib/components/tab-navigation/TabNavigation.svelte";
     import { Table, TableTh, TableTd } from "$lib/components/table/index.js";
 	import Select from "$lib/components/select/Select.svelte";
+	import TextArea from "$lib/components/text-area/TextArea.svelte";
 
     let menuVerticalOpen = $state(false);
     let menuHorizontalOpen = $state(false);
@@ -251,6 +252,9 @@
     <Select labelPosition="right" id="select1" labelText="Select Example" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
         bind:value={selectValue} size="lg" class="w-64" />
 </div>
+
+<TextArea id="textArea1" labelText="Text Area Example" placeholder="Enter your text here..." minlength={10} maxlength={15} class="w-64 resize-none" size="lg" />
+<TextArea id="textArea2" labelText="Text Area 2" placeholder="Enter your text here..." minlength={10} maxlength={15} class="w-64 resize-none" size="md" disabled={true} />
 
 
 
