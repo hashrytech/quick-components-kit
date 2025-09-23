@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.8
+
+### Patch Changes
+
+- add: Adding pattern to TextInput
+
 ## 0.19.7
 
 ### Patch Changes
