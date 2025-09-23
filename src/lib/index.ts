@@ -27,6 +27,7 @@ export * from './modules/crypto.js';
 export * from './modules/problem-details.js';
 
 export * from './functions/object-to-form-data.js';
+export * from './functions/compare-objects.js';
 
 export * from './ui/headers/header-1/index.js';
 export * from './ui/footers/footer-1/index.js';
