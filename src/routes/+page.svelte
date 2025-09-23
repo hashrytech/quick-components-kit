@@ -248,8 +248,8 @@
 </div>
 
 <div class="flex flex-col gap-10 items-start justify-start">
-    <Select labelPosition="right" id="select1" labelText="Select Example" options={[{ value: "apple", label: "Apple", disabled: false }, { value: "banana", label: "Banana", disabled: true }, { value: "cherry", label: "Cherry" }]} 
-        bind:value={selectValue} size="md" class="w-64" />
+    <Select labelPosition="right" id="select1" labelText="Select Example" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
+        bind:value={selectValue} size="lg" class="w-64" />
 </div>
 
 

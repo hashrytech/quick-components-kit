@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.6
+
+### Patch Changes
+
+- patch: removing padding from select
+
 ## 0.19.5
 
 ### Patch Changes
