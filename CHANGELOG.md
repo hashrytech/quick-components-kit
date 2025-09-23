@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.4
+
+### Patch Changes
+
+- patch: Adding compare-objects function
+
 ## 0.19.3
 
 ### Patch Changes
