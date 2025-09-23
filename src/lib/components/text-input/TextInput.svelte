@@ -107,6 +107,12 @@
         lg: "text-base placeholder:text-base px-3"
     };
 
+    let iconStyle: Record<TextInputSize, string> = {
+        sm: "pl-2.5",
+        md: "px-2.5",
+        lg: "text-base placeholder:text-base px-3"
+    };
+
     let textBoxStyle: Record<TextInputSize, string> = {
         sm: "h-[2.05rem]",
         md: "h-[2.375rem]",
@@ -122,7 +128,7 @@
 
     // --- Debounce logic ---
 	let localValue = value; // local for immediate typing
-	let debounceTimer: ReturnType<typeof setTimeout>;	
+	let debounceTimer: ReturnType<typeof setTimeout>;
 
     function handleInput(e: Event) {
 		localValue = (e.target as HTMLInputElement).value;
@@ -145,12 +151,12 @@
         <div class={twMerge("flex flex-row items-center rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30", 
             error ? "bg-red-50 border-red-300" : "", textBoxStyle[size], thirdDivClass)}>
             
-            {#if leftIcon}<div class="h-full flex flex-col items-center justify-center pl-2">{@render leftIcon()}</div>{/if}
+            {#if leftIcon}<div class="h-full flex flex-col items-center justify-center {size == 'lg' ? 'pl-3' : 'pl-2.5'}">{@render leftIcon()}</div>{/if}
             
             <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {onmouseup} bind:value {autocomplete} {inputmode} {min} {max} oninput={handleInput}
-                class={twMerge("border-0 focus:border-0 focus:ring-0 active:border-0 outline-none p-0 bg-transparent placeholder:text-neutral-600/50 h-full w-full", sizeStyle[size], restProps.class)} />
+                class={twMerge("border-0 focus:border-0 focus:ring-0 active:border-0 outline-none p-0 bg-transparent placeholder:text-neutral-600/50 h-full w-full rounded-primary", sizeStyle[size], restProps.class)} />
 
-            {#if rightIcon}<div class="h-full flex flex-col items-center justify-center pr-2">{@render rightIcon()}</div>{/if}
+            {#if rightIcon}<div class="h-full flex flex-col items-center justify-center {size == 'lg' ? 'pr-3' : 'pr-2.5'}">{@render rightIcon()}</div>{/if}
         </div>
         
     </div>
