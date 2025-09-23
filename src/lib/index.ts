@@ -1,6 +1,7 @@
 // Reexport your entry components here
 // lib/index.js
 export * from './components/text-input/index.js';
+export * from './components/text-area/index.js';
 export * from './components/button/index.js';
 export * from './components/link-button/index.js';
 export * from './components/hamburger-menu/index.js';

@@ -4,12 +4,12 @@
     import type { ClassNameValue } from 'tailwind-merge';
 
     /**
-     * Predefined size classes for the TextBox input.
+     * Predefined size classes for the TextArea input.
      * - "sm": h-[2.05rem] text-sm placeholder:text-sm
      * - "md": h-[2.375rem] text-sm placeholder:text-sm
      * - "lg": h-[2.8rem] text-lg placeholder:text-lg
     */
-    export type TextInputSize = "sm" | "md" | "lg";
+    export type TextAreaSize = "sm" | "md" | "lg";
     export type TextInputType = "text" | "password" | "number" | "email" | "tel" | "url" | "search";
     export type InputMode = "none" | "text" | "decimal" | "numeric" | "tel" | "search" | "email" | "url";
 
@@ -33,30 +33,25 @@
     export type TextInputProps = {
         id: string;        
         name?: string;
-        value?: string|number;
-        type?: TextInputType;
+        value?: string|number;        
         placeholder?: string;
         labelText?: string;
         labelPosition?: "top" | "left" | "right" | "bottom";
-        size?: TextInputSize;
+        size?: TextAreaSize;
         disabled?: boolean;
         required?: boolean;
         error?: string;
         labelClass?: ClassNameValue;
         firstDivClass?: ClassNameValue;
-        secondDivClass?: ClassNameValue;        
-        thirdDivClass?: ClassNameValue;
-        autocomplete?: FullAutoFill | null;
-        inputmode?: InputMode;
-        min?: number;
-        max?: number;
+        secondDivClass?: ClassNameValue;
+        autocomplete?: FullAutoFill | null;        
+        minlength?: number;
+        maxlength?: number;
         debounceDelay?: number;
         onInput?: (value: string|number) => void;
         onchange?: (event: Event) => void;
         onmouseup?: () => void;
-        label?: Snippet;
-        leftIcon?: Snippet;
-        rightIcon?: Snippet;
+        label?: Snippet;        
         class?: ClassNameValue;
     };
     
@@ -67,8 +62,7 @@
     import { twMerge } from 'tailwind-merge';
 
     let { 
-        id, 
-        type="text", 
+        id,
         name="", 
         value=$bindable(""), 
         placeholder="", 
@@ -80,19 +74,15 @@
         required=false, 
         error, 
         firstDivClass, 
-        secondDivClass,
-        thirdDivClass,
-        autocomplete, 
-        inputmode,
-        min,
-        max,
+        secondDivClass,        
+        autocomplete,         
+        minlength,
+        maxlength,
         debounceDelay=300, //ms
         onchange,
         onInput,
         onmouseup, 
-        label, 
-        leftIcon, 
-        rightIcon, 
+        label,
         ...restProps}: TextInputProps = $props();
 
     /**
@@ -101,16 +91,10 @@
      * - "md": h-[2.375rem] text-sm placeholder:text-sm
      * - "lg": h-[2.8rem] text-lg placeholder:text-lg
      */
-    let sizeStyle: Record<TextInputSize, string> = {
+    let sizeStyle: Record<TextAreaSize, string> = {
         sm: "text-sm placeholder:text-sm px-2.5",
         md: "text-sm placeholder:text-sm px-2.5",
         lg: "text-base placeholder:text-base px-3"
-    };
-
-    let textBoxStyle: Record<TextInputSize, string> = {
-        sm: "h-[2.05rem]",
-        md: "h-[2.375rem]",
-        lg: "h-[2.8rem]"
     };
 
     const directionClass = {
@@ -136,23 +120,13 @@
 </script>
 
 <div class={twMerge("", firstDivClass)}>
-    <div class={twMerge("flex rounded-primary", directionClass[labelPosition] ?? directionClass.top, secondDivClass)}>
-        
+    <div class={twMerge("flex rounded-primary", directionClass[labelPosition] ?? directionClass.top, secondDivClass)}>        
         {#if label}{@render label()}{/if}
-        {#if !label && labelText}<label for={id} class={twMerge("text-sm font-medium text-primary-label-text ml-1", labelClass)}>{labelText}</label>{/if}
-
-        <!-- Text Box -->
-        <div class={twMerge("flex flex-row items-center rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30", 
-            error ? "bg-red-50 border-red-300" : "", textBoxStyle[size], thirdDivClass)}>
+        {#if !label && labelText}<label for={id} class={twMerge("text-sm font-medium text-primary-label-text ml-1", labelClass)}>{labelText}</label>{/if}        
             
-            {#if leftIcon}<div class="h-full flex flex-col items-center justify-center {size == 'lg' ? 'pl-3' : 'pl-2.5'}">{@render leftIcon()}</div>{/if}
-            
-            <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {onmouseup} bind:value {autocomplete} {inputmode} {min} {max} oninput={handleInput}
-                class={twMerge("border-0 focus:border-0 focus:ring-0 active:border-0 outline-none p-0 bg-transparent placeholder:text-neutral-600/50 h-full w-full rounded-primary", sizeStyle[size], restProps.class)} />
-
-            {#if rightIcon}<div class="h-full flex flex-col items-center justify-center {size == 'lg' ? 'pr-3' : 'pr-2.5'}">{@render rightIcon()}</div>{/if}
-        </div>
-        
+        <textarea {disabled} {required} {id} name={name ? name: id} {placeholder} {onmouseup} bind:value {autocomplete} {minlength} {maxlength} oninput={handleInput}
+            class={twMerge("placeholder:text-neutral-600/50 h-full w-full rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus disabled:bg-neutral-300/30 disabled:border-neutral-300/30", sizeStyle[size], restProps.class)}>
+        </textarea>
     </div>
     
     {#if error}

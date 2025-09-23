@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.7
+
+### Patch Changes
+
+- add: Adding text area component
+
 ## 0.19.6
 
 ### Patch Changes
