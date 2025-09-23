@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.5
+
+### Patch Changes
+
+- patch: removing span for button
+
 ## 0.19.4
 
 ### Patch Changes
