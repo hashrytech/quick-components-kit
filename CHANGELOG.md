@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.3
+
+### Patch Changes
+
+- TextInput css updates
+
 ## 0.19.2
 
 ### Patch Changes
