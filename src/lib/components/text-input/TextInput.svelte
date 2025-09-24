@@ -10,7 +10,7 @@
      * - "lg": h-[2.8rem] text-lg placeholder:text-lg
     */
     export type TextInputSize = "sm" | "md" | "lg";
-    export type TextInputType = "text" | "password" | "number" | "email" | "tel" | "url" | "search";
+    export type TextInputType = "text" | "password" | "number" | "email" | "tel" | "url" | "search" | "date" | "datetime-local" | "time" | "month" | "week" | "color";
     export type InputMode = "none" | "text" | "decimal" | "numeric" | "tel" | "search" | "email" | "url";
 
     /**
