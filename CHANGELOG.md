@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.9
+
+### Patch Changes
+
+- patch: Updating the types for TextInput
+
 ## 0.19.8
 
 ### Patch Changes
