@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.10
+
+### Patch Changes
+
+- add: Adding Icon component and button support
+
 ## 0.19.9
 
 ### Patch Changes

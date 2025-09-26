@@ -5,7 +5,7 @@
 		"type": "git",
 		"url": "git+https://github.com/hashrytech/quick-components-kit.git"
 	},
-	"version": "0.19.9",
+	"version": "0.19.10",
 	"license": "MIT",
 	"author": "Hashry Tech",
 	"scripts": {
@@ -60,6 +60,8 @@
 		"@chromatic-com/storybook": "^4.0.0",
 		"@eslint/compat": "^1.2.9",
 		"@eslint/js": "^9.27.0",
+		"@iconify/json": "^2.2.388",
+		"@iconify/tailwind4": "^1.0.6",
 		"@playwright/test": "^1.52.0",
 		"@storybook/addon-a11y": "^9.0.0",
 		"@storybook/addon-docs": "^9.0.0",

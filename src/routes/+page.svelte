@@ -92,7 +92,7 @@
 <div class="flex flex-row flex-wrap gap-10 items-center">
     <div class="flex flex-row gap-4 items-center">
         <p>Button</p>
-        <Button class="text-white text-base font-semibold">Get Started</Button>
+        <Button cssIcon="icon-[ion--add-circle]" cssIconClass="size-6 text-neutral-900" class="text-white text-base font-semibold">Get Started</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">
