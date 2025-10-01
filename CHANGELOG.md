@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.13
+
+### Patch Changes
+
+- fix: Fixing problem details return
+
 ## 0.19.12
 
 ### Patch Changes

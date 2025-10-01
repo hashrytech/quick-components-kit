@@ -101,3 +101,40 @@ export function getProblemDetail(input: { status?: number; title?: string; detai
 
   return problem;
 }
+
+/**
+ * Type guard for RFC 7807 "Problem Details" objects.
+ *
+ * Why:
+ * - Network errors and server responses can be `unknown` at the callsite.
+ * - This guard lets TypeScript safely narrow `unknown` to `ProblemDetail`
+ *   so you can access `title`, `status`, etc. without extra checks.
+ *
+ * Contract (RFC 7807):
+ * - `title`: human-readable summary (required string)
+ * - `status`: HTTP status code (required number)
+ * - `type`, `detail`, `instance`: optional strings
+ * - Implementations may include arbitrary extension members (we allow them).
+ *
+ * Note:
+ * - Some backends serialize `status` as a string. If that happens in your stack,
+ *   consider accepting `"number-like"` values or coercing before validation.
+*/
+export function isProblemDetail(v: unknown): v is ProblemDetail {
+  // Must be a non-null object
+  if (!v || typeof v !== 'object') return false;
+
+  // Treat as a generic dictionary to inspect fields at runtime
+  const o = v as Record<string, unknown>;
+
+  // Required members with exact types
+  const hasTitle = typeof o.title === 'string';
+  const hasStatus = typeof o.status === 'number';
+
+  // Optional RFC 7807 members (if present, must be strings)
+  const typeOk = o.type === undefined || typeof o.type === 'string';
+  const detailOk = o.detail === undefined || typeof o.detail === 'string';
+  const instanceOk = o.instance === undefined || typeof o.instance === 'string';
+  
+  return hasTitle && hasStatus && typeOk && detailOk && instanceOk;
+}
