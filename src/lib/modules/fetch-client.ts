@@ -84,10 +84,11 @@ export class FetchError extends Error {
 
 
 export interface FetchClientEvents {
-	onRequest?: (request: Request) => void;
-	onResponse?: (response: Response) => void;
-	onError?: (error: Error) => void;
+  onRequest?: (request: Request) => Promise<void> | void;
+  onResponse?: (response: Response) => Promise<void> | void;
+  onError?: (error: Error) => Promise<void> | void;
 }
+
 
 
 /**
@@ -124,6 +125,7 @@ export class FetchClient {
         this.defaultHeaders = config.defaultHeaders || { 'Content-Type': 'application/json' };
         this.autoRedirects = config.autoRedirects || [];
         this.debug = config.debug || false;
+        this.events = config.events ?? {};
     }
 
     /**
@@ -172,6 +174,32 @@ export class FetchClient {
     setEventHooks(events: Partial<FetchClientEvents>) {
 		Object.assign(this.events, events);
 	}
+
+    /**
+     * Emits a typed event to a single-argument handler (if registered).
+     *
+     * Why `Parameters<...>[0]`?
+     * - `FetchClientEvents[K]` is a function type (or undefined). `NonNullable<>` removes `undefined`.
+     * - `Parameters<F>[0]` extracts the first parameter type of that function.
+     * - This keeps the arg type in sync with your `FetchClientEvents` definition.
+     *
+     * Notes:
+     * - This variant assumes each event handler accepts exactly one argument.
+     * - Handlers may be sync or async; both are awaited via `Promise.resolve(...)`.
+     * - Errors thrown by a handler are caught and logged so they don't break the request flow.
+     *
+     * If you later need multiple args per event, prefer a tuple map approach
+     * (e.g. `type EventArgsMap = { onRequest: [Request]; ... }`) to keep spreads type-safe.
+    */
+    private async emit<K extends keyof FetchClientEvents>(name: K, arg: Parameters<NonNullable<FetchClientEvents[K]>>[0]): Promise<void> {
+        const handler = this.events[name];
+        if (!handler) return;
+        try {
+            await Promise.resolve((handler as (a: typeof arg) => unknown)(arg));
+        } catch (e) {
+            if (this.debug) console.warn(`FetchClient ${String(name)} handler threw`, e);
+        }
+    }
 
     /**
      * Processes the request, applying default headers, auth token, and request interceptors.
@@ -236,6 +264,9 @@ export class FetchClient {
         for (const interceptor of this.requestInterceptors) {
             request = await Promise.resolve(interceptor(request));
         }
+
+        //this.events.onRequest?.(request);
+        await this.emit('onRequest', request.clone());
 
         return request;
     }
@@ -330,6 +361,8 @@ export class FetchClient {
         try {
             const request = await this.processRequest(endpoint, method, body, options);
             const response = await currentFetch(request);
+            //this.events.onResponse?.(response.clone());
+            await this.emit('onResponse', response.clone());
             const parsed = await this.processResponse<T>(response, options);
 
             return {
@@ -339,12 +372,16 @@ export class FetchClient {
             };
         } catch (error: unknown) {
             if (this.debug) console.debug(`Fetch Client: Error occurred while processing request to ${endpoint} with method ${method}`, error);
-            await this.handleError(error);
             
+            const err = error instanceof Error ? error : new Error(String(error));
+            await this.emit('onError', err);
+            //this.events.onError?.(err);
+
             const isApiError = error instanceof FetchError;
             const status = isApiError ? error.status : 503; // Service Unavailable fallback
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
             const errorObj = isApiError && error.json ? error.json as ProblemDetail : getProblemDetail({ status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: message });
+            await this.handleError(errorObj);
             //const errorObj = status != 503 ? message : getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: message });
 
             this.evaluateRedirect(errorObj, status);
