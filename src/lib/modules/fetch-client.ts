@@ -1,6 +1,6 @@
 // src/lib/api/client.ts
 import { redirect } from "@sveltejs/kit";
-import { getProblemDetail, type ProblemDetail } from "./problem-details.js";
+import { getProblemDetail, isProblemDetail, type ProblemDetail } from "./problem-details.js";
 import { browser } from "$app/environment";
 
 /**
@@ -372,23 +372,18 @@ export class FetchClient {
             };
         } catch (error: unknown) {
             if (this.debug) console.debug(`Fetch Client: Error occurred while processing request to ${endpoint} with method ${method}`, error);
-            
             await this.handleError(error);
-
             const isApiError = error instanceof FetchError;
             const status = isApiError ? error.status : 503; // Service Unavailable fallback
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
-            const errorObj = isApiError && error.json ? error.json as ProblemDetail : getProblemDetail({ status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: message });
-            await this.emit('onError', errorObj);
-            
-            //const errorObj = status != 503 ? message : getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: message });
-
-            this.evaluateRedirect(errorObj, status);
+            const problemError = isApiError && error.json && isProblemDetail(error.json) ? error.json as ProblemDetail : getProblemDetail({ status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: message });            
+            await this.emit('onError', problemError);
+            this.evaluateRedirect(problemError, status);
             
             return {
                 ok: false,
                 status,
-                error: errorObj
+                error: problemError
             };
         }
     }
