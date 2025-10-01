@@ -86,7 +86,7 @@ export class FetchError extends Error {
 export interface FetchClientEvents {
   onRequest?: (request: Request) => Promise<void> | void;
   onResponse?: (response: Response) => Promise<void> | void;
-  onError?: (error: Error) => Promise<void> | void;
+  onError?: (error: ProblemDetail) => Promise<void> | void;
 }
 
 
@@ -373,15 +373,14 @@ export class FetchClient {
         } catch (error: unknown) {
             if (this.debug) console.debug(`Fetch Client: Error occurred while processing request to ${endpoint} with method ${method}`, error);
             
-            const err = error instanceof Error ? error : new Error(String(error));
-            await this.emit('onError', err);
-            //this.events.onError?.(err);
+            await this.handleError(error);
 
             const isApiError = error instanceof FetchError;
             const status = isApiError ? error.status : 503; // Service Unavailable fallback
             const message = error instanceof Error ? error.message : 'Unexpected error occurred';
             const errorObj = isApiError && error.json ? error.json as ProblemDetail : getProblemDetail({ status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: message });
-            await this.handleError(errorObj);
+            await this.emit('onError', errorObj);
+            
             //const errorObj = status != 503 ? message : getProblemDetail({status, title: "Server fetch error", type: "/exceptions/fetch-error/", detail: "Error fetching data from API", server: message });
 
             this.evaluateRedirect(errorObj, status);

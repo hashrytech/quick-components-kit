@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.12
+
+### Patch Changes
+
+- fix: Adjusting 2 error handlers so that 1 returns problem details and the other returns the default error
+
 ## 0.19.11
 
 ### Patch Changes
