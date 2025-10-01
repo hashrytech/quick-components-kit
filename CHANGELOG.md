@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.11
+
+### Patch Changes
+
+- fix: Fixing event handlers for fetch
+
 ## 0.19.10
 
 ### Patch Changes
