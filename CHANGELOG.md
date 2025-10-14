@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.14
+
+### Patch Changes
+
+- patch: adding null as possible value for text input
+
 ## 0.19.13
 
 ### Patch Changes
