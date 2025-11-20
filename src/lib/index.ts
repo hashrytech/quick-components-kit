@@ -1,5 +1,5 @@
-// Reexport your entry components here
 // lib/index.js
+
 export * from './components/icon/index.js';
 export * from './components/text-input/index.js';
 export * from './components/text-area/index.js';
@@ -16,6 +16,7 @@ export * from './components/tab-navigation/index.js';
 export * from './components/portal/index.js';
 export * from './components/table/index.js';
 
+// Actions
 export * from './actions/disable-scroll.js';
 export * from './actions/on-keydown.js';
 export * from './actions/lock-scroll.js';
@@ -23,14 +24,18 @@ export * from './actions/scroll-to.js';
 export * from './actions/stop-interaction.js';
 export * from './actions/portal.js';
 
+// Modules
 export * from './modules/fetch-client.js';
 export * from './modules/api-proxy.js';
 export * from './modules/crypto.js';
 export * from './modules/problem-details.js';
 
+// Functions
 export * from './functions/object-to-form-data.js';
 export * from './functions/compare-objects.js';
+export * from './functions/click-outside.js';
 
+// UI Components
 export * from './ui/headers/header-1/index.js';
 export * from './ui/footers/footer-1/index.js';
 export * from './ui/banners/banner-1/index.js';

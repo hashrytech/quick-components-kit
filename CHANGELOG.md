@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.15
+
+### Patch Changes
+
+- add: click outside function
+
 ## 0.19.14
 
 ### Patch Changes
