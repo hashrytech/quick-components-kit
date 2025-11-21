@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.17
+
+### Patch Changes
+
+- feat: Added min and max enforcement
+
 ## 0.19.16
 
 ### Patch Changes

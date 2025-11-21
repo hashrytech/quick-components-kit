@@ -60,7 +60,7 @@
         <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={true} />
         <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={false} />
         <TextInput id="Small" placeholder="Small..." labelText="Small" class="" size="sm" disabled={false} />
-        <TextInput id="Large" placeholder="Large (Force Positive Number) ..." labelText="Large" class="" size="lg" error="A name is required." forcePositiveNumber={true} type="number" onInput={(e)=> console.log(e)} />
+        <TextInput id="Large" placeholder="Large (Force Positive Number) ..." labelText="Large" class="" size="lg" max={5} min={2} error="A name is required." forcePositiveNumber={true} type="number" onInput={(e)=> console.log(e)} />
         <TextInput id="searchBox" value="search box" placeholder="Product search...">
         
         {#snippet leftIcon()}

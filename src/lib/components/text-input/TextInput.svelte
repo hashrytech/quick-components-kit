@@ -137,6 +137,20 @@
             (e.target as HTMLInputElement).value = localValue; // reflect sanitized value in the UI
         }
 
+        if(max && max > 0){
+            if(Number(value) > max){
+                localValue = String(max);
+                (e.target as HTMLInputElement).value = localValue; // reflect max value in the UI
+            }
+        }
+
+        if(min && min > 0){
+            if(Number(value) < min){
+                localValue = String(min);
+                (e.target as HTMLInputElement).value = localValue; // reflect min value in the UI
+            }
+        }
+
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(() => {
 			value = localValue; // sync to bound value after delay
@@ -164,7 +178,6 @@
         // Return normalized positive integer as string
         return String(num);
     }
-
 
 </script>
 
