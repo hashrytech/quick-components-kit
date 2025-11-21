@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.19.16
+
+### Patch Changes
+
+- feat: force positive number to text field property
+
 ## 0.19.15
 
 ### Patch Changes

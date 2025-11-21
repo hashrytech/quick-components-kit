@@ -51,8 +51,10 @@
         inputmode?: InputMode;
         min?: number;
         max?: number;
+        step?: number;
         debounceDelay?: number;
-        onInput?: (value: string|number) => void;
+        forcePositiveNumber?: boolean;
+        onInput?: (value: string|number|null) => void;
         onchange?: (event: Event) => void;
         onmouseup?: () => void;
         label?: Snippet;
@@ -88,7 +90,9 @@
         inputmode,
         min,
         max,
+        step,
         debounceDelay=300, //ms
+        forcePositiveNumber=false,
         onchange,
         onInput,
         onmouseup, 
@@ -128,12 +132,39 @@
 
     function handleInput(e: Event) {
 		localValue = (e.target as HTMLInputElement).value;
+        if (forcePositiveNumber) {
+            localValue = sanitizePositiveNumber(localValue);
+            (e.target as HTMLInputElement).value = localValue; // reflect sanitized value in the UI
+        }
+
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(() => {
 			value = localValue; // sync to bound value after delay
 			onInput?.(value); // call handler if provided
 		}, debounceDelay);
 	}
+
+    function sanitizePositiveNumber(value: string | number | null): string {
+        // Handle null, undefined, or empty string
+        if (value === null || value === undefined || value === "") {
+            return "1";
+        }
+
+        // Convert to string and strip non-digits
+        let v = value.toString().replace(/[^0-9]/g, "") || "1";
+
+        // Convert to number
+        let num = parseInt(v, 10);
+
+        // If NaN, zero, or negative → force to 1
+        if (isNaN(num) || num <= 0) {
+            return "1";
+        }
+
+        // Return normalized positive integer as string
+        return String(num);
+    }
+
 
 </script>
 
