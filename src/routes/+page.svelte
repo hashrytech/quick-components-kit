@@ -11,6 +11,16 @@
     import { Table, TableTh, TableTd } from "$lib/components/table/index.js";
 	import Select from "$lib/components/select/Select.svelte";
 	import TextArea from "$lib/components/text-area/TextArea.svelte";
+	import ToastContainer from "$lib/components/toast/ToastContainer.svelte";
+	import { showToast, toastIcons, toastOptions } from "$lib/components/toast/index.js";
+
+    /* Globally available state variables for toast */
+    toastIcons['info'] = "icon-[ion--information-circle]";
+    toastIcons['success'] = "icon-[ion--checkmark-circle]";
+    toastIcons['warning'] = "icon-[ion--warning]";
+    toastIcons['error'] = "icon-[ion--close-circle]";
+    toastIcons['debug'] = "icon-[ion--bug]";
+    toastOptions.closeButtonIcon = "icon-[ion--close-circle-sharp]";
 
     let menuVerticalOpen = $state(false);
     let menuHorizontalOpen = $state(false);
@@ -42,6 +52,8 @@
         </div>
     </div>
 </div>
+
+<ToastContainer />
 
 <form class="flex flex-col gap-4">
     <div class="flex flex-wrap w-full max-w-lg gap-2">
@@ -93,6 +105,11 @@
     <div class="flex flex-row gap-4 items-center">
         <p>Button</p>
         <Button cssIcon="icon-[ion--add-circle]" cssIconClass="size-6 text-neutral-900" class="text-white text-base font-semibold">Get Started</Button>
+    </div>
+
+    <div class="flex flex-row gap-4 items-center">
+        <p>Toast Button</p>
+        <Button onclick={()=> showToast('success', 'This is a toast message that is very long and needs extra material', "This is a sub message that is nice")} cssIcon="icon-[ion--images]" cssIconClass="size-6 text-neutral-900" class="text-white text-base font-semibold">Show Toast</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">

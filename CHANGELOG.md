@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.0
+
+### Minor Changes
+
+- add: Toast component addition
+
 ## 0.19.17
 
 ### Patch Changes
