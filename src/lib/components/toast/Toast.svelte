@@ -42,16 +42,16 @@
 {#if open}
 <div transition:fly={{ delay: toastOptions.transitionDelay, duration: toastOptions.transitionDuration, y: toastOptions.transitionY, easing: toastOptions.transitionEasing }} class="flex flex-row rounded-lg mt-2 py-0.5 h-full min-h-[4rem] shadow-lg w-full max-w-md ring-1 
   border-none pointer-events-auto text-neutral-700 {toastTypeClasses[toastType]}">
-  <div class="flex flex-row gap-4 items-center w-full justify-center rounded-sm mx-4">          
+  <div class="flex flex-row gap-4 items-center w-full justify-center rounded-sm px-4">          
       
       <div class="flex flex-row items-center justify-center">
           <span class="{toastIcons[toastType]} {toastTypeIconColours[toastType]} size-8 outline-hidden"></span>
       </div>
       
-      <div class="flex flex-col gap-1 px-2 w-full rounded-sm p-2">
-          <p class="text-sm font-medium break-all xs:break-word">{@html message}</p>
+      <div class="flex flex-col gap-1 rounded-sm py-2 flex-1 min-w-0">
+          <p class="text-sm font-medium break-words overflow-wrap-anywhere hyphens-auto">{@html message}</p>
           {#if subMessage}
-          <p class="text-xs font-light break-all xs:break-word">{@html subMessage}</p>
+          <p class="text-xs font-light break-words whitespace-normal hyphens-auto">{@html subMessage}</p>
           {/if}
       </div>
 

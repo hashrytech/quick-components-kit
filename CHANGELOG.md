@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.1
+
+### Patch Changes
+
+- fix: text breaking in toast
+
 ## 0.20.0
 
 ### Minor Changes
