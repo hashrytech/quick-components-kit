@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.3
+
+### Patch Changes
+
+- add: adding navigation-state class
+
 ## 0.20.2
 
 ### Patch Changes
