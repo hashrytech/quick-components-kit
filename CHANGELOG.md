@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.2
+
+### Patch Changes
+
+- fix: adding step to input and null type to value of text area
+
 ## 0.20.1
 
 ### Patch Changes
