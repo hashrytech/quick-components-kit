@@ -30,6 +30,7 @@ export * from './modules/fetch-client.js';
 export * from './modules/api-proxy.js';
 export * from './modules/crypto.js';
 export * from './modules/problem-details.js';
+export * from './modules/navigation-state.js';
 
 // Functions
 export * from './functions/object-to-form-data.js';
