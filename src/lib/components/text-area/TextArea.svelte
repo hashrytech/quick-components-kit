@@ -33,7 +33,7 @@
     export type TextInputProps = {
         id: string;        
         name?: string;
-        value?: string|number;        
+        value?: string|number|null;        
         placeholder?: string;
         labelText?: string;
         labelPosition?: "top" | "left" | "right" | "bottom";

@@ -193,7 +193,7 @@
             
             {#if leftIcon}<div class="h-full flex flex-col items-center justify-center {size == 'lg' ? 'pl-3' : 'pl-2.5'}">{@render leftIcon()}</div>{/if}
             
-            <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {pattern} {onmouseup} bind:value {autocomplete} {inputmode} {min} {max} oninput={handleInput}
+            <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {pattern} {onmouseup} bind:value {autocomplete} {inputmode} {step} {min} {max} oninput={handleInput}
                 class={twMerge("border-0 focus:border-0 focus:ring-0 active:border-0 outline-none p-0 bg-transparent placeholder:text-neutral-600/50 h-full w-full rounded-primary", sizeStyle[size], restProps.class)} />
 
             {#if rightIcon}<div class="h-full flex flex-col items-center justify-center {size == 'lg' ? 'pr-3' : 'pr-2.5'}">{@render rightIcon()}</div>{/if}
