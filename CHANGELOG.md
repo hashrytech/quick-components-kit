@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.5
+
+### Patch Changes
+
+- add: Adding max decimal places property
+
 ## 0.20.4
 
 ### Patch Changes
