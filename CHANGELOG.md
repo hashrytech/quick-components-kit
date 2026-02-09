@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.4
+
+### Patch Changes
+
+- add: new showErrorText property
+
 ## 0.20.3
 
 ### Patch Changes
