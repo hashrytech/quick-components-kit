@@ -42,7 +42,8 @@
         disabled?: boolean;
         required?: boolean;
         pattern?: string;
-        error?: string;        
+        error?: string;
+        showErrorText?: boolean;
         labelClass?: ClassNameValue;
         firstDivClass?: ClassNameValue;
         secondDivClass?: ClassNameValue;        
@@ -83,6 +84,7 @@
         required=false, 
         pattern,
         error,
+        showErrorText=true,
         firstDivClass, 
         secondDivClass,
         thirdDivClass,
@@ -201,7 +203,7 @@
         
     </div>
     
-    {#if error}
+    {#if error && showErrorText}
     <p class="text-sm text-red-500 mt-0.5 bg-red-100/30 px-2 rounded-primary">{error}</p>
     {/if}
     
