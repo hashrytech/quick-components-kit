@@ -55,6 +55,7 @@
         step?: number;
         debounceDelay?: number;
         forcePositiveNumber?: boolean;
+        maxDecimalPlaces?: number;
         onInput?: (value: string|number|null) => void;
         onchange?: (event: Event) => void;
         onmouseup?: () => void;
@@ -95,6 +96,7 @@
         step,
         debounceDelay=300, //ms
         forcePositiveNumber=false,
+        maxDecimalPlaces=-1,
         onchange,
         onInput,
         onmouseup, 
@@ -137,6 +139,15 @@
         if (forcePositiveNumber) {
             localValue = sanitizePositiveNumber(localValue);
             (e.target as HTMLInputElement).value = localValue; // reflect sanitized value in the UI
+        }
+
+        if(maxDecimalPlaces > -1){
+            const parts = localValue.split(".");
+            if(parts.length > 1){
+                parts[1] = parts[1].slice(0, maxDecimalPlaces); // limit to maxDecimalPlaces decimal places
+                localValue = parts.join(".");
+                (e.target as HTMLInputElement).value = localValue; // reflect limited decimal places in the UI
+            }
         }
 
         if(max && max > 0){
