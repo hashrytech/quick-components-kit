@@ -216,11 +216,11 @@ export class FetchClient {
         }
     }
 
-    private beginRequest(): void {
+    protected beginRequest(): void {
         this.activeRequests += 1;
     }
 
-    private endRequest(): void {
+    protected endRequest(): void {
         if (this.activeRequests > 0) {
             this.activeRequests -= 1;
         }
