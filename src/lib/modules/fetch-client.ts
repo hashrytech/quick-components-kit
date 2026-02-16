@@ -115,6 +115,7 @@ export class FetchClient {
     private responseInterceptors: ResponseInterceptor[] = [];
     private errorHandlers: ErrorHandler[] = [];
     private events: FetchClientEvents = {};
+    private activeRequests = 0;
 
     /**
      * Creates an instance of ApiClient.
@@ -176,6 +177,20 @@ export class FetchClient {
 	}
 
     /**
+     * True when one or more requests are currently in progress.
+     */
+    get requestsInProgress(): boolean {
+        return this.activeRequests > 0;
+    }
+
+    /**
+     * Number of active in-flight requests.
+     */
+    get activeRequestCount(): number {
+        return this.activeRequests;
+    }
+
+    /**
      * Emits a typed event to a single-argument handler (if registered).
      *
      * Why `Parameters<...>[0]`?
@@ -198,6 +213,16 @@ export class FetchClient {
             await Promise.resolve((handler as (a: typeof arg) => unknown)(arg));
         } catch (e) {
             if (this.debug) console.warn(`FetchClient ${String(name)} handler threw`, e);
+        }
+    }
+
+    private beginRequest(): void {
+        this.activeRequests += 1;
+    }
+
+    private endRequest(): void {
+        if (this.activeRequests > 0) {
+            this.activeRequests -= 1;
         }
     }
 
@@ -357,6 +382,7 @@ export class FetchClient {
     async request<T>(endpoint: string, method: string, body: BodyInit | object | null | undefined, options: RequestOptions = {}): Promise<FetchResponse<T>> {
         if (this.debug) console.debug(`Fetch Client: ${options.fetchInstance || this.fetchInstance ? "Using sveltekit fetch instance..." : "Using default fetch instance"}`);
         const currentFetch = options.fetchInstance || this.fetchInstance || fetch; // Use provided fetch first then the class instance fetch or the global fetch if not specified.
+        this.beginRequest();
 
         try {
             const request = await this.processRequest(endpoint, method, body, options);
@@ -385,6 +411,8 @@ export class FetchClient {
                 status,
                 error: problemError
             };
+        } finally {
+            this.endRequest();
         }
     }
 
@@ -542,6 +570,7 @@ export class FetchClient {
         const url = this.baseURL ? new URL(endpoint, this.baseURL).toString() : endpoint; // Resolve endpoint relative to baseURL
         const token = this.accessToken;
         const headers = new Headers(this.defaultHeaders);
+        this.beginRequest();
 
         // Merge user-supplied headers
         if (options.headers) {
@@ -550,49 +579,67 @@ export class FetchClient {
         }
 
         return new Promise<T>((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open(method, url, true);
-
-            // Add Authorization if not skipped
-            if (!options.skipAuth && token) {
-                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            }
-
-            // Add any remaining headers
-            headers.forEach((value, key) => {
-                // Let the browser set Content-Type for FormData
-                if (key.toLowerCase() !== 'content-type') {
-                    xhr.setRequestHeader(key, value);
-                }
-            });
-
-            xhr.upload.onprogress = (event) => {
-                if (event.lengthComputable) {
-                    onProgress?.(Math.round((event.loaded / event.total) * 100));
-                }
+            let settled = false;
+            const resolveOnce = (value: T) => {
+                if (settled) return;
+                settled = true;
+                this.endRequest();
+                resolve(value);
+            };
+            const rejectOnce = (reason: unknown) => {
+                if (settled) return;
+                settled = true;
+                this.endRequest();
+                reject(reason);
             };
 
-            xhr.onload = () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    const contentType = xhr.getResponseHeader('Content-Type') || '';
-                    if (contentType.includes('application/json')) {
-                        try {
-                            const json: T = JSON.parse(xhr.responseText);
-                            resolve(json);
-                        } catch {
-                            reject(new Error('Failed to parse JSON response'));
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open(method, url, true);
+
+                // Add Authorization if not skipped
+                if (!options.skipAuth && token) {
+                    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+                }
+
+                // Add any remaining headers
+                headers.forEach((value, key) => {
+                    // Let the browser set Content-Type for FormData
+                    if (key.toLowerCase() !== 'content-type') {
+                        xhr.setRequestHeader(key, value);
+                    }
+                });
+
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable) {
+                        onProgress?.(Math.round((event.loaded / event.total) * 100));
+                    }
+                };
+
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        const contentType = xhr.getResponseHeader('Content-Type') || '';
+                        if (contentType.includes('application/json')) {
+                            try {
+                                const json: T = JSON.parse(xhr.responseText);
+                                resolveOnce(json);
+                            } catch {
+                                rejectOnce(new Error('Failed to parse JSON response'));
+                            }
+                        } else {
+                            // If not JSON, cast explicitly to unknown first, then to T
+                            resolveOnce(xhr.responseText as unknown as T);
                         }
                     } else {
-                        // If not JSON, cast explicitly to unknown first, then to T
-                        resolve(xhr.responseText as unknown as T);
+                        rejectOnce(new FetchError(xhr.statusText, xhr.status));
                     }
-                } else {
-                    reject(new FetchError(xhr.statusText, xhr.status));
-                }
-            };
+                };
 
-            xhr.onerror = () => reject(new Error('Upload failed'));
-            xhr.send(data);
+                xhr.onerror = () => rejectOnce(new Error('Upload failed'));
+                xhr.send(data);
+            } catch (error) {
+                rejectOnce(error);
+            }
         });
     }
 

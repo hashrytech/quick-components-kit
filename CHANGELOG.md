@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.7
+
+### Patch Changes
+
+- Adding requests in progress to fetch client
+
 ## 0.20.6
 
 ### Patch Changes
