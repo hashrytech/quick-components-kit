@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.6
+
+### Patch Changes
+
+- patch: adding css loading icons
+
 ## 0.20.5
 
 ### Patch Changes

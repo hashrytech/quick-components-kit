@@ -7,6 +7,7 @@
         children?: Snippet;
         cssIcon?: string;
         cssIconClass?: ClassNameValue;
+        cssLoadingIcon?: string;
         icon?: Snippet;
         loadingIcon?: Snippet;
         loading?: boolean;
@@ -20,14 +21,14 @@
   import {twMerge} from 'tailwind-merge';
   import { Icon } from '$lib/components/icon/index.js';
   
-  let { disabled=$bindable(), loading=$bindable(false), children, cssIcon, cssIconClass, icon, loadingIcon, onclick, ...props }: ButtonProps = $props();
+  let { disabled=$bindable(), loading=$bindable(false), children, cssIcon, cssIconClass, cssLoadingIcon, icon, loadingIcon, onclick, ...props }: ButtonProps = $props();
 
 </script>
 
 <button {disabled} class={twMerge("flex flex-row items-center gap-2 px-4 py-2 focus:outline-primary-focus bg-primary-button hover:bg-primary-button-hover rounded-primary cursor-pointer focus:ring-primary-focus focus:ring", 
   "disabled:bg-primary-button/60 disabled:cursor-default", props.class)}
   {onclick}>
-  {#if cssIcon}<Icon icon={cssIcon} class={twMerge(loading ? "animate-spin" : "", cssIconClass)} />
+  {#if cssIcon}<Icon icon={loading ? cssLoadingIcon ? cssLoadingIcon : "" : cssIcon} class={twMerge(loading ? "animate-spin" : "", cssIconClass)} />
   {:else if loadingIcon && loading}
   <span class="shrink-0 animate-spin font-semibold">{@render loadingIcon()}</span>
   {:else if icon}
