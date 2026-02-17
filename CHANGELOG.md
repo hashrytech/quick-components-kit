@@ -1,5 +1,11 @@
 # @hashrytech/quick-components-kit
 
+## 0.20.9
+
+### Patch Changes
+
+- fix: css loading icon when no css icon is present
+
 ## 0.20.8
 
 ### Patch Changes

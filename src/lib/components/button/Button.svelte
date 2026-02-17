@@ -28,7 +28,10 @@
 <button {disabled} class={twMerge("flex flex-row items-center gap-2 px-4 py-2 focus:outline-primary-focus bg-primary-button hover:bg-primary-button-hover rounded-primary cursor-pointer focus:ring-primary-focus focus:ring", 
   "disabled:bg-primary-button/60 disabled:cursor-default", props.class)}
   {onclick}>
-  {#if cssIcon}<Icon icon={loading ? cssLoadingIcon ? cssLoadingIcon : "" : cssIcon} class={twMerge(loading ? "animate-spin" : "", cssIconClass)} />
+  {#if loading && cssLoadingIcon}
+  <Icon icon={cssLoadingIcon} class={twMerge("animate-spin", cssIconClass)} />
+  {:else if cssIcon}
+  <Icon icon={cssIcon} class={twMerge(loading ? "animate-spin" : "", cssIconClass)} />
   {:else if loadingIcon && loading}
   <span class="shrink-0 animate-spin font-semibold">{@render loadingIcon()}</span>
   {:else if icon}

@@ -105,6 +105,7 @@
     <div class="flex flex-row gap-4 items-center">
         <p>Button</p>
         <Button cssIcon="icon-[ion--add-circle]" cssIconClass="size-6 text-neutral-900" class="text-white text-base font-semibold">Get Started</Button>
+        <Button cssIconClass="size-6 text-neutral-50" class="text-white text-base font-semibold" loading={true} cssLoadingIcon="icon-[ion--sync]">Loading Icon</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">
