@@ -20,8 +20,9 @@ Push to `main` with Conventional Commits. CI runs `semantic-release` to:
 - calculate semantic version bump (`fix`/`patch`/`perf`/`revert` = patch, `feat` = minor, `BREAKING CHANGE`/`!` = major)
 - generate release notes from commit messages
 - update `CHANGELOG.md`
-- tag and create GitHub release
+- Tag and create GitHub release
 - publish to npm
+  
 
 ### Commit message format
 Use Conventional Commit format:
