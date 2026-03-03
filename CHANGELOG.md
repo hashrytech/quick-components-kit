@@ -1,3 +1,11 @@
+## [0.20.10](https://github.com/hashrytech/quick-components-kit/compare/v0.20.9...v0.20.10) (2026-03-03)
+
+
+### Bug Fixes
+
+* Adding id to button component ([f108569](https://github.com/hashrytech/quick-components-kit/commit/f10856910bc143611bed976accb5b1238935a433))
+* launch update ([d4e4257](https://github.com/hashrytech/quick-components-kit/commit/d4e425714a551c8b5c377d2650b5d360fbf77c79))
+
 # @hashrytech/quick-components-kit
 
 ## 0.20.9
