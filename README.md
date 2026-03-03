@@ -15,11 +15,35 @@ or via yarn:
 yarn add @hashrytech/quick-components-kit
 ```
 
-## To Update Version
+## Releases
+Push to `main` with Conventional Commits. CI runs `semantic-release` to:
+- calculate semantic version bump (`fix`/`patch`/`perf`/`revert` = patch, `feat` = minor, `BREAKING CHANGE`/`!` = major)
+- generate release notes from commit messages
+- update `CHANGELOG.md`
+- tag and create GitHub release
+- publish to npm
+
+### Commit message format
+Use Conventional Commit format:
+
 ```bash
-npm run change
-npm run version
+type(scope): short summary
 ```
+
+Examples:
+
+```bash
+fix(button): correct disabled styles
+patch(button): adjust icon spacing
+feat(button): add loading slot
+feat!: remove deprecated button prop
+```
+
+Notes:
+- `patch:` is supported and creates a patch release.
+- `!` or `BREAKING CHANGE:` creates a major release.
+- `docs:`, `chore:`, `style:`, `test:` and other non-release types do not trigger a version bump.
+- If a commit is not a valid Conventional Commit, CI commitlint fails and the release job stops before publishing.
 
 ## Configurations
 Set default theme values for primary and secondary variables:

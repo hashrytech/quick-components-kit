@@ -4,21 +4,16 @@ on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
 permissions:
-  id-token: write  # Required for OIDC
-  contents: read # for checkout
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
 
 jobs:
   release:
     name: Release and Publish
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
 
     steps:
       - name: Checkout code
@@ -38,38 +33,20 @@ jobs:
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
 
-      - name: Get package version
-        id: pkg
-        run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
-
-      - name: Extract latest release notes from CHANGELOG.md
-        id: changelog
-        env:
-          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
+      - name: Validate commit messages
         run: |
-          VERSION="v${{ env.PACKAGE_VERSION }}"
-          awk "/^## ${VERSION}/,/^## /{if(!/^## ${VERSION}/)print prev; prev=\$0}" CHANGELOG.md | head -n -1 > _release_body.md
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            echo "Skipping commitlint for initial branch push."
+          else
+            npx commitlint --from "${{ github.event.before }}" --to "${{ github.sha }}"
+          fi
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Build package
+        run: npm run build
+
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
-        with:
-          tag_name: v${{ env.PACKAGE_VERSION }}
-          name: Release v${{ env.PACKAGE_VERSION }}
-          body_path: _release_body.md
-          #body: |
-          #  Automated release of v${{ env.PACKAGE_VERSION }}
-          files: |
-            dist/**
-
-      - name: Package and Publish
-        run: |
-          npm run package
-          npm run clean-package-json
-          npm publish --access public
-
-      
-        
-
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+        run: npx semantic-release
