@@ -44,10 +44,12 @@ export function disableScroll(node: HTMLElement, enabled = true) {
 
 	return {
 		update(newValue: boolean) {
-			if (enabled) {
-				if (newValue) applyLock();
-				else removeLock();
-			}
+			if (newValue === enabled) return;
+
+			enabled = newValue;
+
+			if (enabled) applyLock();
+			else removeLock();
 		},
 		destroy() {
 			if (enabled) {

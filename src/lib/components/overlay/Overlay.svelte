@@ -3,7 +3,7 @@
     import type { ClassNameValue } from 'tailwind-merge';
     import { fade } from 'svelte/transition';
     import {twMerge} from 'tailwind-merge';
-    import { disableScroll } from '$lib/actions/disable-scroll.js';    
+    import { disableScroll } from '$lib/actions/disable-scroll.js';
 	  import { config } from '$lib/configs/config.js';
     
     export type OverlayProps = {
@@ -21,7 +21,7 @@
   let { disableBodyScroll=true, transitionDuration=config.transitionDuration, ariaLabel="Overlay", onclick, children, ...props }: OverlayProps = $props();
 </script>
 
-<div  transition:fade={{duration: transitionDuration}} class={twMerge("fixed inset-0 bg-primary-overlay", props.class)} role="presentation" {onclick} use:disableScroll={disableBodyScroll} >
+<div transition:fade={{duration: transitionDuration}} aria-label={ariaLabel} class={twMerge("fixed inset-0 bg-primary-overlay", props.class)} role="presentation" {onclick} use:disableScroll={disableBodyScroll} >
   {@render children?.()}
 </div>
 

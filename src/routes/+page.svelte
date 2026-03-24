@@ -28,6 +28,7 @@
     let radioValue = $state("Apple");
     let showMultiSelect = $state(true);
     let selectValue = $state("apple");
+    const drawerItems = Array.from({ length: 20 }, (_, index) => `Drawer item ${index + 1}`);
 </script>
 
 <h1 class="mt-4 text-center bg-primary-600 p-2 rounded-lg text-white font-semibold text-xl mx-2">Quick Components Kit</h1>
@@ -174,12 +175,15 @@
     <div class="flex flex-row gap-4 items-center">
         <p>Hamburger Menu &amp; Left Drawer</p>
         <HamburgerMenu ariaLabel="Toggle Horizontal Menu" bind:open={menuHorizontalOpen} onclick={()=> {menuHorizontalOpen = !menuHorizontalOpen}} />
-        <Drawer bind:open={menuHorizontalOpen} position="left">
-            <p>Hello</p>
-            <p>This is a left drawer.</p>
-            <div class="flex flex-col gap-4 w-full">
+        <Drawer bind:open={menuHorizontalOpen} position="left" disableContentScroll={false}>
+            <div class="flex flex-col gap-4 w-full p-4">
+                <p>Hello</p>
+                <p>This drawer keeps its width stable while the local scrollbar is locked.</p>
                 <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> { menuHorizontalOpen=false; console.log("MENU: ", menuHorizontalOpen)}}>Close Drawer</Button>
                 <Button class="text-white text-base font-semibold bg-red-500">Test Trap</Button>
+                {#each drawerItems as item (item)}
+                    <p>{item}</p>
+                {/each}
             </div>
         </Drawer>
     </div>
@@ -273,6 +277,5 @@
 
 <TextArea id="textArea1" labelText="Text Area Example" placeholder="Enter your text here..." minlength={10} maxlength={15} class="w-64 resize-none" size="lg" />
 <TextArea id="textArea2" labelText="Text Area 2" placeholder="Enter your text here..." minlength={10} maxlength={15} class="w-64 resize-none" size="md" disabled={true} />
-
 
 

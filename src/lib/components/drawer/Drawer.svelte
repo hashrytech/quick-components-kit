@@ -8,6 +8,7 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
 - `open?`: `boolean` — Whether the drawer is visible. Bindable.
 - `escapeKeyClose?`: `boolean` — If `true`, allows closing the drawer via the Escape key. Default: `true`.
 - `disableBodyScroll?`: `boolean` — Prevents body scroll while drawer is open. Default: `true`.
+- `disableContentScroll?`: `boolean` — Prevents drawer content scroll while preserving the scrollbar gutter. Default: `false`.
 - `inertId?`: `string` — DOM element ID to set `inert` while the drawer is open (for accessibility).
 - `ariaLabel?`: `string` — ARIA label for screen readers. Default: `"Drawer"`.
 - `position?`: `"left" | "right" | "top" | "bottom"` — Drawer slide direction. Default: `"left"`.
@@ -41,12 +42,14 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
   import { config } from '$lib/configs/config.js';	
 	import { Portal } from "$lib/components/portal/index.js";
   import { trapFocus } from '$lib/actions/trap-focus.js';
+  import { disableLocalScroll } from '$lib/actions/disable-local-scroll.js';
     
   export type DrawerProps = {
     open?: boolean;
     escapeKeyClose?: boolean;
     clickOutsideClose?: boolean;
     disableBodyScroll?: boolean;
+    disableContentScroll?: boolean;
     inertId?: string;
     ariaLabel?: string;
     transitionDuration?: number;
@@ -65,6 +68,7 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
     escapeKeyClose=true,
     clickOutsideClose=true, 
     disableBodyScroll=true, 
+    disableContentScroll=false,
     inertId,
     ariaLabel="Drawer", 
     position="left", 
@@ -127,7 +131,9 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
     in:fly={transitionProperties}
     out:fly={transitionProperties}
     use:onKeydown={{key: "Escape", callback: handleKeydown}}>
-    {@render children?.()}
+    <div use:disableLocalScroll={disableContentScroll} class="h-full w-full overflow-y-auto overscroll-contain [scrollbar-gutter:stable]">
+      {@render children?.()}
+    </div>
   </div>
 </Portal>
 {/if}

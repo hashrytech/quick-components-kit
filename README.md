@@ -22,6 +22,7 @@ Push to `main` with Conventional Commits. CI runs `semantic-release` to:
 - update `CHANGELOG.md`
 - Tag and create GitHub release
 - publish to npm
+- example commit message: patch: fixed div width
   
 
 ### Commit message format
