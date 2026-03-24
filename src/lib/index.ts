@@ -19,6 +19,7 @@ export * from './components/toast/index.js';
 
 // Actions
 export * from './actions/disable-scroll.js';
+export * from './actions/disable-local-scroll.js';
 export * from './actions/on-keydown.js';
 export * from './actions/lock-scroll.js';
 export * from './actions/scroll-to.js';
