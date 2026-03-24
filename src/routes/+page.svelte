@@ -175,7 +175,7 @@
     <div class="flex flex-row gap-4 items-center">
         <p>Hamburger Menu &amp; Left Drawer</p>
         <HamburgerMenu ariaLabel="Toggle Horizontal Menu" bind:open={menuHorizontalOpen} onclick={()=> {menuHorizontalOpen = !menuHorizontalOpen}} />
-        <Drawer bind:open={menuHorizontalOpen} position="left" disableContentScroll={false}>
+        <Drawer bind:open={menuHorizontalOpen} position="left" disableContentScroll={true}>
             <div class="flex flex-col gap-4 w-full p-4">
                 <p>Hello</p>
                 <p>This drawer keeps its width stable while the local scrollbar is locked.</p>
@@ -191,7 +191,9 @@
     <div class="flex flex-row gap-4 items-center">
         <p>Hamburger Menu &amp; Top Drawer</p>
         <HamburgerMenu ariaLabel="Toggle Vertical Menu" bind:open={menuVerticalOpen} onclick={()=> {menuVerticalOpen = !menuVerticalOpen}} useCloseBtn={false} />
-        <Drawer bind:open={menuVerticalOpen} position="top" />
+        <Drawer bind:open={menuVerticalOpen} position="top" >
+        <div class="flex flex-col gap-4 w-full p-4 bg-primary-500 h-full"></div>
+        </Drawer>
     </div>
 </div>
 

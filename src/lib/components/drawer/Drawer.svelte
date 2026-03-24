@@ -131,7 +131,7 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
     in:fly={transitionProperties}
     out:fly={transitionProperties}
     use:onKeydown={{key: "Escape", callback: handleKeydown}}>
-    <div use:disableLocalScroll={disableContentScroll} class="h-full w-full overflow-y-auto overscroll-contain [scrollbar-gutter:stable]">
+    <div use:disableLocalScroll={disableContentScroll} class="h-full w-full overflow-y-auto overscroll-contain [scrollbar-gutter:auto]">
       {@render children?.()}
     </div>
   </div>
