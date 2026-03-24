@@ -22,7 +22,7 @@ Push to `main` with Conventional Commits. CI runs `semantic-release` to:
 - update `CHANGELOG.md`
 - Tag and create GitHub release
 - publish to npm
-- example commit message: patch: fixed div width
+- example commit message: patch: fix div width
   
 
 ### Commit message format
@@ -46,6 +46,12 @@ Notes:
 - `!` or `BREAKING CHANGE:` creates a major release.
 - `docs:`, `chore:`, `style:`, `test:` and other non-release types do not trigger a version bump.
 - If a commit is not a valid Conventional Commit, CI commitlint fails and the release job stops before publishing.
+- Use a lowercase imperative summary. Good: `fix(drawer): add local scroll lock action`. Bad: `patch: Adding disable local scroll action`.
+- If commitlint rejects your last commit message, amend it with:
+
+```bash
+git commit --amend -m "fix(drawer): add local scroll lock action"
+```
 
 ## Configurations
 Set default theme values for primary and secondary variables:
