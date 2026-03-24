@@ -1,3 +1,10 @@
+## [0.20.11](https://github.com/hashrytech/quick-components-kit/compare/v0.20.10...v0.20.11) (2026-03-24)
+
+
+### Bug Fixes
+
+* **drawer:** add local scroll lock action ([1d1e0ff](https://github.com/hashrytech/quick-components-kit/commit/1d1e0ff544187c0a666d449ad59f6578556b96de))
+
 ## [0.20.10](https://github.com/hashrytech/quick-components-kit/compare/v0.20.9...v0.20.10) (2026-03-03)
 
 
