@@ -219,12 +219,12 @@
 
 <div class="flex flex-row gap-10 items-center">
     <div class="flex flex-row gap-4 items-center">
-        <Checkbox id="checkbox1" label="Check Box Active" checked={true} />
+        <Checkbox id="checkbox1" label="Check Box Active" checked={true} onclick={()=> {console.log("Checkbox clicked")}} onchange={()=> {console.log("Checkbox changed")}} />
     </div>
 
     <div class=" inline-flex gap-4 items-center">
-        <Radio id="radio1" label="Radio Button 1" name="fruit" value="Apple" bind:group={radioValue} />
-        <Radio id="radio2" label="Radio Button 2" name="fruit" value="Banana" bind:group={radioValue} />            
+        <Radio id="radio1" label="Radio Button 1" labelPosition="top" containerClass="items-center" name="fruit" value="Apple" bind:group={radioValue} onclick={()=> {console.log("Radio 1 clicked")}} />
+        <Radio id="radio2" label="Radio Button 2" name="fruit" value="Banana" bind:group={radioValue} onchange={()=> {console.log("Radio 2 changed")}} />
     </div>
 </div>
 
