@@ -1,3 +1,10 @@
+# [0.21.0](https://github.com/hashrytech/quick-components-kit/compare/v0.20.12...v0.21.0) (2026-03-26)
+
+
+### Features
+
+* **checkbox-radio:** support vertical labels and native input props ([7d3d7be](https://github.com/hashrytech/quick-components-kit/commit/7d3d7be32a8ab5b4d07d47309e7e4f032158a44f))
+
 ## [0.20.12](https://github.com/hashrytech/quick-components-kit/compare/v0.20.11...v0.20.12) (2026-03-24)
 
 
