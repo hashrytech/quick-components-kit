@@ -26,6 +26,10 @@ export * from './actions/scroll-to.js';
 export * from './actions/stop-interaction.js';
 export * from './actions/portal.js';
 
+// Drag and Drop
+export * from './components/drag-drop/index.js';
+export * from './modules/drag-drop/index.js';
+
 // Modules
 export * from './modules/fetch-client.js';
 export * from './modules/api-proxy.js';
