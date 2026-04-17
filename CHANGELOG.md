@@ -1,3 +1,10 @@
+## [0.22.2](https://github.com/hashrytech/quick-components-kit/compare/v0.22.1...v0.22.2) (2026-04-17)
+
+
+### Bug Fixes
+
+* **text-input:** debounce committed value and add full component coverage ([b9fa498](https://github.com/hashrytech/quick-components-kit/commit/b9fa498b537b29243aab5b0c772d86a012dc32b3))
+
 ## [0.22.1](https://github.com/hashrytech/quick-components-kit/compare/v0.22.0...v0.22.1) (2026-04-17)
 
 
