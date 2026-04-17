@@ -1,221 +1,467 @@
 <script lang="ts" module>
 	import type { Snippet } from 'svelte';
-	import type { FullAutoFill } from 'svelte/elements';
-    import type { ClassNameValue } from 'tailwind-merge';
+	import type { FullAutoFill, HTMLInputAttributes } from 'svelte/elements';
+	import type { ClassNameValue } from 'tailwind-merge';
 
-    /**
-     * Predefined size classes for the TextBox input.
-     * - "sm": h-[2.05rem] text-sm placeholder:text-sm
-     * - "md": h-[2.375rem] text-sm placeholder:text-sm
-     * - "lg": h-[2.8rem] text-lg placeholder:text-lg
-    */
-    export type TextInputSize = "sm" | "md" | "lg";
-    export type TextInputType = "text" | "password" | "number" | "email" | "tel" | "url" | "search" | "date" | "datetime-local" | "time" | "month" | "week" | "color";
-    export type InputMode = "none" | "text" | "decimal" | "numeric" | "tel" | "search" | "email" | "url";
+	type ForwardedInputProps = Omit<
+		HTMLInputAttributes,
+		| 'class'
+		| 'value'
+		| 'type'
+		| 'size'
+		| 'name'
+		| 'placeholder'
+		| 'disabled'
+		| 'required'
+		| 'pattern'
+		| 'autocomplete'
+		| 'inputmode'
+		| 'min'
+		| 'max'
+		| 'step'
+		| 'oninput'
+		| 'onchange'
+		| 'onmouseup'
+	>;
 
-    /**
-     * Props for the TextBox component.
-     *
-     * @prop {string} id - The unique ID of the input field.
-     * @prop {string} [name] - The name attribute for form submission.
-     * @prop {string} [value] - The bound value of the input.
-     * @prop {string} [placeholder] - Placeholder text.
-     * @prop {string} [labelText] - Optional label text.     
-     * @prop {TextInputSize} [size] - Size variant ("sm", "md", "lg") with predefined Tailwind styles.
-     *        - "sm": h-[2.05rem] text-sm placeholder:text-sm
-     *        - "md": h-[2.375rem] text-sm placeholder:text-sm
-     *        - "lg": h-[2.8rem] text-lg placeholder:text-lg
-     * @prop {() => void} [onchange] - Event handler for change events.
-     * @prop {() => void} [onmouseup] - Event handler for mouseup events.
-     * @prop {Snippet} [label] - Custom label snippet.
-     * @prop {Snippet} [class] - Css classes for the input element.
-     */
-    export type TextInputProps = {
-        id: string;        
-        name?: string;
-        value?: string|number|null;
-        type?: TextInputType;
-        placeholder?: string;
-        labelText?: string;
-        labelPosition?: "top" | "left" | "right" | "bottom";
-        size?: TextInputSize;
-        disabled?: boolean;
-        required?: boolean;
-        pattern?: string;
-        error?: string;
-        showErrorText?: boolean;
-        labelClass?: ClassNameValue;
-        firstDivClass?: ClassNameValue;
-        secondDivClass?: ClassNameValue;        
-        thirdDivClass?: ClassNameValue;
-        autocomplete?: FullAutoFill | null;
-        inputmode?: InputMode;
-        min?: number;
-        max?: number;
-        step?: number;
-        debounceDelay?: number;
-        forcePositiveNumber?: boolean;
-        maxDecimalPlaces?: number;
-        onInput?: (value: string|number|null) => void;
-        onchange?: (event: Event) => void;
-        onmouseup?: () => void;
-        label?: Snippet;
-        leftIcon?: Snippet;
-        rightIcon?: Snippet;
-        class?: ClassNameValue;
-    };
-    
+	/**
+	 * Predefined size classes for the TextBox input.
+	 * - "sm": h-[2.05rem] text-sm placeholder:text-sm
+	 * - "md": h-[2.375rem] text-sm placeholder:text-sm
+	 * - "lg": h-[2.8rem] text-lg placeholder:text-lg
+	 */
+	export type TextInputSize = 'sm' | 'md' | 'lg';
+	export type TextInputType =
+		| 'text'
+		| 'password'
+		| 'number'
+		| 'email'
+		| 'tel'
+		| 'url'
+		| 'search'
+		| 'date'
+		| 'datetime-local'
+		| 'time'
+		| 'month'
+		| 'week'
+		| 'color';
+	export type InputMode =
+		| 'none'
+		| 'text'
+		| 'decimal'
+		| 'numeric'
+		| 'tel'
+		| 'search'
+		| 'email'
+		| 'url';
 
+	/**
+	 * Props for the TextBox component.
+	 *
+	 * @prop {string} id - The unique ID of the input field.
+	 * @prop {string} [name] - The name attribute for form submission.
+	 * @prop {string} [value] - The bound value of the input.
+	 * @prop {string} [placeholder] - Placeholder text.
+	 * @prop {string} [labelText] - Optional label text.
+	 * @prop {TextInputSize} [size] - Size variant ("sm", "md", "lg") with predefined Tailwind styles.
+	 *        - "sm": h-[2.05rem] text-sm placeholder:text-sm
+	 *        - "md": h-[2.375rem] text-sm placeholder:text-sm
+	 *        - "lg": h-[2.8rem] text-lg placeholder:text-lg
+	 * @prop {() => void} [onchange] - Event handler for change events.
+	 * @prop {() => void} [onmouseup] - Event handler for mouseup events.
+	 * @prop {Snippet} [label] - Custom label snippet.
+	 * @prop {Snippet} [class] - Css classes for the input element.
+	 */
+	export type TextInputProps = ForwardedInputProps & {
+		id: string;
+		name?: string;
+		value?: string | number | null;
+		type?: TextInputType;
+		placeholder?: string;
+		labelText?: string;
+		labelPosition?: 'top' | 'left' | 'right' | 'bottom';
+		size?: TextInputSize;
+		disabled?: boolean;
+		required?: boolean;
+		pattern?: string;
+		error?: string;
+		showErrorText?: boolean;
+		labelClass?: ClassNameValue;
+		firstDivClass?: ClassNameValue;
+		secondDivClass?: ClassNameValue;
+		thirdDivClass?: ClassNameValue;
+		autocomplete?: FullAutoFill | null;
+		inputmode?: InputMode;
+		min?: number;
+		max?: number;
+		step?: number;
+		debounceDelay?: number;
+		forcePositiveNumber?: boolean;
+		maxDecimalPlaces?: number;
+		onInput?: (value: string) => void;
+		onchange?: (event: Event) => void;
+		onmouseup?: (event: MouseEvent) => void;
+		label?: Snippet;
+		leftIcon?: Snippet;
+		rightIcon?: Snippet;
+		class?: ClassNameValue;
+	};
 </script>
 
 <script lang="ts">
-    import { twMerge } from 'tailwind-merge';
+	import { onDestroy } from 'svelte';
+	import { twMerge } from 'tailwind-merge';
 
-    let { 
-        id, 
-        type="text", 
-        name="", 
-        value=$bindable(""), 
-        placeholder="", 
-        labelText="",
-        labelClass, 
-        labelPosition="top",
-        size="md", 
-        disabled=false, 
-        required=false, 
-        pattern,
-        error,
-        showErrorText=true,
-        firstDivClass, 
-        secondDivClass,
-        thirdDivClass,
-        autocomplete, 
-        inputmode,
-        min,
-        max,
-        step,
-        debounceDelay=300, //ms
-        forcePositiveNumber=false,
-        maxDecimalPlaces=-1,
-        onchange,
-        onInput,
-        onmouseup, 
-        label, 
-        leftIcon, 
-        rightIcon, 
-        ...restProps}: TextInputProps = $props();
+	let {
+		id,
+		type = 'text',
+		name = '',
+		value = $bindable(''),
+		placeholder = '',
+		labelText = '',
+		labelClass,
+		labelPosition = 'top',
+		size = 'md',
+		disabled = false,
+		required = false,
+		pattern,
+		error,
+		showErrorText = true,
+		firstDivClass,
+		secondDivClass,
+		thirdDivClass,
+		autocomplete,
+		inputmode,
+		min,
+		max,
+		step,
+		debounceDelay = 300,
+		forcePositiveNumber = false,
+		maxDecimalPlaces = -1,
+		onInput,
+		onchange,
+		onblur,
+		onmouseup,
+		label,
+		leftIcon,
+		rightIcon,
+		class: inputClass,
+		'aria-describedby': ariaDescribedBy,
+		...inputProps
+	}: TextInputProps = $props();
 
-    /**
-     * Predefined size classes for the TextBox input.
-     * - "sm": h-[2.05rem] text-sm placeholder:text-sm
-     * - "md": h-[2.375rem] text-sm placeholder:text-sm
-     * - "lg": h-[2.8rem] text-lg placeholder:text-lg
-     */
-    let sizeStyle: Record<TextInputSize, string> = {
-        sm: "text-sm placeholder:text-sm px-2.5",
-        md: "text-sm placeholder:text-sm px-2.5",
-        lg: "text-base placeholder:text-base px-3"
-    };
+	/**
+	 * Predefined size classes for the TextBox input.
+	 * - "sm": h-[2.05rem] text-sm placeholder:text-sm
+	 * - "md": h-[2.375rem] text-sm placeholder:text-sm
+	 * - "lg": h-[2.8rem] text-lg placeholder:text-lg
+	 */
+	const sizeStyle: Record<TextInputSize, string> = {
+		sm: 'text-sm placeholder:text-sm px-2.5',
+		md: 'text-sm placeholder:text-sm px-2.5',
+		lg: 'text-base placeholder:text-base px-3'
+	};
 
-    let textBoxStyle: Record<TextInputSize, string> = {
-        sm: "h-[2.05rem]",
-        md: "h-[2.375rem]",
-        lg: "h-[2.8rem]"
-    };
+	const textBoxStyle: Record<TextInputSize, string> = {
+		sm: 'h-[2.05rem]',
+		md: 'h-[2.375rem]',
+		lg: 'h-[2.8rem]'
+	};
 
-    const directionClass = {
-        top: "flex-col gap-1",
-        bottom: "flex-col-reverse gap-1",
-        left: "flex-row items-center gap-2",
-        right: "flex-row-reverse items-center gap-2",
-    };
+	const directionClass = {
+		top: 'flex-col gap-1',
+		bottom: 'flex-col-reverse gap-1',
+		left: 'flex-row items-center gap-2',
+		right: 'flex-row-reverse items-center gap-2'
+	};
 
-    // --- Debounce logic ---
-	let localValue = value; // local for immediate typing
-	let debounceTimer: ReturnType<typeof setTimeout>;
+	let localValue = $state(toInputString(value));
+	let lastCommittedValue = $state(toInputString(value));
+	let hasPendingCommit = false;
+	let debounceTimer: ReturnType<typeof setTimeout> | undefined;
 
-    function handleInput(e: Event) {
-		localValue = (e.target as HTMLInputElement).value;
-        if (forcePositiveNumber) {
-            localValue = sanitizePositiveNumber(localValue);
-            (e.target as HTMLInputElement).value = localValue; // reflect sanitized value in the UI
-        }
+	$effect(() => {
+		const externalValue = toInputString(value);
+		lastCommittedValue = externalValue;
 
-        if(maxDecimalPlaces > -1){
-            const parts = localValue.split(".");
-            if(parts.length > 1){
-                parts[1] = parts[1].slice(0, maxDecimalPlaces); // limit to maxDecimalPlaces decimal places
-                localValue = parts.join(".");
-                (e.target as HTMLInputElement).value = localValue; // reflect limited decimal places in the UI
-            }
-        }
+		if (!hasPendingCommit) {
+			localValue = externalValue;
+		}
+	});
 
-        if(max && max > 0){
-            if(Number(value) > max){
-                localValue = String(max);
-                (e.target as HTMLInputElement).value = localValue; // reflect max value in the UI
-            }
-        }
+	onDestroy(() => {
+		clearDebounceTimer();
+		hasPendingCommit = false;
+	});
 
-        if(min && min > 0){
-            if(Number(value) < min){
-                localValue = String(min);
-                (e.target as HTMLInputElement).value = localValue; // reflect min value in the UI
-            }
-        }
+	function toInputString(nextValue: string | number | null | undefined): string {
+		return nextValue === null || nextValue === undefined ? '' : String(nextValue);
+	}
+
+	function isNumberField(): boolean {
+		return type === 'number';
+	}
+
+	function usesPositiveNumberCommit(): boolean {
+		return isNumberField() && forcePositiveNumber;
+	}
+
+	function clearDebounceTimer(): void {
+		if (debounceTimer === undefined) {
+			return;
+		}
 
 		clearTimeout(debounceTimer);
+		debounceTimer = undefined;
+	}
+
+	function scheduleCommit(): void {
+		clearDebounceTimer();
+		hasPendingCommit = true;
+
+		if (debounceDelay <= 0) {
+			commitLocalValue();
+			return;
+		}
+
 		debounceTimer = setTimeout(() => {
-			value = localValue; // sync to bound value after delay
-			onInput?.(value); // call handler if provided
+			debounceTimer = undefined;
+			commitLocalValue();
 		}, debounceDelay);
 	}
 
-    function sanitizePositiveNumber(value: string | number | null): string {
-        // Handle null, undefined, or empty string
-        if (value === null || value === undefined || value === "") {
-            return "1";
-        }
+	function mergeDescribedBy(): string | undefined {
+		const describedByIds = [ariaDescribedBy, error ? `${id}-error` : undefined].filter(
+			(value): value is string => Boolean(value)
+		);
 
-        // Convert to string and strip non-digits
-        let v = value.toString().replace(/[^0-9]/g, "") || "1";
+		return describedByIds.length > 0 ? describedByIds.join(' ') : undefined;
+	}
 
-        // Convert to number
-        let num = parseInt(v, 10);
+	function getFallbackCommittedValue(): string {
+		if (lastCommittedValue === '' || !isNumberField()) {
+			return lastCommittedValue;
+		}
 
-        // If NaN, zero, or negative → force to 1
-        if (isNaN(num) || num <= 0) {
-            return "1";
-        }
+		return isValidCommittedNumber(lastCommittedValue) ? lastCommittedValue : '';
+	}
 
-        // Return normalized positive integer as string
-        return String(num);
-    }
+	function isValidCommittedNumber(candidate: string): boolean {
+		const trimmed = candidate.trim();
+		if (trimmed === '') {
+			return true;
+		}
 
+		const limitedValue = applyDecimalLimit(trimmed);
+		const numericValue = Number(limitedValue);
+		if (!Number.isFinite(numericValue)) {
+			return false;
+		}
+
+		if (usesPositiveNumberCommit() && numericValue <= 0) {
+			return false;
+		}
+
+		if (max !== undefined && max !== null && numericValue > max) {
+			return false;
+		}
+
+		if (min !== undefined && min !== null && numericValue < min) {
+			return false;
+		}
+
+		return true;
+	}
+
+	function applyDecimalLimit(candidate: string): string {
+		if (maxDecimalPlaces < 0 || !candidate.includes('.') || /e/i.test(candidate)) {
+			return candidate;
+		}
+
+		const sign = candidate.startsWith('-') || candidate.startsWith('+') ? candidate[0] : '';
+		const unsigned = sign ? candidate.slice(1) : candidate;
+		const dotIndex = unsigned.indexOf('.');
+		if (dotIndex === -1) {
+			return candidate;
+		}
+
+		const whole = unsigned.slice(0, dotIndex);
+		const fraction = unsigned.slice(dotIndex + 1);
+		if (maxDecimalPlaces === 0) {
+			if (whole !== '') {
+				return `${sign}${whole}`;
+			}
+
+			return sign ? `${sign}0` : '0';
+		}
+
+		if (fraction.length <= maxDecimalPlaces) {
+			return candidate;
+		}
+
+		return `${sign}${whole}.${fraction.slice(0, maxDecimalPlaces)}`;
+	}
+
+	function getPositiveLowerBound(): number | null {
+		if (!usesPositiveNumberCommit()) {
+			return null;
+		}
+
+		if (min !== undefined && min !== null && min > 0) {
+			return min;
+		}
+
+		return null;
+	}
+
+	function resolveCommittedNumber(candidate: string): string {
+		const trimmed = candidate.trim();
+		if (trimmed === '') {
+			return '';
+		}
+
+		const limitedValue = applyDecimalLimit(trimmed);
+		const numericValue = Number(limitedValue);
+
+		if (!Number.isFinite(numericValue)) {
+			return getFallbackCommittedValue();
+		}
+
+		if (usesPositiveNumberCommit() && numericValue <= 0) {
+			const positiveLowerBound = getPositiveLowerBound();
+			return positiveLowerBound !== null ? String(positiveLowerBound) : getFallbackCommittedValue();
+		}
+
+		if (max !== undefined && max !== null && numericValue > max) {
+			return String(max);
+		}
+
+		if (min !== undefined && min !== null && numericValue < min) {
+			return String(min);
+		}
+
+		return limitedValue;
+	}
+
+	function resolveCommittedValue(candidate: string): string {
+		if (!isNumberField()) {
+			return candidate;
+		}
+
+		return resolveCommittedNumber(candidate);
+	}
+
+	function commitLocalValue(): void {
+		const nextValue = resolveCommittedValue(localValue);
+		const currentValue = toInputString(value);
+
+		clearDebounceTimer();
+		hasPendingCommit = false;
+		localValue = nextValue;
+		lastCommittedValue = nextValue;
+
+		if (nextValue === currentValue) {
+			return;
+		}
+
+		value = nextValue;
+		onInput?.(nextValue);
+	}
+
+	function flushPendingCommit(): void {
+		if (!hasPendingCommit && localValue === toInputString(value)) {
+			return;
+		}
+
+		commitLocalValue();
+	}
+
+	function handleInput(event: Event): void {
+		localValue = (event.currentTarget as HTMLInputElement).value;
+		scheduleCommit();
+	}
+
+	function handleBlur(event: FocusEvent): void {
+		flushPendingCommit();
+		onblur?.(event as FocusEvent & { currentTarget: EventTarget & HTMLInputElement });
+	}
+
+	function handleChange(event: Event): void {
+		flushPendingCommit();
+		onchange?.(event);
+	}
 </script>
 
-<div class={twMerge("", firstDivClass)}>
-    <div class={twMerge("flex rounded-primary", directionClass[labelPosition] ?? directionClass.top, secondDivClass)}>
-        
-        {#if label}{@render label()}{/if}
-        {#if !label && labelText}<label for={id} class={twMerge("text-sm font-medium text-primary-label-text ml-1", labelClass)}>{labelText}</label>{/if}
+<div class={twMerge('', firstDivClass)}>
+	<div class={twMerge('flex rounded-primary', directionClass[labelPosition] ?? directionClass.top, secondDivClass)}>
+		{#if label}
+			{@render label()}
+		{/if}
+		{#if !label && labelText}
+			<label for={id} class={twMerge('ml-1 text-sm font-medium text-primary-label-text', labelClass)}
+				>{labelText}</label
+			>
+		{/if}
 
-        <!-- Text Box -->
-        <div class={twMerge("flex flex-row items-center rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30", 
-            error ? "bg-red-50 border-red-300" : "", textBoxStyle[size], thirdDivClass)}>
-            
-            {#if leftIcon}<div class="h-full flex flex-col items-center justify-center {size == 'lg' ? 'pl-3' : 'pl-2.5'}">{@render leftIcon()}</div>{/if}
-            
-            <input {disabled} {required} {type} {id} name={name ? name: id} {placeholder} {pattern} {onmouseup} bind:value {autocomplete} {inputmode} {step} {min} {max} oninput={handleInput}
-                class={twMerge("border-0 focus:border-0 focus:ring-0 active:border-0 outline-none p-0 bg-transparent placeholder:text-neutral-600/50 h-full w-full rounded-primary", sizeStyle[size], restProps.class)} />
+		<div
+			class={twMerge(
+				'flex flex-row items-center rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30',
+				error ? 'border-red-300 bg-red-50' : '',
+				textBoxStyle[size],
+				thirdDivClass
+			)}
+		>
+			{#if leftIcon}
+				<div class={size === 'lg' ? 'flex h-full flex-col items-center justify-center pl-3' : 'flex h-full flex-col items-center justify-center pl-2.5'}>
+					{@render leftIcon()}
+				</div>
+			{/if}
 
-            {#if rightIcon}<div class="h-full flex flex-col items-center justify-center {size == 'lg' ? 'pr-3' : 'pr-2.5'}">{@render rightIcon()}</div>{/if}
-        </div>
-        
-    </div>
-    
-    {#if error && showErrorText}
-    <p class="text-sm text-red-500 mt-0.5 bg-red-100/30 px-2 rounded-primary">{error}</p>
-    {/if}
-    
+			<input
+				{...inputProps}
+				{disabled}
+				{required}
+				{type}
+				{id}
+				name={name ? name : id}
+				{placeholder}
+				{pattern}
+				{autocomplete}
+				{inputmode}
+				{step}
+				{min}
+				{max}
+				value={localValue}
+				aria-invalid={error ? 'true' : undefined}
+				aria-describedby={mergeDescribedBy()}
+				oninput={handleInput}
+				onchange={handleChange}
+				onblur={handleBlur}
+				onmouseup={onmouseup}
+				class={twMerge(
+					'h-full w-full rounded-primary border-0 bg-transparent p-0 outline-none placeholder:text-neutral-600/50 focus:border-0 focus:ring-0 active:border-0',
+					sizeStyle[size],
+					inputClass
+				)}
+			/>
+
+			{#if rightIcon}
+				<div class={size === 'lg' ? 'flex h-full flex-col items-center justify-center pr-3' : 'flex h-full flex-col items-center justify-center pr-2.5'}>
+					{@render rightIcon()}
+				</div>
+			{/if}
+		</div>
+	</div>
+
+	{#if error}
+		<p
+			id={`${id}-error`}
+			class={twMerge(
+				'mt-0.5 rounded-primary px-2 text-sm text-red-500',
+				showErrorText ? 'bg-red-100/30' : 'sr-only'
+			)}
+		>
+			{error}
+		</p>
+	{/if}
 </div>

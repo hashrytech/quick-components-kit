@@ -15,4 +15,12 @@ Object.defineProperty(window, 'matchMedia', {
 	}))
 });
 
+if (!global.ResizeObserver) {
+	global.ResizeObserver = class ResizeObserver {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	};
+}
+
 // add more mocks here if you need them

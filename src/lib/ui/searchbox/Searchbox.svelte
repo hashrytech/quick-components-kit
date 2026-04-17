@@ -9,7 +9,7 @@
     thirdDivClass?: string;
     class?: ClassNameValue;
     onclick?: (event: Event) => void;
-    onInput?: (value: string|number) => void
+    onInput?: (value: string) => void
   };
 
 </script>
