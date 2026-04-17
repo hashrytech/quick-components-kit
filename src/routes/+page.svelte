@@ -13,6 +13,9 @@
 	import TextArea from "$lib/components/text-area/TextArea.svelte";
 	import ToastContainer from "$lib/components/toast/ToastContainer.svelte";
 	import { showToast, toastIcons, toastOptions } from "$lib/components/toast/index.js";
+    import { dragDropZone, itemId, type DragDropEvent } from '$lib/modules/drag-drop/index.js';
+    import { flip } from 'svelte/animate';
+	import DragDropProviderSmart from "$lib/components/drag-drop/DragDropProviderSmart.svelte";
 
     /* Globally available state variables for toast */
     toastIcons['info'] = "icon-[ion--information-circle]";
@@ -29,6 +32,33 @@
     let showMultiSelect = $state(true);
     let selectValue = $state("apple");
     const drawerItems = Array.from({ length: 20 }, (_, index) => `Drawer item ${index + 1}`);
+
+    /* Drag Drop */
+    type Item = { id: string; label: string, color: string };
+
+    let items = $state<Item[]>([
+        { id: '1', label: 'Item One', color: 'bg-blue-500' },
+        { id: '2', label: 'Item Two', color: 'bg-green-500' },
+        { id: '3', label: 'Item Three', color: 'bg-yellow-500' },
+        { id: '4', label: 'Item Four', color: 'bg-red-500' }
+    ]);
+
+    function sync(e: CustomEvent<DragDropEvent<Item>>) {
+        items = e.detail.items;
+    }
+
+    type Card = { id: string; title: string };
+
+    let todo = $state<Card[]>([
+        { id: '1', title: 'Write docs' },
+        { id: '2', title: 'Review PR' }
+    ]);
+
+    let done = $state<Card[]>([
+        { id: '3', title: 'Ship release' }
+    ]);
+    /* End of Drag Drop */
+
 </script>
 
 <h1 class="mt-4 text-center bg-primary-600 p-2 rounded-lg text-white font-semibold text-xl mx-2">Quick Components Kit</h1>
@@ -182,7 +212,7 @@
                 <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> { menuHorizontalOpen=false; console.log("MENU: ", menuHorizontalOpen)}}>Close Drawer</Button>
                 <Button class="text-white text-base font-semibold bg-red-500">Test Trap</Button>
                 {#each drawerItems as item (item)}
-                    <p>{item}</p>
+                <p>{item}</p>
                 {/each}
             </div>
         </Drawer>
@@ -281,3 +311,37 @@
 <TextArea id="textArea2" labelText="Text Area 2" placeholder="Enter your text here..." minlength={10} maxlength={15} class="w-64 resize-none" size="md" disabled={true} />
 
 
+<div class="flex flex-col gap-10 items-start justify-start ring ring-primary-500">
+
+    <ul use:dragDropZone={{ items, getItemId: itemId('id'), axis: "y" }} onconsider={sync} onfinalize={sync}>
+        {#each items as item (item.id)}
+        <li><button data-dnd-handle aria-label="Drag item">::</button>{item.label}</li>
+        {/each}
+    </ul>
+
+    <div class="flex flex-row gap-2 p-2 ring overflow-x-auto w-fit" use:dragDropZone={{ items, getItemId: itemId('id'), axis: "x", constrainToContainer: true }} onconsider={sync} onfinalize={sync}>
+        {#each items as item (item.id)}
+        <div animate:flip={{ duration: 180 }} data-item-id={item.id} class="size-20 shrink-0 {item.color} cursor-pointer" data-dnd-handle aria-label="Drag item">{item.label}</div>
+        {/each}
+    </div>
+
+    <DragDropProviderSmart items={todo} zoneId="todo" group="board" getItemId={(item) => item.id}  ontransfer={({ items }) => { todo = items; }}>
+    {#snippet children({ items })}
+        {#each items as item (item.id)}
+        <div>
+            <button data-dnd-handle>::</button>
+            {item.title}
+        </div>
+        {/each}
+    {/snippet}
+    </DragDropProviderSmart>
+
+    <DragDropProviderSmart items={done} zoneId="done" group="board" getItemId={(item) => item.id} onreceive={({ items }) => { done = items; }}>
+    {#snippet children({ items })}
+        {#each items as item (item.id)}
+        <div><button data-dnd-handle>::</button>{item.title}</div>
+        {/each}
+    {/snippet}
+    </DragDropProviderSmart>
+
+</div>
