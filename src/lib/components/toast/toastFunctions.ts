@@ -36,14 +36,10 @@ export const toastTypeIconColours : Record<ToastType, string> = {
     debug: "text-neutral-500",
 };
 
-/* Icons for different toast types 
-Globally available state variables for toast: 
-toastIcons['info'] = "icon-[ion--information-circle]";
-toastIcons['success'] = "icon-[ion--checkmark-circle]";
-toastIcons['warning'] = "icon-[ion--warning]";
-toastIcons['error'] = "icon-[ion--close-circle]";
-toastIcons['debug'] = "icon-[ion--bug]";
-*/
+/*
+ * Icons for different toast types.
+ * Set these values from the consuming app to the icon classes you want to use.
+ */
 export const toastIcons : Record<ToastType, string> = {
     info: "",
     success: "",

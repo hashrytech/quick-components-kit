@@ -3,7 +3,7 @@
     /**
      * Props for the Icon component. See instructions: https://iconify.design/docs/usage/css/tailwind/tailwind4/
      *
-     * @prop {string} icon - The icon string to be used in the span, example: icon-[ion--add-circle]     
+     * @prop {string} icon - The icon class to be applied to the span.
      * @prop {() => void} [onclick] - Event handler for click events.
      * @prop {Snippet} [class] - Css classes for the input element.
      */
