@@ -19,7 +19,7 @@ function getOrCreateLiveRegion(doc: Document): HTMLElement {
     el.setAttribute('aria-atomic', 'true');
     el.setAttribute('aria-relevant', 'additions text');
     el.style.cssText =
-        'position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+        'position:fixed;top:0;left:0;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0;';
     doc.body.appendChild(el);
     liveRegionEl = el;
     return el;
