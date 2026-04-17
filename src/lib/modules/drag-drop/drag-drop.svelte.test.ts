@@ -10,6 +10,25 @@ global.ResizeObserver = class {
     disconnect() {}
 };
 
+if (!global.PointerEvent) {
+    global.PointerEvent = class extends MouseEvent {
+        pointerId: number;
+        pointerType: string;
+        isPrimary: boolean;
+
+        constructor(type: string, params: PointerEventInit = {}) {
+            super(type, params);
+            this.pointerId = params.pointerId ?? 1;
+            this.pointerType = params.pointerType ?? 'mouse';
+            this.isPrimary = params.isPrimary ?? true;
+        }
+    } as unknown as typeof PointerEvent;
+}
+
+if (!HTMLElement.prototype.scrollIntoView) {
+    HTMLElement.prototype.scrollIntoView = function scrollIntoView() {};
+}
+
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
 type Item = { id: string; label: string };
@@ -82,6 +101,20 @@ function collectEvents(node: HTMLElement) {
     node.addEventListener('consider', (e) => events.push({ name: 'consider', detail: (e as CustomEvent).detail }));
     node.addEventListener('finalize', (e) => events.push({ name: 'finalize', detail: (e as CustomEvent).detail }));
     return events;
+}
+
+function mockRect(target: Element, rect: Partial<DOMRect>) {
+    return vi.spyOn(target, 'getBoundingClientRect').mockReturnValue({
+        top: rect.top ?? 0,
+        bottom: rect.bottom ?? 0,
+        left: rect.left ?? 0,
+        right: rect.right ?? 0,
+        width: rect.width ?? 0,
+        height: rect.height ?? 0,
+        x: rect.x ?? rect.left ?? 0,
+        y: rect.y ?? rect.top ?? 0,
+        toJSON: () => ({})
+    } as DOMRect);
 }
 
 // ─── syncChildren ─────────────────────────────────────────────────────────────
@@ -292,6 +325,94 @@ describe('drop outside (remove)', () => {
 });
 
 // ─── drag start fires consider/dragStarted ────────────────────────────────────
+
+describe('constrainToContainer', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+        vi.restoreAllMocks();
+    });
+
+    it('clamps the preview and resolves release using the constrained point', () => {
+        const items = [makeItem('a'), makeItem('b')];
+        const { node, action } = makeZone(items, {
+            constrainToContainer: true,
+            dropOutsideBehavior: 'remove'
+        });
+        const events = collectEvents(node);
+
+        mockRect(node, {
+            top: 0, bottom: 200, left: 0, right: 200, width: 200, height: 200
+        });
+        mockRect(node.children[0] as HTMLElement, {
+            top: 0, bottom: 50, left: 0, right: 50, width: 50, height: 50
+        });
+        mockRect(node.children[1] as HTMLElement, {
+            top: 60, bottom: 110, left: 0, right: 50, width: 50, height: 50
+        });
+
+        pointerDown(node.children[0]!, 25, 25);
+        pointerMove(60, 60);
+        pointerMove(999, 999);
+
+        const preview = document.body.querySelector('[aria-hidden="true"]') as HTMLElement | null;
+        expect(preview).not.toBeNull();
+        expect(preview!.style.transform).toBe('translate3d(150px, 150px, 0)');
+
+        pointerUp(999, 999);
+
+        const insideDrop = events.find(
+            (e) => e.name === 'finalize' && (e.detail as { info: { trigger: string } }).info.trigger === 'droppedIntoZone'
+        );
+        const outsideDrop = events.find(
+            (e) => e.name === 'finalize' && (e.detail as { info: { trigger: string } }).info.trigger === 'droppedOutsideOfAny'
+        );
+
+        expect(insideDrop).toBeDefined();
+        expect(outsideDrop).toBeUndefined();
+
+        action.destroy();
+    });
+
+    it('allows horizontal reordering to the far edge regardless of grab offset', () => {
+        const items = [makeItem('a'), makeItem('b'), makeItem('c'), makeItem('d')];
+        const { node, action } = makeZone(items, {
+            axis: 'x',
+            constrainToContainer: true
+        });
+        const events = collectEvents(node);
+
+        mockRect(node, {
+            top: 0, bottom: 50, left: 0, right: 230, width: 230, height: 50
+        });
+        mockRect(node.children[0] as HTMLElement, {
+            top: 0, bottom: 50, left: 0, right: 50, width: 50, height: 50
+        });
+        mockRect(node.children[1] as HTMLElement, {
+            top: 0, bottom: 50, left: 60, right: 110, width: 50, height: 50
+        });
+        mockRect(node.children[2] as HTMLElement, {
+            top: 0, bottom: 50, left: 120, right: 170, width: 50, height: 50
+        });
+        mockRect(node.children[3] as HTMLElement, {
+            top: 0, bottom: 50, left: 180, right: 230, width: 50, height: 50
+        });
+
+        pointerDown(node.children[0]!, 1, 25);
+        pointerMove(10, 25);
+        pointerMove(999, 25);
+
+        const reordered = events.findLast(
+            (e) =>
+                e.name === 'consider' &&
+                (e.detail as { info: { trigger: string } }).info.trigger === 'draggedOverIndex'
+        );
+
+        expect(reordered).toBeDefined();
+        expect(((reordered!.detail as { items: Item[] }).items).map((item) => item.id)).toEqual(['b', 'c', 'd', 'a']);
+
+        action.destroy();
+    });
+});
 
 describe('drag start event', () => {
     afterEach(() => { document.body.innerHTML = ''; });

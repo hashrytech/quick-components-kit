@@ -26,6 +26,7 @@ import {
 } from './aria.js';
 import {
     createDragPreview,
+    constrainPreviewPointer,
     positionPreview,
     destroyPreview,
     hideDragSource,
@@ -35,7 +36,8 @@ import {
     setDraggingCursor,
     getScrollableAncestor,
     tryAutoScroll,
-    type PreviewOffset
+    type PreviewOffset,
+    type PreviewSize
 } from './preview.js';
 
 export type { Zone };
@@ -51,6 +53,11 @@ export type DragDropTrigger =
     | 'droppedOutsideOfAny'
     | 'removedFromZone';
 
+/**
+ * Event payload emitted by the `consider` and `finalize` events from `dragDropZone`.
+ *
+ * In most cases you should replace your local items with `event.detail.items`.
+ */
 export type DragDropEvent<T> = {
     items: T[];
     info: {
@@ -61,22 +68,43 @@ export type DragDropEvent<T> = {
     };
 };
 
+/**
+ * DOM event listeners exposed by the `dragDropZone` action.
+ */
 export type DragDropZoneAttributes<T> = {
     onconsider?: (e: CustomEvent<DragDropEvent<T>>) => void;
     onfinalize?: (e: CustomEvent<DragDropEvent<T>>) => void;
 };
 
+/**
+ * Configuration for the `dragDropZone` action.
+ *
+ * Items are matched to the zone's direct children by index. If the container
+ * also includes non-item children, use `itemSelector` so only item nodes are tracked.
+ */
 export type DragDropZoneOptions<T extends object> = {
+    /** Ordered items rendered inside the zone. */
     items: T[];
+    /** Returns a stable string id for each item. */
     getItemId: (item: T) => string;
+    /** Optional explicit id for cross-zone interactions. */
     zoneId?: string;
+    /** Zones with the same group can accept drops from each other. */
     group?: string;
+    /** Pointer movement required before a drag starts. */
     dragThreshold?: number;
+    /** Drag handle selector. Defaults to `[data-dnd-handle]`. */
     handleSelector?: string;
+    /** Reorder direction. Use `'x'` for rows and `'y'` for stacked lists. */
     axis?: 'x' | 'y' | 'both';
     swapThreshold?: number;
+    /** Restricts cross-zone movement; items can only be sorted within this zone. */
     lockToContainer?: boolean;
+    /** Keeps preview movement, reordering, and drop resolution inside this zone's bounds. */
+    constrainToContainer?: boolean;
+    /** What happens when the item is dropped outside any valid zone. */
     dropOutsideBehavior?: 'restore' | 'remove';
+    /** Filters which direct children are treated as draggable items. */
     itemSelector?: string;
     canDrag?: (item: T, index: number) => boolean;
     canDrop?: (item: T, targetZoneId: string) => boolean;
@@ -96,12 +124,58 @@ export type DragDropZoneOptions<T extends object> = {
 
 // ─── itemId helper ───────────────────────────────────────────────────────────
 
+/**
+ * Convenience helper for the common case where each item already has an id-like property.
+ */
 export function itemId<T extends object>(key: keyof T): (item: T) => string {
     return (item: T) => String(item[key]);
 }
 
 // ─── dragDropZone action ──────────────────────────────────────────────────────
 
+/**
+ * Svelte action that turns a container into a sortable drag-and-drop zone.
+ *
+ * Each draggable item should render as a direct child of the container. Drag pickup
+ * starts from an element matching `handleSelector`, which defaults to `[data-dnd-handle]`.
+ *
+ * Handle both `consider` and `finalize` by writing `event.detail.items` back into your state.
+ * Set `constrainToContainer: true` to hard-clamp preview movement and drop resolution
+ * to the current zone's bounds.
+ * To smooth sibling movement during reordering, add consumer-side `animate:flip`
+ * to the keyed item element in your `{#each}` block.
+ *
+ * @example
+ * ```svelte
+ * <script lang="ts">
+ *   import { flip } from 'svelte/animate';
+ *   import { dragDropZone, itemId, type DragDropEvent } from '$lib/modules/drag-drop/index.js';
+ *
+ *   type Item = { id: string; label: string };
+ *   let items = $state<Item[]>([
+ *     { id: '1', label: 'Item One' },
+ *     { id: '2', label: 'Item Two' }
+ *   ]);
+ *
+ *   function sync(event: CustomEvent<DragDropEvent<Item>>) {
+ *     items = event.detail.items;
+ *   }
+ * </script>
+ *
+ * <ul
+ *   use:dragDropZone={{ items, getItemId: itemId('id') }}
+ *   onconsider={sync}
+ *   onfinalize={sync}
+ * >
+ *   {#each items as item (item.id)}
+ *     <li animate:flip={{ duration: 180 }}>
+ *       <button data-dnd-handle aria-label="Drag item">::</button>
+ *       {item.label}
+ *     </li>
+ *   {/each}
+ * </ul>
+ * ```
+ */
 export function dragDropZone<T extends object>(
     node: HTMLElement,
     initialOptions: DragDropZoneOptions<T>
@@ -144,12 +218,15 @@ export function dragDropZone<T extends object>(
     let originalItems: T[] = [...options.items];
     let previewEl: HTMLElement | null = null;
     let previewOffset: PreviewOffset = { x: 0, y: 0 };
+    let previewSize: PreviewSize = { width: 0, height: 0 };
     let savedSourceStyle: { visibility: string; pointerEvents: string } | null = null;
     let sourceEl: HTMLElement | null = null;
     let lastClientX = 0;
     let lastClientY = 0;
+    let lastDragClientX: number | null = null;
     let lastDragClientY: number | null = null;
-    let dragDirection: -1 | 0 | 1 = 0;
+    let dragDirectionX: -1 | 0 | 1 = 0;
+    let dragDirectionY: -1 | 0 | 1 = 0;
     let pointerSource: 'pointer' | 'touch' = 'pointer';
 
     // Rect cache
@@ -299,19 +376,39 @@ export function dragDropZone<T extends object>(
 
     // ── Preview direction / comparison ────────────────────────────────────────
 
-    function updateDragDirection(clientY: number): void {
+    function updateDragDirection(clientX: number, clientY: number): void {
+        if (lastDragClientX !== null && clientX !== lastDragClientX) {
+            dragDirectionX = clientX < lastDragClientX ? -1 : 1;
+        }
+        lastDragClientX = clientX;
+
         if (lastDragClientY !== null && clientY !== lastDragClientY) {
-            dragDirection = clientY < lastDragClientY ? -1 : 1;
+            dragDirectionY = clientY < lastDragClientY ? -1 : 1;
         }
         lastDragClientY = clientY;
     }
 
     function getDragComparisonPoint(clientX: number, clientY: number): { x: number; y: number } {
         if (previewEl) {
-            const r = previewEl.getBoundingClientRect();
-            if (dragDirection < 0) return { x: clientX, y: r.top };
-            if (dragDirection > 0) return { x: clientX, y: r.bottom };
-            return { x: clientX, y: r.top + r.height / 2 };
+            const left = clientX - previewOffset.x;
+            const top = clientY - previewOffset.y;
+            const right = left + previewSize.width;
+            const bottom = top + previewSize.height;
+            const axis = options.axis ?? 'y';
+
+            if (axis === 'x') {
+                if (dragDirectionX < 0) return { x: left, y: clientY };
+                if (dragDirectionX > 0) return { x: right, y: clientY };
+                return { x: left + previewSize.width / 2, y: clientY };
+            }
+
+            if (axis === 'both') {
+                return { x: left + previewSize.width / 2, y: top + previewSize.height / 2 };
+            }
+
+            if (dragDirectionY < 0) return { x: clientX, y: top };
+            if (dragDirectionY > 0) return { x: clientX, y: bottom };
+            return { x: clientX, y: top + previewSize.height / 2 };
         }
         return { x: clientX, y: clientY };
     }
@@ -319,6 +416,20 @@ export function dragDropZone<T extends object>(
     function isPointerInsideNode(el: HTMLElement, clientX: number, clientY: number): boolean {
         const r = el.getBoundingClientRect();
         return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+    }
+
+    function getEffectivePointerPosition(clientX: number, clientY: number): { clientX: number; clientY: number } {
+        if (!options.constrainToContainer || !previewEl) {
+            return { clientX, clientY };
+        }
+
+        return constrainPreviewPointer(
+            clientX,
+            clientY,
+            previewOffset,
+            previewSize,
+            node.getBoundingClientRect()
+        );
     }
 
     // ── Auto-scroll ───────────────────────────────────────────────────────────
@@ -352,19 +463,29 @@ export function dragDropZone<T extends object>(
         draggedIndex = sourceIndex;
         originalItems = [...options.items];
         previewItems = [...options.items];
+        lastDragClientX = event.clientX;
         lastDragClientY = event.clientY;
-        dragDirection = 0;
+        dragDirectionX = 0;
+        dragDirectionY = 0;
         isDragging = true;
         currentZoneId = resolvedZoneId;
         rectsDirty = true;
 
-        const { element, offset } = createDragPreview(sourceElement, event.clientX, event.clientY, previewItems[sourceIndex], {
+        const { element, offset, size } = createDragPreview(sourceElement, event.clientX, event.clientY, previewItems[sourceIndex], {
             previewSelector: options.previewSelector,
             renderPreview: options.renderPreview as ((item: unknown, el: HTMLElement) => HTMLElement | null | undefined) | undefined,
             previewClass: options.previewClass
         });
         previewEl = element;
         previewOffset = offset;
+        previewSize = size;
+
+        const startPoint = getEffectivePointerPosition(event.clientX, event.clientY);
+        positionPreview(previewEl, startPoint.clientX, startPoint.clientY, previewOffset);
+        lastClientX = startPoint.clientX;
+        lastClientY = startPoint.clientY;
+        lastDragClientX = startPoint.clientX;
+        lastDragClientY = startPoint.clientY;
 
         savedSourceStyle = hideDragSource(sourceElement);
         sourceEl = sourceElement;
@@ -379,7 +500,7 @@ export function dragDropZone<T extends object>(
 
         resizeObserver.observe(node);
         node.addEventListener('scroll', onScroll, { passive: true });
-        runAutoScroll(event.clientX, event.clientY);
+        runAutoScroll(startPoint.clientX, startPoint.clientY);
 
         options.onDragStart?.({ item: previewItems[sourceIndex], index: sourceIndex });
 
@@ -419,6 +540,7 @@ export function dragDropZone<T extends object>(
         previewEl = null;
         savedSourceStyle = null;
         sourceEl = null;
+        previewSize = { width: 0, height: 0 };
 
         setDraggingCursor(ownerDocument, false, savedRoot, savedBody);
 
@@ -440,8 +562,10 @@ export function dragDropZone<T extends object>(
         draggedIndex = null;
         currentZoneId = resolvedZoneId;
         ghostTargetZoneOriginalItems = [];
+        lastDragClientX = null;
         lastDragClientY = null;
-        dragDirection = 0;
+        dragDirectionX = 0;
+        dragDirectionY = 0;
 
         ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
         ownerDocument.removeEventListener('pointerup', handlePointerUp, true);
@@ -464,7 +588,7 @@ export function dragDropZone<T extends object>(
     // ── Cross-zone helpers ────────────────────────────────────────────────────
 
     function getValidTargetZones(): Zone<T>[] {
-        if (!ctx || options.lockToContainer) return [];
+        if (!ctx || options.lockToContainer || options.constrainToContainer) return [];
         return ctx.getRegisteredZones().filter((z) =>
             isValidTarget(ctx, options.group, z, resolvedZoneId)
         );
@@ -594,7 +718,8 @@ export function dragDropZone<T extends object>(
         pointerStart = { x: event.clientX, y: event.clientY };
         lastClientX = event.clientX;
         lastClientY = event.clientY;
-        dragDirection = 0;
+        dragDirectionX = 0;
+        dragDirectionY = 0;
 
         try { node.setPointerCapture(event.pointerId); } catch { /* non-critical */ }
 
@@ -620,18 +745,22 @@ export function dragDropZone<T extends object>(
 
         if (draggedIndex === null) return;
 
-        updateDragDirection(event.clientY);
-        positionPreview(previewEl!, event.clientX, event.clientY, previewOffset);
+        const dragPoint = getEffectivePointerPosition(event.clientX, event.clientY);
+        lastClientX = dragPoint.clientX;
+        lastClientY = dragPoint.clientY;
+
+        updateDragDirection(dragPoint.clientX, dragPoint.clientY);
+        positionPreview(previewEl!, dragPoint.clientX, dragPoint.clientY, previewOffset);
 
         // Cross-zone check
         const hasTargets = getValidTargetZones().length > 0;
         if (hasTargets) {
-            handleCrossZoneMove(event.clientX, event.clientY, pointerSource);
+            handleCrossZoneMove(dragPoint.clientX, dragPoint.clientY, pointerSource);
         }
 
         // Same-zone reorder (only if ghost is still in source zone)
         if (currentZoneId === resolvedZoneId) {
-            const cp = getDragComparisonPoint(event.clientX, event.clientY);
+            const cp = getDragComparisonPoint(dragPoint.clientX, dragPoint.clientY);
             const rects = getItemRects();
             const insertionIdx = getInsertionIndex(
                 getChildren(), rects, draggedIndex, cp.x, cp.y,
@@ -643,7 +772,7 @@ export function dragDropZone<T extends object>(
                 draggedIndex = nextIdx;
                 syncDndIndices();
                 options.onActiveItemChange?.({ item: previewItems[nextIdx], index: nextIdx, trigger: 'draggedOverIndex' });
-                options.onDragMove?.({ item: previewItems[nextIdx]!, index: nextIdx, clientX: event.clientX, clientY: event.clientY });
+                options.onDragMove?.({ item: previewItems[nextIdx]!, index: nextIdx, clientX: dragPoint.clientX, clientY: dragPoint.clientY });
                 dispatchEvent('consider', previewItems, nextIdx, 'draggedOverIndex', pointerSource);
                 emitAnnouncement(previewItems, nextIdx, 'draggedOverIndex', pointerSource);
             }
@@ -654,6 +783,7 @@ export function dragDropZone<T extends object>(
         if (event.pointerId !== activePointerId) return;
 
         if (isDragging && draggedIndex !== null) {
+            const dropPoint = getEffectivePointerPosition(event.clientX, event.clientY);
             if (currentZoneId !== resolvedZoneId) {
                 // Drop into a target zone
                 const targetZone = ctx?.getRegisteredZones().find((z) => z.zoneId === currentZoneId);
@@ -664,7 +794,7 @@ export function dragDropZone<T extends object>(
                     );
                     const targetRects = new Map(targetChildren.map((c) => [c, c.getBoundingClientRect()]));
                     const insertIdx = getInsertionIndex(
-                        targetChildren, targetRects, -1, event.clientX, event.clientY,
+                        targetChildren, targetRects, -1, dropPoint.clientX, dropPoint.clientY,
                         options.axis ?? 'y', options.swapThreshold ?? 0.5
                     );
                     const finalTargetItems = [...ghostTargetZoneOriginalItems];
@@ -682,7 +812,7 @@ export function dragDropZone<T extends object>(
                     dispatchEvent('finalize', sourceItems, draggedIndex, 'removedFromZone', pointerSource);
                     options.onDrop?.({ item: draggedItem, index: draggedIndex, trigger: 'removedFromZone' });
                 }
-            } else if (isPointerInsideNode(node, event.clientX, event.clientY)) {
+            } else if (isPointerInsideNode(node, dropPoint.clientX, dropPoint.clientY)) {
                 dispatchEvent('finalize', previewItems, draggedIndex, 'droppedIntoZone', pointerSource);
                 emitAnnouncement(previewItems, draggedIndex, 'droppedIntoZone', pointerSource);
                 options.onDrop?.({ item: previewItems[draggedIndex]!, index: draggedIndex, trigger: 'droppedIntoZone' });
@@ -878,7 +1008,7 @@ export function dragDropZone<T extends object>(
                 cancelKeyboard();
                 break;
             case 'Tab':
-                if (!options.lockToContainer && ctx) {
+                if (!options.lockToContainer && !options.constrainToContainer && ctx) {
                     const targets = getValidTargetZones();
                     if (targets.length > 0) {
                         event.preventDefault();

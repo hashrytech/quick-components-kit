@@ -1,4 +1,5 @@
 export type PreviewOffset = { x: number; y: number };
+export type PreviewSize = { width: number; height: number };
 
 export type PreviewOptions = {
     previewSelector?: string;
@@ -12,7 +13,7 @@ export function createDragPreview(
     clientY: number,
     item: unknown,
     options: PreviewOptions
-): { element: HTMLElement; offset: PreviewOffset } {
+): { element: HTMLElement; offset: PreviewOffset; size: PreviewSize } {
     const rect = sourceElement.getBoundingClientRect();
 
     let previewEl: HTMLElement;
@@ -52,11 +53,12 @@ export function createDragPreview(
         x: Math.min(rect.width, Math.max(0, pointerX - rect.left)),
         y: Math.min(rect.height, Math.max(0, pointerY - rect.top))
     };
+    const size: PreviewSize = { width: rect.width, height: rect.height };
 
     sourceElement.ownerDocument.body.appendChild(previewEl);
     positionPreview(previewEl, pointerX, pointerY, offset);
 
-    return { element: previewEl, offset };
+    return { element: previewEl, offset, size };
 }
 
 function cloneElement(source: HTMLElement, selector?: string): HTMLElement {
@@ -76,6 +78,27 @@ export function positionPreview(
     const x = Math.round(clientX - offset.x);
     const y = Math.round(clientY - offset.y);
     previewEl.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+}
+
+function clampToRange(value: number, min: number, max: number): number {
+    if (max < min) return min;
+    return Math.min(max, Math.max(min, value));
+}
+
+export function constrainPreviewPointer(
+    clientX: number,
+    clientY: number,
+    offset: PreviewOffset,
+    size: PreviewSize,
+    bounds: DOMRect
+): { clientX: number; clientY: number } {
+    const previewX = clampToRange(clientX - offset.x, bounds.left, bounds.right - size.width);
+    const previewY = clampToRange(clientY - offset.y, bounds.top, bounds.bottom - size.height);
+
+    return {
+        clientX: previewX + offset.x,
+        clientY: previewY + offset.y
+    };
 }
 
 export function destroyPreview(previewEl: HTMLElement | null): void {
