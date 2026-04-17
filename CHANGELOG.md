@@ -1,3 +1,10 @@
+# [0.22.0](https://github.com/hashrytech/quick-components-kit/compare/v0.21.0...v0.22.0) (2026-04-17)
+
+
+### Features
+
+* **drag-drop:** constrain movement within container ([5aa8cf3](https://github.com/hashrytech/quick-components-kit/commit/5aa8cf387eb97868562bb8df2a892499faf8c063))
+
 # [0.21.0](https://github.com/hashrytech/quick-components-kit/compare/v0.20.12...v0.21.0) (2026-03-26)
 
 
