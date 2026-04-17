@@ -1,3 +1,10 @@
+## [0.22.1](https://github.com/hashrytech/quick-components-kit/compare/v0.22.0...v0.22.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* **drag-drop:** prevent live region from causing scrollbars ([134a9d4](https://github.com/hashrytech/quick-components-kit/commit/134a9d4d47e67fd84a3c26394594d717c656c065))
+
 # [0.22.0](https://github.com/hashrytech/quick-components-kit/compare/v0.21.0...v0.22.0) (2026-04-17)
 
 
