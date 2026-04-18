@@ -1,3 +1,10 @@
+## [0.22.4](https://github.com/hashrytech/quick-components-kit/compare/v0.22.3...v0.22.4) (2026-04-18)
+
+
+### Bug Fixes
+
+* **modal,drawer:** accessibility, focus, inert cleanup, and API improvements ([ba10b80](https://github.com/hashrytech/quick-components-kit/commit/ba10b807b27a842f0b8c93acc3f53242141d3bc2)), closes [#if](https://github.com/hashrytech/quick-components-kit/issues/if)
+
 ## [0.22.3](https://github.com/hashrytech/quick-components-kit/compare/v0.22.2...v0.22.3) (2026-04-17)
 
 
