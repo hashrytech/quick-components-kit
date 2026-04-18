@@ -7,26 +7,26 @@ export type KeyHandler = {
  * Action to call a function callback when a specific key is pressed.
  */
 export function onKeydown(node: HTMLElement, { key, callback }: KeyHandler) {
-    
-	if (typeof window === 'undefined' || !node) return;
+
+	if (!node) return;
 
 	const handle = (event: KeyboardEvent) => {
-		if (event.key === key) {
+		if (event.key === key && !event.defaultPrevented) {
 			callback(event);
 		}
 	};
 
-	window.addEventListener('keydown', handle);
+	node.addEventListener('keydown', handle);
 
 	return {
 		update(newParams: KeyHandler) {
-			window.removeEventListener('keydown', handle);
+			node.removeEventListener('keydown', handle);
 			key = newParams.key;
 			callback = newParams.callback;
-			window.addEventListener('keydown', handle);
+			node.addEventListener('keydown', handle);
 		},
 		destroy() {
-			window.removeEventListener('keydown', handle);
+			node.removeEventListener('keydown', handle);
 		}
 	};
 }

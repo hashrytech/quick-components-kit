@@ -36,12 +36,9 @@ export const FOCUSABLE_ELEMENTS = [
 export function trapFocus(node: HTMLElement) {
 	const previous = document.activeElement as HTMLElement | null;
 
-	function focusable(): HTMLElement[] {        
+	function focusable(): HTMLElement[] {
 		return Array.from(
-			node.querySelectorAll<HTMLElement>(
-				'button, [href], input, select, textarea, iframe, object, embed, [contenteditable], [tabindex]:not([tabindex="-1"])'
-			)
-        
+			node.querySelectorAll<HTMLElement>(FOCUSABLE_ELEMENTS.join(','))
 		).filter(el => {
             // Skip if disabled
             if (el.hasAttribute('disabled')) return false;

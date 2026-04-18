@@ -33,7 +33,7 @@ export function stopInteraction(node: HTMLElement, options: StopInteractionOptio
 		cleanups.forEach((fn) => fn());
 
 		// Normalize options
-		const { stop = true, prevent = false, events = ['clicka', 'mousedown', 'mouseup', 'touchstart'] } =
+		const { stop = true, prevent = false, events = ['click', 'mousedown', 'mouseup', 'touchstart'] } =
 			typeof options === 'object' && options !== null ? options : {};
 
 		cleanups = events.map((event) => {
