@@ -1,3 +1,10 @@
+## [0.22.3](https://github.com/hashrytech/quick-components-kit/compare/v0.22.2...v0.22.3) (2026-04-17)
+
+
+### Bug Fixes
+
+* **iconify:** remove stale ion icon references ([8ff14c8](https://github.com/hashrytech/quick-components-kit/commit/8ff14c81668ffb4981845fe885b859c00c5178e1))
+
 ## [0.22.2](https://github.com/hashrytech/quick-components-kit/compare/v0.22.1...v0.22.2) (2026-04-17)
 
 
