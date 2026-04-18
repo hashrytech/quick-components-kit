@@ -166,7 +166,7 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
 		aria-modal="true"
 		aria-label={ariaLabel}
 		tabindex="0"
-		class={twMerge('fixed bg-white focus:outline-none', positionClasses[position], sizeClass, props.class)}
+		class={twMerge('fixed overflow-hidden bg-white focus:outline-none', positionClasses[position], sizeClass, props.class)}
 		in:fly={transitionProperties}
 		out:fly={transitionProperties}
 		use:onKeydown={{ key: 'Escape', callback: handleKeydown }}

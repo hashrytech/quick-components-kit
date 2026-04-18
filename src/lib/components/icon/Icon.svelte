@@ -1,27 +1,74 @@
 <script lang="ts" module>
-    import type { ClassNameValue } from 'tailwind-merge';
-    /**
-     * Props for the Icon component. See instructions: https://iconify.design/docs/usage/css/tailwind/tailwind4/
-     *
-     * @prop {string} icon - The icon class to be applied to the span.
-     * @prop {() => void} [onclick] - Event handler for click events.
-     * @prop {Snippet} [class] - Css classes for the input element.
-     */
-    export type IconProps = {
-        icon: string;
-        onclick?: (event: MouseEvent) => void;
-        class?: ClassNameValue;
-    };
+  import type { HTMLAttributes } from 'svelte/elements';
+  import type { ClassNameValue } from 'tailwind-merge';
 
+  type ForwardedSpanProps = Omit<HTMLAttributes<HTMLSpanElement>, 'class' | 'onclick'>;
+
+  /**
+   * @component Icon
+   *
+   * Renders an Iconify CSS icon as a `<span>` using the Tailwind 4 CSS approach.
+   * See: https://iconify.design/docs/usage/css/tailwind/tailwind4/
+   *
+   * ## Props
+   *
+   * - `icon` — Iconify class string in the format `"icon-[collection--name]"`.
+   * - `class?` — Additional Tailwind classes for size, colour, animation, etc. Icons have no
+   *   intrinsic size — always pass a size class such as `size-5`.
+   * - `onclick?` — Click handler. When provided, `role="button"` and keyboard support
+   *   (Enter / Space) are added automatically.
+   * - All standard `<span>` HTML attributes are forwarded (`aria-*`, `data-*`, `tabindex`, etc.).
+   *   Pass `aria-label` to mark the icon as meaningful; omitting it marks it `aria-hidden`.
+   *
+   * ## Usage
+   *
+   * ```svelte
+   * <!-- Basic decorative icon (aria-hidden applied automatically) -->
+   * <Icon icon="icon-[ri--save-line]" class="size-5" />
+   *
+   * <!-- Coloured -->
+   * <Icon icon="icon-[ri--heart-fill]" class="size-6 text-red-500" />
+   *
+   * <!-- Animated spinner -->
+   * <Icon icon="icon-[ri--loader-line]" class="size-5 animate-spin" />
+   *
+   * <!-- Interactive — keyboard accessible automatically -->
+   * <Icon icon="icon-[ri--close-line]" class="size-5 cursor-pointer" onclick={() => close()} />
+   *
+   * <!-- Meaningful icon with accessible label -->
+   * <Icon icon="icon-[ri--search-line]" class="size-5" aria-label="Search" />
+   * ```
+   */
+  export type IconProps = ForwardedSpanProps & {
+    icon: string;
+    onclick?: (event: MouseEvent) => void;
+    class?: ClassNameValue;
+  };
 </script>
 
 <script lang="ts">
-  import {twMerge} from 'tailwind-merge';
-  
-  let { icon, onclick, ...restProps }: IconProps = $props();
+  import { twMerge } from 'tailwind-merge';
 
+  let { icon, onclick, class: className, 'aria-label': ariaLabel, ...rest }: IconProps = $props();
+
+  const isInteractive = $derived(!!onclick);
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      (event.currentTarget as HTMLElement).click();
+    }
+  }
 </script>
 
-<span class={twMerge("block shrink-0", icon, restProps.class)}></span>
-
-
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<span
+  class={twMerge('inline-block shrink-0', icon, className)}
+  role={isInteractive ? 'button' : undefined}
+  tabindex={isInteractive ? 0 : undefined}
+  aria-label={ariaLabel}
+  aria-hidden={!isInteractive && !ariaLabel ? true : undefined}
+  {onclick}
+  onkeydown={isInteractive ? handleKeydown : undefined}
+  {...rest}
+></span>

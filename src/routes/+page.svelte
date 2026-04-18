@@ -135,13 +135,13 @@
 <div class="flex flex-row flex-wrap gap-10 items-center">
     <div class="flex flex-row gap-4 items-center">
         <p>Button</p>
-        <Button cssIcon="icon-[ion--add-circle]" cssIconClass="size-6 text-neutral-900" class="text-white text-base font-semibold">Get Started</Button>
-        <Button cssIconClass="size-6 text-neutral-50" class="text-white text-base font-semibold" loading={true} cssLoadingIcon="icon-[ion--sync]">Loading Icon</Button>
+        <Button icon="icon-[ion--add-circle]" iconClass="size-6 text-neutral-900" class="text-white text-base font-semibold">Get Started</Button>
+        <Button iconClass="size-6 text-neutral-50" class="text-white text-base font-semibold" loading={true} loadingIcon="icon-[ion--sync]">Loading Icon</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">
         <p>Toast Button</p>
-        <Button onclick={()=> showToast('success', 'This is a toast message that is very long and needs extra material', "This is a sub message that is nice")} cssIcon="icon-[ion--images]" cssIconClass="size-6 text-neutral-900" class="text-white text-base font-semibold">Show Toast</Button>
+        <Button onclick={()=> showToast('success', 'This is a toast message that is very long and needs extra material', "This is a sub message that is nice")} icon="icon-[ion--images]" iconClass="size-6 text-neutral-900" class="text-white text-base font-semibold">Show Toast</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">
