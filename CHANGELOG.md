@@ -1,3 +1,10 @@
+## [0.22.6](https://github.com/hashrytech/quick-components-kit/compare/v0.22.5...v0.22.6) (2026-04-19)
+
+
+### Bug Fixes
+
+* **actions:** fix bugs, add MutationObserver caching, and add JSDoc across all actions ([27db528](https://github.com/hashrytech/quick-components-kit/commit/27db5289e58876a132d19464a7c5dd915aa6effb))
+
 ## [0.22.5](https://github.com/hashrytech/quick-components-kit/compare/v0.22.4...v0.22.5) (2026-04-18)
 
 
