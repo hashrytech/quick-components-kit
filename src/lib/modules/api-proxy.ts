@@ -40,7 +40,7 @@ export function createProxyHandlers(config: RestApiProxyConfig): Record<string, 
 		const slash = config.appendSlash ? '/' : '';
 		const prepend = config.prependPath ? `/${config.prependPath}/` : '/';
         const fullPath = `${prepend}${path}${slash}${queryString ? `?${queryString}` : ''}`;
-		console.log("Full Path:", fullPath);
+		if(config.debug) console.debug("API Proxy: Full Path:", fullPath);
 		const url = `${config.host}${fullPath}`;
 
 		if(config.debug) console.debug(`API Proxy: Proxying ${event.request.method} request to: ${url}`);
