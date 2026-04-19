@@ -1,3 +1,10 @@
+## [0.22.7](https://github.com/hashrytech/quick-components-kit/compare/v0.22.6...v0.22.7) (2026-04-19)
+
+
+### Bug Fixes
+
+* **functions,modules:** fix critical logic bugs and add JSDoc across functions and modules ([df3cf55](https://github.com/hashrytech/quick-components-kit/commit/df3cf55f75f8e422d41f0c968d2ba07ec84c59b3))
+
 ## [0.22.6](https://github.com/hashrytech/quick-components-kit/compare/v0.22.5...v0.22.6) (2026-04-19)
 
 
