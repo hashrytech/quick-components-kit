@@ -1,3 +1,10 @@
+## [0.23.1](https://github.com/hashrytech/quick-components-kit/compare/v0.23.0...v0.23.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* **link-button:** add secure rel tokens for _blank links ([e83a159](https://github.com/hashrytech/quick-components-kit/commit/e83a1595511e1a0bde7a8d762b9f15846cfbfde9))
+
 # [0.23.0](https://github.com/hashrytech/quick-components-kit/compare/v0.22.7...v0.23.0) (2026-04-19)
 
 
