@@ -3,16 +3,17 @@
 
 An `<a>` element styled as a primary button. Passes all native anchor attributes through.
 
-## Props
+ ## Props
 
-- `href: string` - Required. The link destination.
-- `preload?: boolean = true` - Whether SvelteKit preloads data on hover.
-- `reload?: boolean = false` - Whether SvelteKit does a full page reload.
+ - `href: string` - Required. The link destination.
+ - `preload?: boolean = true` - Whether SvelteKit preloads data on hover.
+ - `reload?: boolean = false` - Whether SvelteKit does a full page reload.
 - `children?: Snippet` - Button label content.
 - `icon?: Snippet` - Optional icon rendered before the label.
-- `class?: ClassNameValue` - Extra classes on the `<a>` element.
+ - `class?: ClassNameValue` - Extra classes on the `<a>` element.
 
-All other native `<a>` attributes (`target`, `rel`, `download`, `aria-*`, etc.) are forwarded.
+ All other native `<a>` attributes (`target`, `rel`, `download`, `aria-*`, etc.) are forwarded.
+ External links opened with `target="_blank"` automatically receive `rel="noopener noreferrer"` when needed.
 
 ## Example
 
@@ -42,11 +43,33 @@ All other native `<a>` attributes (`target`, `rel`, `download`, `aria-*`, etc.) 
 <script lang="ts">
 	import { twMerge } from 'tailwind-merge';
 
-	let { href, preload = true, reload = false, children, icon, class: className, ...props }: LinkButtonProps = $props();
+	let {
+		href,
+		preload = true,
+		reload = false,
+		children,
+		icon,
+		class: className,
+		target,
+		rel,
+		...props
+	}: LinkButtonProps = $props();
+
+	const resolvedRel = $derived.by(() => {
+		if (target !== '_blank') return rel;
+
+		const relTokens = new Set((rel ?? '').split(/\s+/).filter(Boolean));
+		relTokens.add('noopener');
+		relTokens.add('noreferrer');
+
+		return Array.from(relTokens).join(' ');
+	});
 </script>
 
 <a
 	{href}
+	{target}
+	rel={resolvedRel}
 	data-sveltekit-reload={reload}
 	data-sveltekit-preload-data={preload ? 'hover' : false}
 	class={twMerge(
