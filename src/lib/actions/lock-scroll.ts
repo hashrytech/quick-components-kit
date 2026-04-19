@@ -1,49 +1,82 @@
+import { browser } from '$app/environment';
+
 /**
- * Svelte action to lock all page scrolling by intercepting scroll events and keys.
- * It prevents:
- *   - Mouse wheel scrolling
- *   - Touch-based scrolling
- *   - Arrow key and spacebar scrolling
- *   - Scroll position changes via `window.onscroll`
- * 
- * This is useful for modals or mobile menus where background scrolling should be disabled.
+ * @action lockScroll
  *
- * @param node - The element the action is applied to (typically unused, but required by Svelte).
- * @param enabled - Whether scroll locking should be applied immediately (default: true).
+ * Svelte action that locks all page scrolling by intercepting scroll events and
+ * scroll-related keys. Prevents mouse wheel, touch, arrow key, and spacebar scrolling,
+ * and pins the window at its current scroll position.
+ *
+ * Unlike `disableScroll`, this does **not** alter `document.body` layout — it works
+ * purely through event interception. Prefer `disableScroll` when you need to prevent
+ * the layout-shift caused by a disappearing scrollbar. Use `lockScroll` when you need
+ * a lightweight, layout-neutral lock (e.g. mobile menus, non-modal overlays).
+ *
+ * Reactive: pass a boolean parameter and update it to toggle the lock without remounting.
+ *
+ * @param node - The element the action is bound to (required by Svelte, otherwise unused).
+ * @param enabled - Whether to apply the lock immediately. Default: `true`.
+ *
+ * @example
+ * ```svelte
+ * <!-- Always locked while mounted -->
+ * <div use:lockScroll />
+ *
+ * <!-- Reactively toggle -->
+ * <script>
+ *   let menuOpen = $state(false);
+ * </script>
+ * <div use:lockScroll={menuOpen} />
+ * ```
  */
 export function lockScroll(node: HTMLElement, enabled = true) {
-	const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-	const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+  let scrollTop = 0;
+  let scrollLeft = 0;
 
-	// Prevent all scrolling interaction
-	function preventDefault(e: Event) {
-		e.preventDefault();
-	}
+  function preventDefault(e: Event) {
+    e.preventDefault();
+  }
 
-	function preventDefaultForScrollKeys(e: KeyboardEvent) {
-		const keys = [' ', 'ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'];
-		if (keys.includes(e.key)) {
-			e.preventDefault();
-		}
-	}
+  function preventDefaultForScrollKeys(e: KeyboardEvent) {
+    const keys = [' ', 'ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'];
+    if (keys.includes(e.key)) e.preventDefault();
+  }
 
-	// Attach scroll-lock event listeners if enabled
-	if (node && enabled) {
-		window.addEventListener('wheel', preventDefault, { passive: false });
-		window.addEventListener('touchmove', preventDefault, { passive: false });
-		window.addEventListener('keydown', preventDefaultForScrollKeys);
-		window.onscroll = () => window.scrollTo(scrollLeft, scrollTop);
-	}
+  function handleScroll() {
+    window.scrollTo(scrollLeft, scrollTop);
+  }
 
-	return {
-		// Svelte action cleanup
-		destroy() {
-			if (enabled) {
-				window.removeEventListener('wheel', preventDefault);
-				window.removeEventListener('touchmove', preventDefault);
-				window.removeEventListener('keydown', preventDefaultForScrollKeys);
-				window.onscroll = null;
-			}
-		}
-	};
+  function applyLock() {
+    if (!browser) return;
+    // Capture position at lock time, not at mount time
+    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    window.addEventListener('wheel', preventDefault, { passive: false });
+    window.addEventListener('touchmove', preventDefault, { passive: false });
+    window.addEventListener('keydown', preventDefaultForScrollKeys);
+    // Use addEventListener instead of window.onscroll to avoid clobbering other handlers
+    window.addEventListener('scroll', handleScroll);
+  }
+
+  function removeLock() {
+    if (!browser) return;
+    window.removeEventListener('wheel', preventDefault);
+    window.removeEventListener('touchmove', preventDefault);
+    window.removeEventListener('keydown', preventDefaultForScrollKeys);
+    window.removeEventListener('scroll', handleScroll);
+  }
+
+  if (enabled) applyLock();
+
+  return {
+    update(newValue: boolean) {
+      if (newValue === enabled) return;
+      enabled = newValue;
+      if (enabled) applyLock();
+      else removeLock();
+    },
+    destroy() {
+      if (enabled) removeLock();
+    }
+  };
 }

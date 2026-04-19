@@ -1,60 +1,81 @@
 /**
- * Svelte action to disable page scroll (commonly used for modals, drawers, or mobile menus).
+ * @action disableScroll
  *
- * It locks the scroll position by applying `position: fixed` to the `<body>` and
- * preserving the current scroll offset. This approach prevents visual jumps and maintains scroll state.
+ * Svelte action that disables page scrolling by applying `position: fixed` to `<body>`
+ * and preserving the current scroll offset so the page does not jump when the lock
+ * is applied or removed.
  *
- * @param node - The element the action is bound to (required for Svelte actions, though unused here).
- * @param enabled - Whether disable scroll should be enabled immediately (default: true).
+ * Prefer this over `lockScroll` when you need to prevent the layout shift caused by a
+ * disappearing scrollbar (e.g. modals, full-screen drawers). The scroll position is
+ * captured at the moment the lock is applied, not at mount time, so it is safe to mount
+ * the action with `enabled = false` and toggle it later.
+ *
+ * Reactive: update the boolean parameter to toggle the lock without remounting.
+ *
+ * @param node - The element the action is bound to (required by Svelte, otherwise unused).
+ * @param enabled - Whether to apply the lock immediately. Default: `true`.
+ *
+ * @example
+ * ```svelte
+ * <!-- Always locked while mounted -->
+ * <div use:disableScroll />
+ *
+ * <!-- Reactively toggle — safe to start disabled -->
+ * <script>
+ *   let modalOpen = $state(false);
+ * </script>
+ * <div use:disableScroll={modalOpen} />
+ * ```
  */
 export function disableScroll(node: HTMLElement, enabled = true) {
-	const scrollTop = window.scrollY;
-	const originalBodyPosition = document.body.style.position;
-	const originalBodyWidth = document.body.style.width;
-	const originalTop = document.body.style.top;
-	const originalOverflow = document.documentElement.style.overflowY;
+  const originalBodyPosition = document.body.style.position;
+  const originalBodyWidth = document.body.style.width;
+  const originalTop = document.body.style.top;
+  const originalOverflow = document.documentElement.style.overflowY;
 
-	const hasVerticalScrollbar = document.documentElement.scrollHeight > document.documentElement.clientHeight;
+  const hasVerticalScrollbar =
+    document.documentElement.scrollHeight > document.documentElement.clientHeight;
 
-	function applyLock() {
-		document.body.style.top = `-${scrollTop}px`;
-		if (hasVerticalScrollbar) {
-			document.documentElement.style.overflowY = 'scroll'; // ensure layout doesn't shift
-		}
-		document.body.style.position = 'fixed';
-		document.body.style.width = '100%';
-	}
+  // Captured at lock time inside applyLock, not at mount — avoids locking to a
+  // stale position when enabled starts false and toggles true after user has scrolled.
+  let scrollTop = 0;
 
-	function removeLock() {
-		const originalScrollBehavior = document.documentElement.style.scrollBehavior;
-		document.body.style.position = originalBodyPosition;
-		document.body.style.width = originalBodyWidth;
-		document.body.style.top = originalTop;
-		document.documentElement.style.overflowY = originalOverflow;		
-		document.documentElement.style.scrollBehavior = 'auto';
-		window.scrollTo(0, scrollTop);
+  function applyLock() {
+    scrollTop = window.scrollY;
+    document.body.style.top = `-${scrollTop}px`;
+    if (hasVerticalScrollbar) {
+      document.documentElement.style.overflowY = 'scroll';
+    }
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+  }
 
-		// Restore scroll behavior without causing a jump
-		requestAnimationFrame(() => {
-			document.documentElement.style.scrollBehavior = originalScrollBehavior;
-		});
-	}
+  function removeLock() {
+    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.body.style.position = originalBodyPosition;
+    document.body.style.width = originalBodyWidth;
+    document.body.style.top = originalTop;
+    document.documentElement.style.overflowY = originalOverflow;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, scrollTop);
 
-	if (node && enabled) applyLock();
+    // Restore scroll behavior after the frame so scrollTo doesn't animate
+    requestAnimationFrame(() => {
+      document.documentElement.style.scrollBehavior = originalScrollBehavior;
+    });
+  }
 
-	return {
-		update(newValue: boolean) {
-			if (newValue === enabled) return;
+  if (enabled) applyLock();
 
-			enabled = newValue;
-
-			if (enabled) applyLock();
-			else removeLock();
-		},
-		destroy() {
-			if (enabled) {
-				removeLock();
-			}
-		}
-	};
+  return {
+    update(newValue: boolean) {
+      if (newValue === enabled) return;
+      enabled = newValue;
+      if (enabled) applyLock();
+      else removeLock();
+    },
+    destroy() {
+      if (enabled) removeLock();
+    }
+  };
 }

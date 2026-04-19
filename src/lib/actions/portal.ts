@@ -1,47 +1,63 @@
+import { browser } from '$app/environment';
+
 /**
- * Svelte action to "portal" an element into a different part of the DOM.
+ * Options for the `portalAction` action.
+ */
+export type PortalOptions = {
+  /** The DOM node to portal into. Defaults to `document.body`. */
+  target?: HTMLElement;
+  /**
+   * If `true` (default), the node is appended to the **end** of the target.
+   * If `false`, the node is prepended to the **beginning** of the target.
+   */
+  append?: boolean;
+};
+
+/**
+ * @action portalAction
  *
- * Useful for rendering components (e.g. modals, tooltips, dropdowns) outside of their natural DOM position,
- * such as appending them to `document.body` or a dedicated overlay container.
+ * Svelte action that moves an element into a different part of the DOM at runtime.
+ * Useful for rendering modals, tooltips, and dropdowns outside their natural DOM
+ * position so they are not clipped by `overflow: hidden` ancestors or stacking
+ * context issues.
  *
- * Supports optional `prepend` behavior to insert at the top of the target.
+ * The node is moved on mount and removed from the target on destroy. The action
+ * is SSR-safe — it is a no-op when `browser` is `false`.
+ *
+ * @param node - The HTML element to portal.
+ * @param options - Optional configuration (see `PortalOptions`).
  *
  * @example
  * ```svelte
- * <div use:portal>Portaled content</div>
- * ```
+ * <!-- Portal to document.body (default) -->
+ * <div use:portalAction>Modal content</div>
  *
- * @example With options:
- * ```svelte
- * <div use:portal={{ target: document.getElementById('modal-root'), prepend: true }}>
- *   Portaled to #modal-root at the top
+ * <!-- Portal to a specific container -->
+ * <div use:portalAction={{ target: document.getElementById('overlay-root') }}>
+ *   Tooltip content
+ * </div>
+ *
+ * <!-- Prepend instead of append -->
+ * <div use:portalAction={{ append: false }}>
+ *   Inserted at the top of body
  * </div>
  * ```
- *
- * @param node - The HTML element to be portaled.
- * @param options - Optional config:
- *   - `target`: The DOM node to portal into (defaults to `document.body`)
- *   - `append`: Whether to insert at the end instead of appending to the begining (default: true)
  */
-import { browser } from '$app/environment';
+export function portalAction(
+  node: HTMLElement,
+  { target = browser ? document.body : undefined, append = true }: PortalOptions = {}
+) {
+  if (append) {
+    target?.appendChild(node);
+  } else {
+    target?.prepend(node);
+  }
 
-export type PortalOptions = {
-	target?: HTMLElement;
-	append?: boolean;
-};
-
-export function portalAction(node: HTMLElement, { target = browser ? document.body : undefined, append = true }: PortalOptions = {}) {
-	if (append) {
-		target?.appendChild(node);		
-	} else {
-		target?.prepend(node);		
-	}
-
-	return {
-		destroy() {
-			if (target?.contains(node)) {
-				target?.removeChild(node);
-			}
-		}
-	};
+  return {
+    destroy() {
+      if (target?.contains(node)) {
+        target.removeChild(node);
+      }
+    }
+  };
 }
