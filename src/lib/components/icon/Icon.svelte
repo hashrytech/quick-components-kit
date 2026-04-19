@@ -12,32 +12,14 @@
    *
    * ## Props
    *
-   * - `icon` — Iconify class string in the format `"icon-[collection--name]"`.
+   * - `icon` — Iconify class string. The consuming app must enable `@iconify/tailwind4`
+   *   and install the icon collection used by that class.
    * - `class?` — Additional Tailwind classes for size, colour, animation, etc. Icons have no
    *   intrinsic size — always pass a size class such as `size-5`.
    * - `onclick?` — Click handler. When provided, `role="button"` and keyboard support
    *   (Enter / Space) are added automatically.
    * - All standard `<span>` HTML attributes are forwarded (`aria-*`, `data-*`, `tabindex`, etc.).
    *   Pass `aria-label` to mark the icon as meaningful; omitting it marks it `aria-hidden`.
-   *
-   * ## Usage
-   *
-   * ```svelte
-   * <!-- Basic decorative icon (aria-hidden applied automatically) -->
-   * <Icon icon="icon-[ri--save-line]" class="size-5" />
-   *
-   * <!-- Coloured -->
-   * <Icon icon="icon-[ri--heart-fill]" class="size-6 text-red-500" />
-   *
-   * <!-- Animated spinner -->
-   * <Icon icon="icon-[ri--loader-line]" class="size-5 animate-spin" />
-   *
-   * <!-- Interactive — keyboard accessible automatically -->
-   * <Icon icon="icon-[ri--close-line]" class="size-5 cursor-pointer" onclick={() => close()} />
-   *
-   * <!-- Meaningful icon with accessible label -->
-   * <Icon icon="icon-[ri--search-line]" class="size-5" aria-label="Search" />
-   * ```
    */
   export type IconProps = ForwardedSpanProps & {
     icon: string;

@@ -15,6 +15,27 @@ or via yarn:
 yarn add @hashrytech/quick-components-kit
 ```
 
+## Iconify setup
+
+If you use the `Icon` component or pass string-based icon classes to components such as `Button`,
+the consuming app must provide the Iconify Tailwind plugin and the icon collections it uses.
+
+Example:
+
+```bash
+npm install -D @iconify/tailwind4 @iconify-json/ri
+```
+
+Then enable the plugin in your app CSS:
+
+```css
+@plugin "@iconify/tailwind4";
+```
+
+Why this is required:
+- Iconify resolves icons at the consuming app's Tailwind build time.
+- This package's own `devDependencies` are not available to another app's build pipeline.
+
 ## Releases
 Push to `main` with Conventional Commits. CI runs `semantic-release` to:
 - calculate semantic version bump (`fix`/`patch`/`perf`/`revert` = patch, `feat` = minor, `BREAKING CHANGE`/`!` = major)
