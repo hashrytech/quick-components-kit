@@ -162,7 +162,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 	let {
 		id,
 		type = 'text',
-		name = '',
+		name,
 		value = $bindable(''),
 		placeholder = '',
 		labelText = '',
@@ -470,7 +470,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 				{required}
 				{type}
 				{id}
-				name={name ? name : id}
+				name={name ?? id}
 				{placeholder}
 				{pattern}
 				{autocomplete}
