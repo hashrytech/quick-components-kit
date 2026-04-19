@@ -1,3 +1,10 @@
+## [0.23.2](https://github.com/hashrytech/quick-components-kit/compare/v0.23.1...v0.23.2) (2026-04-19)
+
+
+### Bug Fixes
+
+* **icon:** remove bogus Iconify collection warning ([bde56da](https://github.com/hashrytech/quick-components-kit/commit/bde56da7f96d81f67d60565587b0f5e396aa9f6f))
+
 ## [0.23.1](https://github.com/hashrytech/quick-components-kit/compare/v0.23.0...v0.23.1) (2026-04-19)
 
 
