@@ -1,3 +1,16 @@
+# [0.23.0](https://github.com/hashrytech/quick-components-kit/compare/v0.22.7...v0.23.0) (2026-04-19)
+
+
+### Bug Fixes
+
+* **api-proxy:** guard full path log behind debug flag ([f2bac5e](https://github.com/hashrytech/quick-components-kit/commit/f2bac5e22f883c82c1434d61df47eb505c093cac))
+* **TextInput:** default name to undefined and use nullish coalescing ([38f6dd6](https://github.com/hashrytech/quick-components-kit/commit/38f6dd61c4c7677884d1975f33ef0392632e0a21))
+
+
+### Features
+
+* **components:** fix bugs, improve accessibility, and add JSDoc to all components ([32a16fb](https://github.com/hashrytech/quick-components-kit/commit/32a16fb25ce159fa996605de1c46ed3a33ee2130))
+
 ## [0.22.7](https://github.com/hashrytech/quick-components-kit/compare/v0.22.6...v0.22.7) (2026-04-19)
 
 
