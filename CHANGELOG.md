@@ -1,3 +1,10 @@
+## [0.22.5](https://github.com/hashrytech/quick-components-kit/compare/v0.22.4...v0.22.5) (2026-04-18)
+
+
+### Bug Fixes
+
+* **button,icon,drawer:** fix critical prop bugs and improve component APIs ([4959b79](https://github.com/hashrytech/quick-components-kit/commit/4959b793980f4290406cf89e35c6f9813acedf2e))
+
 ## [0.22.4](https://github.com/hashrytech/quick-components-kit/compare/v0.22.3...v0.22.4) (2026-04-18)
 
 
