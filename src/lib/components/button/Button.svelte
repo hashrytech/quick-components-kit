@@ -1,3 +1,34 @@
+<!--
+@component Button
+
+A fully-featured button with variant, size, icon, and loading-state support.
+Passes all native `<button>` attributes through (except `class`, `disabled`, `onclick`, `type`).
+
+## Props
+
+- `type?: 'button' | 'submit' | 'reset'` — Button type. Default: `'button'`.
+- `variant?: 'primary' | 'secondary' | 'ghost' | 'danger'` — Visual style. Default: `'primary'`.
+- `size?: 'sm' | 'md' | 'lg'` — Size variant. Default: `'md'`.
+- `disabled?: boolean` — Disables the button.
+- `loading?: boolean` — Shows the loading icon and sets `aria-busy`.
+- `disableOnLoading?: boolean = true` — Auto-disables the button while `loading` is true.
+- `icon?: string | Snippet` — Icon to render. Pass a CSS class string (e.g. Iconify) or a Snippet.
+- `loadingIcon?: string | Snippet` — Icon shown while loading. Falls back to `icon` if not provided.
+- `iconClass?: ClassNameValue` — Extra classes on the icon wrapper.
+- `children?: Snippet` — Button label content.
+- `onclick?: (event: MouseEvent) => void` — Click handler.
+- `class?: ClassNameValue` — Extra classes on the `<button>` element.
+
+## Example
+
+```svelte
+<button onclick={save}>Save</button>
+<button variant="danger" onclick={del}>Delete</button>
+<button loading={isSaving} loadingIcon="i-svg-spinners-180-ring">Saving…</button>
+<button icon="i-ph-plus">Add Item</button>
+```
+-->
+
 <script lang="ts" module>
   import type { Snippet } from 'svelte';
   import type { HTMLButtonAttributes } from 'svelte/elements';

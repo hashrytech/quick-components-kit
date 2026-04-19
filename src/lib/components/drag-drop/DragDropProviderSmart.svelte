@@ -1,3 +1,45 @@
+<!--
+@component DragDropProviderSmart
+
+A self-managing drag-and-drop zone that automatically handles `consider` / `finalize`
+events and maintains its own internal item list. Supports cross-zone transfers with
+`ontransfer` and `onreceive` callbacks.
+
+Use `DragDropProvider` instead if you want full manual control over the item list.
+
+## Props
+
+All `DragDropZoneOptions` props (except `items` and `onActiveItemChange`) are accepted, plus:
+
+- `items: T[]` — Required. External item array. Synced back into internal state when not dragging.
+- `isolated?: boolean = false` — Creates an independent drag context (no cross-zone).
+- `parentTag?: keyof HTMLElementTagNameMap = 'ul'` — HTML tag for the container element.
+- `ontransfer?: (detail) => void` — Fires when an item leaves this zone to another.
+- `onreceive?: (detail) => void` — Fires when an item arrives from another zone.
+- `children?: Snippet<[{ items, isDragging, activeItem, draggedIndex }]>` — Slot with managed state.
+- `class?: string` — Extra classes on the container element.
+
+## Example
+
+```svelte
+<script>
+  let list = $state([{ id: '1', name: 'Alpha' }, { id: '2', name: 'Beta' }]);
+  const getId = (item) => item.id;
+</script>
+
+<dragdropprovider items={list} getItemId={getId} zoneId="zone-1"
+  ontransfer={({ items }) => (list = items)}
+  onreceive={({ items }) => (list = items)}
+>
+  {#snippet children({ items })}
+    {#each items as item (item.id)}
+      <li>{item.name}</li>
+    {/each}
+  {/snippet}
+</dragdropprovider>
+```
+-->
+
 <script lang="ts" module>
     import type { Snippet } from 'svelte';
     import { dragDropZone, type DragDropZoneOptions, type DragDropEvent } from '../../modules/drag-drop/index.js';

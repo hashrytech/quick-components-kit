@@ -35,7 +35,7 @@ export function createProxyHandlers(config: RestApiProxyConfig): Record<string, 
 	if(config.debug) console.debug("API Proxy: Creating proxy handlers with config:", config);
 
 	async function handler(event: Parameters<RequestHandler>[0]): Promise<Response> {
-		const path = event.params.path;
+		const path = (event.params as Record<string, string | undefined>)['path'];
 		const queryString = event.url.searchParams.toString();
 		const slash = config.appendSlash ? '/' : '';
 		const prepend = config.prependPath ? `/${config.prependPath}/` : '/';

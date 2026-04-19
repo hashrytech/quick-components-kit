@@ -1,3 +1,29 @@
+/**
+ * Toast system for displaying ephemeral notifications.
+ *
+ * ## Setup
+ * 1. Configure icons and options once at app startup by mutating `toastOptions`.
+ * 2. Place a `ToastContainer` in your root layout.
+ * 3. Call `showToast` / `successToast` / `failToast` etc. from anywhere.
+ *
+ * @example
+ * ```ts
+ * // app startup (e.g. +layout.ts or a config file)
+ * import { toastOptions, toastIcons } from '$lib/components/toast';
+ * toastIcons.success = 'i-ph-check-circle';
+ * toastIcons.error   = 'i-ph-x-circle';
+ * toastOptions.closeButtonIcon = 'i-ph-x';
+ * toastOptions.removalTimeout  = 5000;
+ * ```
+ *
+ * @example
+ * ```ts
+ * import { successToast, failToast, infoToast } from '$lib/components/toast';
+ * successToast('Saved!', 'Your changes were saved.');
+ * failToast('Error', 'Something went wrong.');
+ * infoToast('Note', 'This is informational.');
+ * ```
+ */
 import { mount, unmount } from 'svelte';
 import type { ToastType } from "./Toast.svelte";
 import Toast from "./Toast.svelte";
@@ -61,6 +87,14 @@ export const toastOptions: ToastOptions = {
     autoRemove: true
 }
 
+/**
+ * Mount a `Toast` into the target container element.
+ *
+ * @param type - Visual variant: `'success' | 'info' | 'warning' | 'error' | 'debug'`.
+ * @param message - Primary message text (plain text, not HTML).
+ * @param subMessage - Optional secondary line.
+ * @param target - DOM element to mount into. Defaults to `#toast_area`.
+ */
 export function showToast(type: ToastType, message: string, subMessage: string = "", target: Element | null = document.querySelector("#toast_area")) {
     if (target !== null) {
         const delToast = () => { unmount(toast, { outro: true }); };
@@ -68,22 +102,27 @@ export function showToast(type: ToastType, message: string, subMessage: string =
     }
 }
 
+/** Show a success toast. @see showToast */
 export function successToast(message: string, subMessage: string = "", target: Element | null = document.querySelector("#toast_area")) {
     showToast('success', message, subMessage, target);
 }
 
+/** Show an error toast. @see showToast */
 export function failToast(message: string, subMessage: string = "", target: Element | null = document.querySelector("#toast_area")) {
     showToast('error', message, subMessage, target);
 }
 
+/** Show an info toast. @see showToast */
 export function infoToast(message: string, subMessage: string = "", target: Element | null = document.querySelector("#toast_area")) {
     showToast('info', message, subMessage, target);
 }
 
+/** Show a warning toast. @see showToast */
 export function warningToast(message: string, subMessage: string = "", target: Element | null = document.querySelector("#toast_area")) {
     showToast('warning', message, subMessage, target);
 }
 
+/** Show a debug toast. @see showToast */
 export function debugToast(message: string, subMessage: string = "", target: Element | null = document.querySelector("#toast_area")) {
     showToast('debug', message, subMessage, target);
 }

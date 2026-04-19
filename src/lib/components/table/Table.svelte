@@ -183,11 +183,8 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 
   function handleSelectAll(event: any){
       if (event.target.checked) {
-        for(let i = 0; i < rows.length; i++){
-            selected.push(getKey(rows[i]));
-        }
-      }
-      else{
+        selected = rows.map(getKey);
+      } else {
           selected = [];
       }
   }
@@ -217,7 +214,7 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 
 
 <div class={twMerge("rounded-lg border-primary-table-border w-full overflow-x-auto", tableRowMobile ? "border-0 md:border bg-transparent" : "border bg-white",  outerDivClass)}>
-    <table bind:this={tableElement} class={twMerge("table-fixed w-full text-sm", tableRowMobile ? "border-separate border-spacing-y-2 md:border-collapse md:border-spacing-y-0": "", props.class)} cellpadding="10px">
+    <table bind:this={tableElement} class={twMerge("table-fixed w-full text-sm", tableRowMobile ? "border-separate border-spacing-y-2 md:border-collapse md:border-spacing-y-0": "", props.class)}>
         <thead class={twMerge("bg-primary-table-heading", tableRowMobile ? "hidden md:table-header-group" : "")}>
             <tr class={twMerge("text-xs text-primary-table-heading-text whitespace-nowrap bg-inherit", headingsRowClass)}>
                 {#if showMultiSelect}

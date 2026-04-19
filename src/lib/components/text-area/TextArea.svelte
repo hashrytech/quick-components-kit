@@ -1,3 +1,38 @@
+<!--
+@component TextArea
+
+A multi-line text input with label, size variants, debounced input, and error display.
+
+## Props
+
+- `id: string` — Required. Sets `id` on the textarea and links the label.
+- `name?: string` — Form field name; defaults to `id`.
+- `value?: string | number | null` — Bindable value.
+- `placeholder?: string` — Placeholder text.
+- `labelText?: string` — Label text shown above (or adjacent to) the textarea.
+- `labelPosition?: 'top' | 'left' | 'right' | 'bottom'` — Layout direction for label. Default: `'top'`.
+- `size?: 'sm' | 'md' | 'lg'` — Text and padding size. Default: `'md'`.
+- `disabled?: boolean` — Disables the textarea.
+- `required?: boolean` — Marks the field as required.
+- `error?: string` — Error message shown below the textarea; also sets `aria-invalid`.
+- `debounceDelay?: number` — Delay in ms before `onInput` fires after typing. Default: `300`.
+- `onInput?: (value: string | number) => void` — Called after debounce with the current value.
+- `onchange?: (event: Event) => void` — Native change handler.
+- `label?: Snippet` — Custom label snippet (overrides `labelText`).
+- `class?: ClassNameValue` — Extra classes on the `<textarea>` element.
+
+## Example
+
+```svelte
+<script>
+  import { TextArea } from '$lib/components/text-area';
+  let bio = $state('');
+</script>
+
+<TextArea id="bio" labelText="Bio" bind:value={bio} placeholder="Tell us about yourself" error={bio.length > 500 ? 'Too long' : ''} />
+```
+-->
+
 <script lang="ts" module>
 	import type { Snippet } from 'svelte';
 	import type { FullAutoFill } from 'svelte/elements';
@@ -105,15 +140,15 @@
     };
 
     // --- Debounce logic ---
-	let localValue = value; // local for immediate typing
+	let localValue: string = String(value ?? ''); // local for immediate typing
 	let debounceTimer: ReturnType<typeof setTimeout>;
 
     function handleInput(e: Event) {
-		localValue = (e.target as HTMLInputElement).value;
+		localValue = (e.target as HTMLTextAreaElement).value;
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(() => {
 			value = localValue; // sync to bound value after delay
-			onInput?.(value); // call handler if provided
+			onInput?.(localValue); // call handler if provided
 		}, debounceDelay);
 	}
 
@@ -124,13 +159,15 @@
         {#if label}{@render label()}{/if}
         {#if !label && labelText}<label for={id} class={twMerge("text-sm font-medium text-primary-label-text ml-1", labelClass)}>{labelText}</label>{/if}        
             
-        <textarea {disabled} {required} {id} name={name ? name: id} {placeholder} {onmouseup} bind:value {autocomplete} {minlength} {maxlength} oninput={handleInput}
+        <textarea {disabled} {required} {id} name={name ? name: id} {placeholder} {onmouseup} {onchange} bind:value {autocomplete} {minlength} {maxlength} oninput={handleInput}
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={error ? `${id}-error` : undefined}
             class={twMerge("placeholder:text-neutral-600/50 h-full w-full rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus disabled:bg-neutral-300/30 disabled:border-neutral-300/30", sizeStyle[size], restProps.class)}>
         </textarea>
     </div>
-    
+
     {#if error}
-    <p class="text-sm text-red-500 mt-0.5 bg-red-100/30 px-2 rounded-primary">{error}</p>
+    <p id="{id}-error" class="text-sm text-red-500 mt-0.5 bg-red-100/30 px-2 rounded-primary">{error}</p>
     {/if}
     
 </div>

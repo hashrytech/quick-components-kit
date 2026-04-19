@@ -1,3 +1,50 @@
+<!--
+@component TextInput
+
+A fully-featured text input with label, size variants, icon slots, debounced input,
+number validation, and accessible error display.
+
+Native `<input>` attributes (except those listed in props) are forwarded via spread.
+
+## Props
+
+- `id: string` — Required. Links the label and generates the error element id.
+- `type?: TextInputType` — Input type. Default: `'text'`.
+- `name?: string` — Form field name; defaults to `id`.
+- `value?: string | number | null` — Bindable value.
+- `placeholder?: string` — Placeholder text.
+- `labelText?: string` — Label text rendered above (or adjacent to) the input.
+- `labelPosition?: 'top' | 'left' | 'right' | 'bottom'` — Layout direction. Default: `'top'`.
+- `size?: 'sm' | 'md' | 'lg'` — Input height and text size. Default: `'md'`.
+- `disabled?: boolean` — Disables the input.
+- `required?: boolean` — Marks the field as required.
+- `error?: string` — Error message; sets `aria-invalid` and `aria-describedby` automatically.
+- `showErrorText?: boolean = true` — Whether to show the error text visually (set `false` for sr-only).
+- `debounceDelay?: number = 300` — Delay in ms before `onInput` fires. Set `0` to disable.
+- `forcePositiveNumber?: boolean = false` — For `type="number"`, clamps to positive values on blur.
+- `maxDecimalPlaces?: number = -1` — Limits decimal places (`-1` = unlimited).
+- `min? / max? / step?` — Forwarded min/max/step attributes.
+- `onInput?: (value: string) => void` — Called after debounce with the committed value.
+- `onchange?: (event: Event) => void` — Native change handler.
+- `onmouseup?: (event: MouseEvent) => void` — Native mouseup handler.
+- `label?: Snippet` — Custom label snippet (overrides `labelText`).
+- `leftIcon?: Snippet` — Icon rendered inside the left edge of the input wrapper.
+- `rightIcon?: Snippet` — Icon rendered inside the right edge of the input wrapper.
+- `class?: ClassNameValue` — Extra classes on the `<input>` element.
+
+## Example
+
+```svelte
+<script>
+  import { TextInput } from '$lib/components/text-input';
+  let email = $state('');
+</script>
+
+<textinput id="email" type="email" labelText="Email" bind:value={email}
+  error={email && !email.includes('@') ? 'Invalid email' : ''} />
+```
+-->
+
 <script lang="ts" module>
 	import type { Snippet } from 'svelte';
 	import type { FullAutoFill, HTMLInputAttributes } from 'svelte/elements';

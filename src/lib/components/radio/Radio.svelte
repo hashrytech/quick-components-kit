@@ -1,3 +1,38 @@
+<!--
+@component Radio
+
+A styled radio input with label and size variants. Use `bind:group` to link
+multiple radios into a group — the selected value is reflected in the bound variable.
+
+All native `<input type="radio">` attributes (except `size`, `type`, `class`) are forwarded.
+
+## Props
+
+- `id: string` — Required. Unique id for the input element.
+- `label?: string` — Label text rendered next to the radio.
+- `labelPosition?: 'left' | 'right' | 'top' | 'bottom'` — Label placement. Default: `'right'`.
+- `value?: unknown` — The value this radio represents.
+- `group?: unknown` — Bindable. The currently selected value in the group.
+- `size?: 'sm' | 'md' | 'lg'` — Radio circle size. Default: `'md'`.
+- `disabled?: boolean` — Disables the input.
+- `name?: string` — Groups radios for form submission; defaults to `id`.
+- `labelClass?: ClassNameValue` — Extra classes on the label `<span>`.
+- `containerClass?: ClassNameValue` — Extra classes on the wrapping `<label>`.
+- `class?: ClassNameValue` — Extra classes on the `<input>` element.
+
+## Example
+
+```svelte
+<script>
+  import { Radio } from '$lib/components/radio';
+  let selected = $state('a');
+</script>
+
+<radio id="opt-a" label="Option A" value="a" bind:group={selected} />
+<radio id="opt-b" label="Option B" value="b" bind:group={selected} />
+```
+-->
+
 <script lang="ts" module>
   import type { Snippet } from 'svelte';
   import type { HTMLInputAttributes } from 'svelte/elements';

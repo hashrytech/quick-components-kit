@@ -1,5 +1,33 @@
+<!--
+@component ToastContainer
+
+A fixed-position container that hosts `Toast` components injected by `showToast()` and its
+convenience wrappers (`successToast`, `failToast`, etc.). Place once near the root of your
+layout.
+
+## Props
+
+- `position?: ToastPosition = 'top-right'` — Screen corner / edge. One of:
+  `'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'`.
+- `id?: string = 'toast_area'` — Element id. Must match the `target` used in `showToast()`.
+- `reverseFlex?: boolean = false` — Reverses the stack order (newest toast at the top).
+
+## Example
+
+Place once in your root layout:
+
+```
+import { ToastContainer, successToast } from '$lib/components/toast';
+```
+
+```svelte
+<toastcontainer position="top-right" />
+<button onclick={() => successToast('Saved!', 'Changes saved.')}>Save</button>
+```
+-->
+
 <script lang="ts">
-  import Toast, { type ToastPosition } from './Toast.svelte';
+  import type { ToastPosition } from './Toast.svelte';
 
   let { position = 'top-right', id = "toast_area", reverseFlex = false }: { position?: ToastPosition, id?: string, reverseFlex?: boolean } = $props();
   

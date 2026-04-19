@@ -1,3 +1,37 @@
+<!--
+@component Checkbox
+
+A styled checkbox input with label, size variants, and group support.
+
+All native `<input type="checkbox">` attributes (except `size`, `type`, `class`) are forwarded.
+
+## Props
+
+- `id: string` — Required. Unique id for the input element.
+- `label?: string` — Label text rendered next to the checkbox.
+- `labelPosition?: 'left' | 'right' | 'top' | 'bottom'` — Label placement. Default: `'right'`.
+- `checked?: boolean` — Bindable checked state. Default: `false`.
+- `value?: unknown` — Value submitted with the form when checked.
+- `group?: unknown[]` — Bindable array for checkbox group binding.
+- `size?: 'sm' | 'md' | 'lg'` — Checkbox size. Default: `'md'`.
+- `disabled?: boolean` — Disables the input.
+- `name?: string` — Form field name; defaults to `id`.
+- `labelClass?: ClassNameValue` — Extra classes on the label `<span>`.
+- `containerClass?: ClassNameValue` — Extra classes on the wrapping `<label>`.
+- `class?: ClassNameValue` — Extra classes on the `<input>` element.
+
+## Example
+
+```svelte
+<script>
+  import { Checkbox } from '$lib/components/checkbox';
+  let agreed = $state(false);
+</script>
+
+<checkbox id="agree" label="I agree to the terms" bind:checked={agreed} />
+```
+-->
+
 <script lang="ts" module>
 	  import type { Snippet } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';

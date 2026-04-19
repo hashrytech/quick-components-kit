@@ -1,3 +1,45 @@
+<!--
+@component Select
+
+A styled `<select>` dropdown with label, size variants, and error display.
+
+## Props
+
+- `id: string` — Required. Links the label and is used to generate the error element id.
+- `name?: string` — Form field name; defaults to `id`.
+- `labelText?: string` — Label text rendered adjacent to the select.
+- `labelPosition?: 'left' | 'top' | 'right' | 'bottom'` — Layout direction. Default: `'right'`.
+- `value?: string | number` — Bindable selected value.
+- `options?: Option[]` — Array of `{ value, key, disabled? }` objects rendered as `<option>` elements.
+- `size?: 'sm' | 'md' | 'lg'` — Height and text size. Default: `'md'`.
+- `disabled?: boolean` — Disables the select.
+- `error?: string` — Error message shown below; also applies red styling to the select.
+- `label?: Snippet` — Custom label snippet (overrides `labelText`).
+- `optionsSnippet?: Snippet` — Custom snippet rendered inside `<select>` before `options`.
+- `icon?: Snippet` — Icon slot (reserved for custom wrapper layouts).
+- `onchange?: (event: Event) => void` — Native change handler.
+- `class?: ClassNameValue` — Extra classes on the `<select>` element.
+
+## Example
+
+```svelte
+<script>
+  import { Select } from '$lib/components/select';
+  let role = $state('');
+</script>
+
+<Select
+  id="role"
+  labelText="Role"
+  bind:value={role}
+  options={[
+    { value: 'admin', key: 'Admin' },
+    { value: 'user', key: 'User' },
+  ]}
+/>
+```
+-->
+
 <script lang="ts" module>
   import type { ClassNameValue } from 'tailwind-merge';
   import type { Snippet } from 'svelte';
@@ -77,18 +119,19 @@
       {/if}
     {/if}
 
-    <select {id} name={name ?? id} bind:value {disabled} onchange={onchange} 
+    <select {id} name={name ?? id} bind:value {disabled} onchange={onchange}
+      aria-describedby={error ? `${id}-error` : undefined}
       class={twMerge("rounded-primary border border-primary-input-border focus:border-primary-focus focus:ring-primary-focus placeholder:opacity-50 disabled:bg-neutral-300/30 disabled:border-neutral-300/30 py-0",
       sizeMap[size], error ? "bg-red-50 border-red-300" : "", restProps.class)}>
       {@render optionsSnippet?.()}
       {#each options as option}
-        <option value={option.value} disabled={option.disabled} class={twMerge("", optionsClass)}>
+        <option value={option.value} disabled={option.disabled}>
           {option.key}
         </option>
       {/each}
     </select>
   </div>
   {#if error}
-    <p class="text-sm text-red-500 mt-0.5 bg-red-100/30 px-2 rounded-primary">{error}</p>
+    <p id="{id}-error" class="text-sm text-red-500 mt-0.5 bg-red-100/30 px-2 rounded-primary">{error}</p>
   {/if}
 </div>

@@ -1,9 +1,35 @@
+<!--
+@component Toast
+
+A single toast notification that mounts, auto-removes, and plays a fly transition.
+Rendered inside a `ToastContainer` via `showToast()` / `successToast()` etc.
+
+## Props
+
+- `toastType?: ToastType = 'info'` — Visual variant: `'success' | 'info' | 'debug' | 'warning' | 'error'`.
+- `message?: string` — Primary message text. Plain text only — HTML is not rendered.
+- `subMessage?: string` — Optional secondary line of text.
+- `delToast?: () => void` — Called after the close transition to unmount the component.
+
+## Example
+
+```svelte
+<script>
+  import { successToast } from '$lib/components/toast';
+</script>
+
+<button onclick={() => successToast('Saved!', 'Your changes have been saved.')}>
+  Save
+</button>
+```
+-->
+
 <script lang="ts" module>
     import type { Snippet } from 'svelte';
     import type { ClassNameValue } from 'tailwind-merge';
-    
+
     export type ToastType = 'success' | 'info' | 'debug' | 'warning' | 'error';
-    export type ToastPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';    
+    export type ToastPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
 </script>
 
@@ -32,7 +58,7 @@
 
   async function handle_close(){
       open = false;
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, toastOptions.transitionDuration));
       delToast?.();
   }
 
@@ -40,18 +66,18 @@
   
   
 {#if open}
-<div transition:fly={{ delay: toastOptions.transitionDelay, duration: toastOptions.transitionDuration, y: toastOptions.transitionY, easing: toastOptions.transitionEasing }} class="flex flex-row rounded-lg mt-2 py-0.5 h-full min-h-[4rem] shadow-lg w-full max-w-md ring-1 
+<div role="alert" aria-live="assertive" transition:fly={{ delay: toastOptions.transitionDelay, duration: toastOptions.transitionDuration, y: toastOptions.transitionY, easing: toastOptions.transitionEasing }} class="flex flex-row rounded-lg mt-2 py-0.5 h-full min-h-[4rem] shadow-lg w-full max-w-md ring-1
   border-none pointer-events-auto text-neutral-700 {toastTypeClasses[toastType]}">
-  <div class="flex flex-row gap-4 items-center w-full justify-center rounded-sm px-4">          
-      
+  <div class="flex flex-row gap-4 items-center w-full justify-center rounded-sm px-4">
+
       <div class="flex flex-row items-center justify-center">
           <span class="{toastIcons[toastType]} {toastTypeIconColours[toastType]} size-8 outline-hidden"></span>
       </div>
-      
+
       <div class="flex flex-col gap-1 rounded-sm py-2 flex-1 min-w-0">
-          <p class="text-sm font-medium break-words overflow-wrap-anywhere hyphens-auto">{@html message}</p>
+          <p class="text-sm font-medium break-words overflow-wrap-anywhere hyphens-auto">{message}</p>
           {#if subMessage}
-          <p class="text-xs font-light break-words whitespace-normal hyphens-auto">{@html subMessage}</p>
+          <p class="text-xs font-light break-words whitespace-normal hyphens-auto">{subMessage}</p>
           {/if}
       </div>
 

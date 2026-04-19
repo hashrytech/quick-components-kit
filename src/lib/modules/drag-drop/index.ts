@@ -179,7 +179,7 @@ export function itemId<T extends object>(key: keyof T): (item: T) => string {
 export function dragDropZone<T extends object>(
     node: HTMLElement,
     initialOptions: DragDropZoneOptions<T>
-): ActionReturn<DragDropZoneOptions<T>, DragDropZoneAttributes<T>> {
+): ActionReturn<DragDropZoneOptions<T>, DragDropZoneAttributes<T>> & { update(options: DragDropZoneOptions<T>): void; destroy(): void } {
     if (typeof document === 'undefined') {
         return { update() {}, destroy() {} };
     }

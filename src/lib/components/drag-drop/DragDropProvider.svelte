@@ -1,3 +1,46 @@
+<!--
+@component DragDropProvider
+
+A drag-and-drop zone component that wraps a list of items and handles all pointer
+events. Uses the `dragDropZone` action internally and exposes drag state to children
+via a snippet slot.
+
+For automatic item-list management use `DragDropProviderSmart` instead.
+
+## Props
+
+All `DragDropZoneOptions` props (except `items`) are accepted, plus:
+
+- `items: T[]` — Required. The ordered list of draggable items.
+- `isolated?: boolean = false` — When true, creates an independent drag context (no cross-zone).
+- `parentTag?: keyof HTMLElementTagNameMap = 'ul'` — HTML tag for the container element.
+- `onconsider?: (e: CustomEvent) => void` — Fires during drag with the provisional item order.
+- `onfinalize?: (e: CustomEvent) => void` — Fires when the drag ends with the final item order.
+- `children?: Snippet<[{ isDragging, activeItem, draggedIndex }]>` — Slot with drag state.
+- `class?: string` — Extra classes on the container element.
+
+## Example
+
+```svelte
+<script>
+  let items = $state([{ id: '1', name: 'Alpha' }, { id: '2', name: 'Beta' }]);
+</script>
+
+<dragdropprovider
+  bind:items
+  {getItemId}
+  onconsider={(e) => (items = e.detail.items)}
+  onfinalize={(e) => (items = e.detail.items)}
+>
+  {#snippet children({ isDragging })}
+    {#each items as item (item.id)}
+      <li>{item.name}</li>
+    {/each}
+  {/snippet}
+</dragdropprovider>
+```
+-->
+
 <script lang="ts" module>
     import type { Snippet } from 'svelte';
     import { dragDropZone, type DragDropZoneOptions, type DragDropEvent } from '../../modules/drag-drop/index.js';
