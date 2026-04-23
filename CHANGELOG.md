@@ -1,3 +1,10 @@
+# [0.24.0](https://github.com/hashrytech/quick-components-kit/compare/v0.23.2...v0.24.0) (2026-04-23)
+
+
+### Features
+
+* **modal:** add mobile drawer mode with direction, size, and rounding control ([31ca754](https://github.com/hashrytech/quick-components-kit/commit/31ca75445737165cfda6b645b6b657b554748d44))
+
 ## [0.23.2](https://github.com/hashrytech/quick-components-kit/compare/v0.23.1...v0.23.2) (2026-04-19)
 
 
