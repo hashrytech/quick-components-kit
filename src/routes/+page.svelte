@@ -68,7 +68,7 @@
     <div class="flex flex-col gap-1 px-2 w-full">
         <p class="font-medium">Primary</p>
         <div class="flex flex-row gap-0.5 justify-center items-center w-full">
-        {#each ["bg-primary-50", "bg-primary-100", "bg-primary-200", "bg-primary-300", "bg-primary-400", "bg-primary-500", "bg-primary-600", "bg-primary-700", "bg-primary-800", "bg-primary-900", "bg-primary-950"] as bg_color}
+        {#each ["bg-primary-50", "bg-primary-100", "bg-primary-200", "bg-primary-300", "bg-primary-400", "bg-primary-500", "bg-primary-600", "bg-primary-700", "bg-primary-800", "bg-primary-900", "bg-primary-950"] as bg_color (bg_color)}
             <div class="h-10 w-full {bg_color} text-center flex items-center justify-center font-medium rounded text-sm">&nbsp;</div>
         {/each}
         </div>
@@ -77,7 +77,7 @@
     <div class="flex flex-col gap-1 px-2 w-full">
         <p class="font-medium">Secondary</p>
         <div class="flex flex-row gap-0.5 justify-center items-center w-full">
-        {#each ["bg-secondary-50", "bg-secondary-100", "bg-secondary-200", "bg-secondary-300", "bg-secondary-400", "bg-secondary-500", "bg-secondary-600", "bg-secondary-700", "bg-secondary-800", "bg-secondary-900", "bg-secondary-950"] as bg_color}
+        {#each ["bg-secondary-50", "bg-secondary-100", "bg-secondary-200", "bg-secondary-300", "bg-secondary-400", "bg-secondary-500", "bg-secondary-600", "bg-secondary-700", "bg-secondary-800", "bg-secondary-900", "bg-secondary-950"] as bg_color (bg_color)}
             <div class="h-10 w-full {bg_color} text-center flex items-center justify-center font-medium rounded text-sm">&nbsp;</div>
         {/each}
         </div>
@@ -235,7 +235,7 @@
         <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> modalOpen=true}>Show Modal</Button>
     </div>
 
-    <Modal bind:open={modalOpen} class="!rounded-none">
+    <Modal bind:open={modalOpen} mobileDrawer={true} drawerSize="90vh" drawerFill={false}>
         <div class="p-4">
             <h2 class="text-lg font-semibold mb-2">Modal Title</h2>
             <p class="mb-4">This is a simple modal dialog. You can put any content here.</p>
