@@ -15,7 +15,8 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
 - `position?`: `"left" | "right" | "top" | "bottom"` — Drawer slide direction. Default: `"left"`.
 - `size?`: `"sm" | "md" | "lg" | "xl" | "full"` — Drawer width (left/right) or height (top/bottom) variant. Default: `"md"`.
 - `transitionDuration?`: `number` — Drawer animation duration in milliseconds.
-- `transitionDistance?`: `number` — Distance the drawer flies in from (px). Defaults to the pixel value of `size`.
+- `transitionDistance?`: `number` — Distance the drawer flies in from (px). Default: `500`.
+- `transitionOpacity?`: `number` — Starting opacity of the fly-in transition (0–1). Default: `1` (no fade).
 - `overlayClasses?`: `string` — Custom Tailwind classes for the backdrop overlay.
 - `class?`: `ClassNameValue` — Classes passed to the drawer container.
 - `children?`: `Snippet` — Svelte content rendered inside the drawer.
@@ -60,19 +61,12 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
 		size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 		transitionDuration?: number;
 		transitionDistance?: number;
+		transitionOpacity?: number;
 		overlayClasses?: string;
 		onopen?: () => void;
 		onclose?: () => void;
 		children?: Snippet;
 		class?: ClassNameValue;
-	};
-
-	const sizePixels: Record<NonNullable<DrawerProps['size']>, number> = {
-		sm: 192,
-		md: 240,
-		lg: 320,
-		xl: 384,
-		full: 9999,
 	};
 
 	const horizontalSizeClasses: Record<NonNullable<DrawerProps['size']>, string> = {
@@ -111,7 +105,8 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
 		position = 'left',
 		size = 'md',
 		transitionDuration = config.transitionDuration,
-		transitionDistance,
+		transitionDistance = 500,
+		transitionOpacity = 1,
 		overlayClasses = '',
 		onopen,
 		onclose,
@@ -119,12 +114,11 @@ A flexible, accessible slide-in drawer component for Svelte 5 using Tailwind CSS
 		...props
 	}: DrawerProps = $props();
 
-	const resolvedDistance = $derived(transitionDistance ?? sizePixels[size]);
-
 	const transitionProperties = $derived({
-		x: position === 'left' ? -resolvedDistance : position === 'right' ? resolvedDistance : 0,
-		y: position === 'top' ? -resolvedDistance : position === 'bottom' ? resolvedDistance : 0,
+		x: position === 'left' ? -transitionDistance : position === 'right' ? transitionDistance : 0,
+		y: position === 'top' ? -transitionDistance : position === 'bottom' ? transitionDistance : 0,
 		duration: transitionDuration,
+		opacity: transitionOpacity,
 	});
 
 	const sizeClass = $derived(
