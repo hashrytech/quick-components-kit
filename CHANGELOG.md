@@ -1,3 +1,10 @@
+# [0.25.0](https://github.com/hashrytech/quick-components-kit/compare/v0.24.0...v0.25.0) (2026-04-24)
+
+
+### Features
+
+* **drawer:** add transitionOpacity prop and simplify transition distance ([bb6a5f9](https://github.com/hashrytech/quick-components-kit/commit/bb6a5f9aaf19b25bf4f4ddf81ea17f819de24043))
+
 # [0.24.0](https://github.com/hashrytech/quick-components-kit/compare/v0.23.2...v0.24.0) (2026-04-23)
 
 
