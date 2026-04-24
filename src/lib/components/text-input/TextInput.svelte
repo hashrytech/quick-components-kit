@@ -32,6 +32,10 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 - `rightIcon?: Snippet` — Icon rendered inside the right edge of the input wrapper.
 - `class?: ClassNameValue` — Extra classes on the `<input>` element.
 
+- `rootClass?: ClassNameValue` - Extra classes on the root wrapper.
+- `labelRowClass?: ClassNameValue` - Extra classes on the label/control layout wrapper.
+- `inputWrapperClass?: ClassNameValue` - Extra classes on the bordered input wrapper.
+
 ## Example
 
 ```svelte
@@ -134,9 +138,9 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 		error?: string;
 		showErrorText?: boolean;
 		labelClass?: ClassNameValue;
-		firstDivClass?: ClassNameValue;
-		secondDivClass?: ClassNameValue;
-		thirdDivClass?: ClassNameValue;
+		rootClass?: ClassNameValue;
+		labelRowClass?: ClassNameValue;
+		inputWrapperClass?: ClassNameValue;
 		autocomplete?: FullAutoFill | null;
 		inputmode?: InputMode;
 		min?: number;
@@ -174,9 +178,9 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 		pattern,
 		error,
 		showErrorText = true,
-		firstDivClass,
-		secondDivClass,
-		thirdDivClass,
+		rootClass,
+		labelRowClass,
+		inputWrapperClass,
 		autocomplete,
 		inputmode,
 		min,
@@ -439,8 +443,8 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 	}
 </script>
 
-<div class={twMerge('', firstDivClass)}>
-	<div class={twMerge('flex rounded-primary', directionClass[labelPosition] ?? directionClass.top, secondDivClass)}>
+<div class={twMerge('', rootClass)}>
+	<div class={twMerge('flex rounded-primary', directionClass[labelPosition] ?? directionClass.top, labelRowClass)}>
 		{#if label}
 			{@render label()}
 		{/if}
@@ -455,7 +459,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 				'quick-text-input-control flex flex-row items-center overflow-hidden rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30',
 				error ? 'border-red-300 bg-red-50' : '',
 				textBoxStyle[size],
-				thirdDivClass
+				inputWrapperClass
 			)}
 		>
 			{#if leftIcon}

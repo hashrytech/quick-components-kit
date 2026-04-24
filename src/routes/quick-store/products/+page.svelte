@@ -98,7 +98,7 @@
 
     <main class="flex flex-col gap-2 flex-1">
         <div class="w-[98%] mx-auto md:w-full bg-primary-500 py-0.5 px-0.5">
-            <Searchbox firstDivClass="w-full max-w-2xl mx-auto" secondDivClass="w-full bg-white !rounded-none" thirdDivClass="w-full !rounded-none border-none" class="bg-white" bind:searchTerm onInput={(value) => { searchTerm = value }} />
+            <Searchbox rootClass="w-full max-w-2xl mx-auto" labelRowClass="w-full bg-white !rounded-none" inputWrapperClass="w-full !rounded-none border-none" class="bg-white" bind:searchTerm onInput={(value) => { searchTerm = value }} />
         </div>
 
         <div class="flex flex-col gap-4">
