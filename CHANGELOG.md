@@ -1,3 +1,10 @@
+## [0.25.1](https://github.com/hashrytech/quick-components-kit/compare/v0.25.0...v0.25.1) (2026-04-24)
+
+
+### Bug Fixes
+
+* **text-input:** extend autofill background behind icon slots ([d19eaff](https://github.com/hashrytech/quick-components-kit/commit/d19eaff9f469f111cb390303c2e15370ebe5ec12))
+
 # [0.25.0](https://github.com/hashrytech/quick-components-kit/compare/v0.24.0...v0.25.0) (2026-04-24)
 
 
