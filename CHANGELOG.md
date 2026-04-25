@@ -1,3 +1,10 @@
+# [0.26.0](https://github.com/hashrytech/quick-components-kit/compare/v0.25.1...v0.26.0) (2026-04-25)
+
+
+### Features
+
+* **overlay-inset-panel:** add new OverlayInsetPanel component ([bd356f3](https://github.com/hashrytech/quick-components-kit/commit/bd356f3df72095211c529eb6b7e7573cf01b8dfd))
+
 ## [0.25.1](https://github.com/hashrytech/quick-components-kit/compare/v0.25.0...v0.25.1) (2026-04-24)
 
 
