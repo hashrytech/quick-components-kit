@@ -1,3 +1,10 @@
+## [0.26.2](https://github.com/hashrytech/quick-components-kit/compare/v0.26.1...v0.26.2) (2026-04-25)
+
+
+### Bug Fixes
+
+* **ci:** add NODE_AUTH_TOKEN to enable npm publish in release workflow ([d368a00](https://github.com/hashrytech/quick-components-kit/commit/d368a00da42b84ab903b80053b6a9d829af96768))
+
 ## [0.26.1](https://github.com/hashrytech/quick-components-kit/compare/v0.26.0...v0.26.1) (2026-04-25)
 
 
