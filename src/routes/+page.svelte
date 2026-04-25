@@ -16,6 +16,8 @@
     import { dragDropZone, itemId, type DragDropEvent } from '$lib/modules/drag-drop/index.js';
     import { flip } from 'svelte/animate';
 	import DragDropProviderSmart from "$lib/components/drag-drop/DragDropProviderSmart.svelte";
+    import OverlayInsetPanel from "$lib/components/overlay-inset-panel/OverlayInsetPanel.svelte";
+    
 
     /* Globally available state variables for toast */
     toastIcons['info'] = "icon-[ion--information-circle]";
@@ -28,6 +30,7 @@
     let menuVerticalOpen = $state(false);
     let menuHorizontalOpen = $state(false);
     let modalOpen = $state(false);
+    let overlayInsetOpen = $state(false);
     let radioValue = $state("Apple");
     let showMultiSelect = $state(true);
     let selectValue = $state("apple");
@@ -233,6 +236,10 @@
     <div class="flex flex-row gap-4 items-center">
         <p>Modal</p>
         <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> modalOpen=true}>Show Modal</Button>
+        <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> overlayInsetOpen=true}>OverlayInsetShow</Button>
+        <OverlayInsetPanel bind:open={overlayInsetOpen}>
+            <div class="w-100 h-full bg-sky-200"></div>
+        </OverlayInsetPanel>
     </div>
 
     <Modal bind:open={modalOpen} mobileDrawer={true} drawerSize="90vh" drawerFill={false}>
@@ -343,5 +350,6 @@
         {/each}
     {/snippet}
     </DragDropProviderSmart>
+    
 
 </div>
