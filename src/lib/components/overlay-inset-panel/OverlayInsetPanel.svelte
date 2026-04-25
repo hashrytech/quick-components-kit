@@ -96,38 +96,22 @@ The parent element should be positioned with `relative`, `absolute`, or `fixed`.
 </script>
 
 {#if open}
-	<div
-		transition:fade={{ duration: transitionDuration }}
-		class={twMerge(
-			'absolute top-0 right-0 bottom-0 left-0 z-10 bg-black/30 shadow-2xl backdrop-blur-[1.5px]',
-			props.class
-		)}
-		role="presentation"
-	>
-		<div
-			transition:slide={panelTransition}
-			class={twMerge(
-				'mx-0.5 flex h-[80%] flex-col gap-4 overflow-y-auto rounded-b bg-white px-3 pt-2 pb-0 xxs:px-6',
-				panelClasses
-			)}
-			use:clickOutside={{
-				callback: handleClickOutside,
-				enabled: clickOutsideClose,
-				ignoreIds: clickOutsideIgnoreIds,
-			}}
-		>
-			{@render children?.()}
-
-			{#if footer}
-				<div
-					class={twMerge(
-						'sticky bottom-0 flex min-h-14 w-full flex-row items-center justify-end gap-5 border-t border-neutral-300 bg-neutral-100 px-2 py-2 xs:min-h-16',
-						footerClasses
-					)}
-				>
-					{@render footer()}
-				</div>
-			{/if}
-		</div>
+<div transition:fade={{ duration: transitionDuration }}
+	class={twMerge(
+		'absolute top-0 right-0 bottom-0 left-0 z-10 bg-black/30 shadow-primary backdrop-blur-[1.5px]',
+		props.class
+	)}
+	role="presentation">
+	<div transition:slide={panelTransition}
+		class={twMerge(panelClasses)}
+		use:clickOutside={{
+			callback: handleClickOutside,
+			enabled: clickOutsideClose,
+			ignoreIds: clickOutsideIgnoreIds,
+		}}>
+		
+		{@render children?.()}
+		{@render footer?.()}
 	</div>
+</div>
 {/if}
