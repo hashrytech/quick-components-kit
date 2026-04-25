@@ -1,3 +1,10 @@
+## [0.26.1](https://github.com/hashrytech/quick-components-kit/compare/v0.26.0...v0.26.1) (2026-04-25)
+
+
+### Bug Fixes
+
+* **overlay-inset-panel:** remove unused footerClasses prop ([0a8559c](https://github.com/hashrytech/quick-components-kit/commit/0a8559ce81ba83d6b237cad2375908f05224a521))
+
 # [0.26.0](https://github.com/hashrytech/quick-components-kit/compare/v0.25.1...v0.26.0) (2026-04-25)
 
 
