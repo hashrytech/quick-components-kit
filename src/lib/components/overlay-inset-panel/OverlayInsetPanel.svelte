@@ -13,7 +13,6 @@ The parent element should be positioned with `relative`, `absolute`, or `fixed`.
 - `transitionDuration?`: `number` - Fade/slide duration in milliseconds.
 - `transitionAxis?`: `"x" | "y"` - Axis used by the panel slide transition. Default: `"y"`.
 - `panelClasses?`: `ClassNameValue` - Extra classes for the inner panel.
-- `footerClasses?`: `ClassNameValue` - Extra classes for the sticky footer container.
 - `onclose?`: `() => void` - Called when the panel closes or unmounts while open.
 - `children?`: `Snippet` - Content rendered inside the panel.
 - `footer?`: `Snippet` - Optional sticky footer content.
@@ -53,7 +52,6 @@ The parent element should be positioned with `relative`, `absolute`, or `fixed`.
 		children?: Snippet;
 		footer?: Snippet;
 		panelClasses?: ClassNameValue;
-		footerClasses?: ClassNameValue;
 		class?: ClassNameValue;
 	};
 </script>
@@ -69,7 +67,6 @@ The parent element should be positioned with `relative`, `absolute`, or `fixed`.
 		children,
 		footer,
 		panelClasses,
-		footerClasses,
 		...props
 	}: OverlayInsetPanelProps = $props();
 
