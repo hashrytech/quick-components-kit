@@ -8,7 +8,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 
 ## Props
 
-- `id: string` — Required. Links the label and generates the error element id.
+- `id?: string` — Links the label and generates the error element id. Defaults to `name` if omitted; one of the two must be provided.
 - `type?: TextInputType` — Input type. Default: `'text'`.
 - `name?: string` — Form field name; defaults to `id`.
 - `value?: string | number | null` — Bindable value.
@@ -40,16 +40,52 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 - `labelRowClass?: ClassNameValue` - Extra classes on the label/control layout wrapper.
 - `inputWrapperClass?: ClassNameValue` - Extra classes on the bordered input wrapper.
 
-## Example
+## Examples
 
+### Basic
+```svelte
+<script>
+  import { TextInput } from '$lib/components/text-input';
+  let name = $state('');
+</script>
+
+<TextInput id="name" labelText="Full name" bind:value={name} />
+```
+
+### With validation error
 ```svelte
 <script>
   import { TextInput } from '$lib/components/text-input';
   let email = $state('');
+  let error = $derived(email && !email.includes('@') ? 'Enter a valid email address' : '');
 </script>
 
-<textinput id="email" type="email" labelText="Email" bind:value={email}
-  error={email && !email.includes('@') ? 'Invalid email' : ''} />
+<TextInput id="email" type="email" labelText="Email" bind:value={email} {error} />
+```
+
+### String icons (Iconify)
+```svelte
+<TextInput
+  id="search"
+  placeholder="Search…"
+  leftIcon="i-ph-magnifying-glass"
+  rightIcon="i-ph-x-circle"
+  onRightIconClick={() => (value = '')}
+/>
+```
+
+### Snippet icons
+```svelte
+<TextInput id="amount" labelText="Amount">
+  {#snippet leftIcon()}<span class="text-sm text-neutral-400 pl-1">$</span>{/snippet}
+</TextInput>
+```
+
+### Sizes
+```svelte
+<TextInput id="sm" size="sm" placeholder="Small" />
+<TextInput id="md" size="md" placeholder="Medium" />
+<TextInput id="lg" size="lg" placeholder="Large" />
 ```
 -->
 
@@ -128,7 +164,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 	 * @prop {Snippet} [class] - Css classes for the input element.
 	 */
 	export type TextInputProps = ForwardedInputProps & {
-		id: string;
+		id?: string;
 		name?: string;
 		value?: string | number | null;
 		type?: TextInputType;
@@ -214,6 +250,12 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 		...inputProps
 	}: TextInputProps = $props();
 
+	const effectiveId = id ?? name;
+
+	if (import.meta.env.DEV && !effectiveId) {
+		console.error('[TextInput] Either `id` or `name` must be provided.');
+	}
+
 	const iconSizeClass: Record<TextInputSize, string> = {
 		sm: 'size-4.5',
 		md: 'size-5',
@@ -295,7 +337,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 	}
 
 	function mergeDescribedBy(): string | undefined {
-		const describedByIds = [ariaDescribedBy, error ? `${id}-error` : undefined].filter(
+		const describedByIds = [ariaDescribedBy, error ? `${effectiveId}-error` : undefined].filter(
 			(value): value is string => Boolean(value)
 		);
 
@@ -462,7 +504,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 			{@render label()}
 		{/if}
 		{#if !label && labelText}
-			<label for={id} class={twMerge('ml-1 text-sm font-medium text-primary-label-text', labelClass)}
+			<label for={effectiveId} class={twMerge('ml-1 text-sm font-medium text-primary-label-text', labelClass)}
 				>{labelText}</label
 			>
 		{/if}
@@ -501,8 +543,8 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 				{disabled}
 				{required}
 				{type}
-				{id}
-				name={name ?? id}
+				id={effectiveId}
+				name={name ?? effectiveId}
 				{placeholder}
 				{pattern}
 				{autocomplete}
@@ -549,7 +591,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 
 	{#if error}
 		<p
-			id={`${id}-error`}
+			id={`${effectiveId}-error`}
 			class={twMerge(
 				'mt-0.5 rounded-primary px-2 text-sm text-red-500',
 				showErrorText ? 'bg-red-100/30' : 'sr-only'
