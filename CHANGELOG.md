@@ -1,3 +1,10 @@
+# [0.28.0](https://github.com/hashrytech/quick-components-kit/compare/v0.27.0...v0.28.0) (2026-04-26)
+
+
+### Features
+
+* **text-input:** make id optional, defaulting to name; expand docs with examples ([0663ed3](https://github.com/hashrytech/quick-components-kit/commit/0663ed3aadbd13a0d39670cffb138635f05fd128))
+
 # [0.27.0](https://github.com/hashrytech/quick-components-kit/compare/v0.26.2...v0.27.0) (2026-04-26)
 
 
