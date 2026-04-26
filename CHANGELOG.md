@@ -1,3 +1,10 @@
+# [0.27.0](https://github.com/hashrytech/quick-components-kit/compare/v0.26.2...v0.27.0) (2026-04-26)
+
+
+### Features
+
+* **text-input:** add string icon support, icon classes, click handlers, and size-aware icon sizing ([51e90b0](https://github.com/hashrytech/quick-components-kit/commit/51e90b0ee179603995f50ecdf4e7b87df487f18f))
+
 ## [0.26.2](https://github.com/hashrytech/quick-components-kit/compare/v0.26.1...v0.26.2) (2026-04-25)
 
 
