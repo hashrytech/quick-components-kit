@@ -1,3 +1,10 @@
+# [0.30.0](https://github.com/hashrytech/quick-components-kit/compare/v0.29.0...v0.30.0) (2026-04-26)
+
+
+### Features
+
+* **select:** make id optional, defaulting to name ([23f9ec9](https://github.com/hashrytech/quick-components-kit/commit/23f9ec91ad907241487263b3c7083548b10effe2))
+
 # [0.29.0](https://github.com/hashrytech/quick-components-kit/compare/v0.28.0...v0.29.0) (2026-04-26)
 
 
