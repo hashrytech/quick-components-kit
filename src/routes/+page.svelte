@@ -90,7 +90,7 @@
 <ToastContainer />
 
 <form class="flex flex-col gap-4">
-    <div class="flex flex-wrap w-full max-w-lg gap-2">
+    <div class="flex flex-wrap w-full gap-2">
         <TextInput id="Small" placeholder="Small..." labelText="Small" class="" size="sm" required={true} type="text">
             {#snippet leftIcon()}
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
@@ -102,13 +102,15 @@
                 <path d="M5 20a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3 1 1 0 0 1-1 1H6a1 1 0 0 1-1-1"/>
             </svg>
             {/snippet}
-        </TextInput>
+        </TextInput>        
         <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={true} />
         <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={false} />
         <TextInput id="Small" placeholder="Small..." labelText="Small" class="" size="sm" disabled={false} />
         <TextInput id="Large" placeholder="Large (Force Positive Number) ..." labelText="Large" class="" size="lg" max={5} min={2} error="A name is required." forcePositiveNumber={true} type="number" onInput={(e)=> console.log(e)} />
-        <TextInput id="searchBox" value="search box" placeholder="Product search...">
         
+        
+
+        <TextInput id="searchBox" value="search box" placeholder="Product search...">
         {#snippet leftIcon()}
         <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-neutral-400" viewBox="0 0 24 24" fill="currentColor">
             <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 
@@ -132,7 +134,15 @@
       </TextInput>
     </div>
     <button type="submit" class="bg-green-500 p-2 rounded-primary w-full">Submit</button>
+
+    
 </form>
+
+<div class="flex flex-row gap-4 w-full">
+    <TextInput id="string icon SM" placeholder="String Icon SM" labelText="String Icon SM" class="" size="sm" leftIcon="icon-[ion--add-circle]" rightIcon="icon-[ion--add-circle]" />
+    <TextInput onLeftIconClick={()=> console.log("Left Icon String Clicked")} id="string icon MD" placeholder="String Icon MD" labelText="String Icon MD" class="" size="md" leftIcon="icon-[ri--search-line]" rightIcon="icon-[ion--add-circle]" />
+    <TextInput onRightIconClick={()=> console.log("Right Icon String Clicked")} id="string icon LG" placeholder="String Icon LG" labelText="String Icon LG" class="" size="lg" leftIcon="icon-[ion--add-circle]" rightIcon="icon-[ion--add-circle]" />
+</div>
 <hr />
     
 <div class="flex flex-row flex-wrap gap-10 items-center">

@@ -28,8 +28,12 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 - `onchange?: (event: Event) => void` — Native change handler.
 - `onmouseup?: (event: MouseEvent) => void` — Native mouseup handler.
 - `label?: Snippet` — Custom label snippet (overrides `labelText`).
-- `leftIcon?: Snippet` — Icon rendered inside the left edge of the input wrapper.
-- `rightIcon?: Snippet` — Icon rendered inside the right edge of the input wrapper.
+- `leftIcon?: string | Snippet` — Icon rendered inside the left edge of the input wrapper. Pass a CSS class string (e.g. Iconify) or a Snippet.
+- `rightIcon?: string | Snippet` — Icon rendered inside the right edge of the input wrapper. Pass a CSS class string (e.g. Iconify) or a Snippet.
+- `leftIconClass?: ClassNameValue` — Extra classes on the left icon (string icons only).
+- `rightIconClass?: ClassNameValue` — Extra classes on the right icon (string icons only).
+- `onLeftIconClick?: (event: MouseEvent) => void` — Click handler for the left icon wrapper.
+- `onRightIconClick?: (event: MouseEvent) => void` — Click handler for the right icon wrapper.
 - `class?: ClassNameValue` — Extra classes on the `<input>` element.
 
 - `rootClass?: ClassNameValue` - Extra classes on the root wrapper.
@@ -153,8 +157,12 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 		onchange?: (event: Event) => void;
 		onmouseup?: (event: MouseEvent) => void;
 		label?: Snippet;
-		leftIcon?: Snippet;
-		rightIcon?: Snippet;
+		leftIcon?: Snippet | string;
+		rightIcon?: Snippet | string;
+		leftIconClass?: ClassNameValue;
+		rightIconClass?: ClassNameValue;
+		onLeftIconClick?: (event: MouseEvent) => void;
+		onRightIconClick?: (event: MouseEvent) => void;
 		class?: ClassNameValue;
 	};
 </script>
@@ -162,6 +170,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 	import { twMerge } from 'tailwind-merge';
+	import { Icon } from '$lib/components/icon/index.js';
 
 	let {
 		id,
@@ -196,21 +205,25 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 		label,
 		leftIcon,
 		rightIcon,
+		leftIconClass,
+		rightIconClass,
+		onLeftIconClick,
+		onRightIconClick,
 		class: inputClass,
 		'aria-describedby': ariaDescribedBy,
 		...inputProps
 	}: TextInputProps = $props();
 
-	/**
-	 * Predefined size classes for the TextBox input.
-	 * - "sm": h-[2.05rem] text-sm placeholder:text-sm
-	 * - "md": h-[2.375rem] text-sm placeholder:text-sm
-	 * - "lg": h-[2.8rem] text-lg placeholder:text-lg
-	 */
+	const iconSizeClass: Record<TextInputSize, string> = {
+		sm: 'size-4.5',
+		md: 'size-5',
+		lg: 'size-6.5'
+	};
+
 	const sizeStyle: Record<TextInputSize, string> = {
-		sm: 'text-sm placeholder:text-sm px-2.5',
-		md: 'text-sm placeholder:text-sm px-2.5',
-		lg: 'text-base placeholder:text-base px-3'
+		sm: 'text-sm placeholder:text-sm px-2',
+		md: 'text-sm placeholder:text-sm px-2',
+		lg: 'text-base placeholder:text-base px-2.5'
 	};
 
 	const textBoxStyle: Record<TextInputSize, string> = {
@@ -463,9 +476,24 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 			)}
 		>
 			{#if leftIcon}
-				<div class={size === 'lg' ? 'flex h-full flex-col items-center justify-center pl-3' : 'flex h-full flex-col items-center justify-center pl-2.5'}>
-					{@render leftIcon()}
-				</div>
+				{@const wrapClass = size === 'lg' ? 'flex items-center pl-2.5' : 'flex items-center pl-2'}
+				{#if onLeftIconClick}
+					<button type="button" class={twMerge('cursor-pointer appearance-none bg-transparent border-0 p-0 outline-none', wrapClass)} onclick={onLeftIconClick}>
+						{#if typeof leftIcon === 'string'}
+							<Icon icon={leftIcon} class={twMerge('text-neutral-400', iconSizeClass[size], leftIconClass)} />
+						{:else}
+							{@render leftIcon()}
+						{/if}
+					</button>
+				{:else}
+					<div class={wrapClass}>
+						{#if typeof leftIcon === 'string'}
+							<Icon icon={leftIcon} class={twMerge('text-neutral-400', iconSizeClass[size], leftIconClass)} />
+						{:else}
+							{@render leftIcon()}
+						{/if}
+					</div>
+				{/if}
 			{/if}
 
 			<input
@@ -497,9 +525,24 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 			/>
 
 			{#if rightIcon}
-				<div class={size === 'lg' ? 'flex h-full flex-col items-center justify-center pr-3' : 'flex h-full flex-col items-center justify-center pr-2.5'}>
-					{@render rightIcon()}
-				</div>
+				{@const wrapClass = size === 'lg' ? 'flex items-center pr-2.5' : 'flex items-center pr-2'}
+				{#if onRightIconClick}
+					<button type="button" class={twMerge('cursor-pointer appearance-none bg-transparent border-0 p-0 outline-none', wrapClass)} onclick={onRightIconClick}>
+						{#if typeof rightIcon === 'string'}
+							<Icon icon={rightIcon} class={twMerge('text-neutral-400', iconSizeClass[size], rightIconClass)} />
+						{:else}
+							{@render rightIcon()}
+						{/if}
+					</button>
+				{:else}
+					<div class={wrapClass}>
+						{#if typeof rightIcon === 'string'}
+							<Icon icon={rightIcon} class={twMerge('text-neutral-400', iconSizeClass[size], rightIconClass)} />
+						{:else}
+							{@render rightIcon()}
+						{/if}
+					</div>
+				{/if}
 			{/if}
 		</div>
 	</div>
