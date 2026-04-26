@@ -5,7 +5,7 @@ A styled `<select>` dropdown with label, size variants, and error display.
 
 ## Props
 
-- `id: string` — Required. Links the label and is used to generate the error element id.
+- `id?: string` — Links the label and generates the error element id. Defaults to `name` if omitted; one of the two must be provided.
 - `name?: string` — Form field name; defaults to `id`.
 - `labelText?: string` — Label text rendered adjacent to the select.
 - `labelPosition?: 'left' | 'top' | 'right' | 'bottom'` — Layout direction. Default: `'right'`.
@@ -54,7 +54,7 @@ A styled `<select>` dropdown with label, size variants, and error display.
 	};
 
 	export type SelectProps = {
-		id: string;
+		id?: string;
 		name?: string;
 		labelText?: string;
 		disabled?: boolean;
@@ -95,6 +95,12 @@ A styled `<select>` dropdown with label, size variants, and error display.
 		...restProps
 	}: SelectProps = $props();
 
+	const effectiveId = id ?? name;
+
+	if (import.meta.env.DEV && !effectiveId) {
+		console.error('[Select] Either `id` or `name` must be provided.');
+	}
+
 	const sizeMap = {
 		sm: 'text-sm h-[2.05rem]',
 		md: 'text-base h-[2.375rem]',
@@ -115,19 +121,19 @@ A styled `<select>` dropdown with label, size variants, and error display.
 			{@render label()}
 		{:else if labelText}
 			<label
-				for={id}
+				for={effectiveId}
 				class={twMerge('text-primary-label-text ml-1 w-full text-sm font-medium', labelClass)}
 				>{labelText}</label
 			>
 		{/if}
 
 		<select
-			{id}
-			name={name ?? id}
+			id={effectiveId}
+			name={name ?? effectiveId}
 			bind:value
 			{disabled}
 			{onchange}
-			aria-describedby={error ? `${id}-error` : undefined}
+			aria-describedby={error ? `${effectiveId}-error` : undefined}
 			class={twMerge(
 				'rounded-primary border-primary-input-border focus:border-primary-focus focus:ring-primary-focus border py-0 placeholder:opacity-50 disabled:border-neutral-300/30 disabled:bg-neutral-300/30',
 				sizeMap[size],
@@ -148,7 +154,7 @@ A styled `<select>` dropdown with label, size variants, and error display.
 	</div>
 	{#if error}
 		<p
-			id="{id}-error"
+			id="{effectiveId}-error"
 			class={twMerge('rounded-primary mt-0.5 bg-red-100/30 px-2 text-sm text-red-500', errorClass)}
 		>
 			{error}
