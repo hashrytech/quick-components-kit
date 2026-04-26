@@ -10,12 +10,11 @@ A styled `<select>` dropdown with label, size variants, and error display.
 - `labelText?: string` — Label text rendered adjacent to the select.
 - `labelPosition?: 'left' | 'top' | 'right' | 'bottom'` — Layout direction. Default: `'right'`.
 - `value?: string | number` — Bindable selected value.
-- `options?: Option[]` — Array of `{ value, key, disabled? }` objects rendered as `<option>` elements.
+- `options?: Option[] | Snippet` — Either an array of `{ value, key, disabled? }` objects rendered as `<option>` elements, or a Snippet rendered directly inside `<select>`.
 - `size?: 'sm' | 'md' | 'lg'` — Height and text size. Default: `'md'`.
 - `disabled?: boolean` — Disables the select.
 - `error?: string` — Error message shown below; also applies red styling to the select.
 - `label?: Snippet` — Custom label snippet (overrides `labelText`).
-- `optionsSnippet?: Snippet` — Custom snippet rendered inside `<select>` before `options`.
 - `icon?: Snippet` — Icon slot (reserved for custom wrapper layouts).
 - `onchange?: (event: Event) => void` — Native change handler.
 - `class?: ClassNameValue` — Extra classes on the `<select>` element.
@@ -56,7 +55,7 @@ A styled `<select>` dropdown with label, size variants, and error display.
     labelText?: string;
     disabled?: boolean;
     value?: string | number;
-    options?: Option[];
+    options?: Option[] | Snippet;
     size?: "sm" | "md" | "lg";
     labelPosition?: "left" | "top" | "right" | "bottom";
     class?: ClassNameValue;
@@ -66,7 +65,6 @@ A styled `<select>` dropdown with label, size variants, and error display.
     optionsClass?: ClassNameValue;
     error?: string;
     label?: Snippet;
-    optionsSnippet?: Snippet;
     icon?: Snippet;
     onchange?: (event: Event) => void;
   };
@@ -82,17 +80,16 @@ A styled `<select>` dropdown with label, size variants, and error display.
     labelText = "", 
     labelPosition = "right", 
     value = $bindable(), 
-    options=$bindable([]), 
-    size = "md", 
-    disabled = $bindable(false), 
+    options,
+    size = "md",
+    disabled = $bindable(false),
     firstDivClass,
     secondDivClass,
-    labelClass, 
-    optionsClass, 
-    error, 
-    onchange, 
-    icon, 
-    optionsSnippet, 
+    labelClass,
+    optionsClass,
+    error,
+    onchange,
+    icon,
     ...restProps}: SelectProps = $props();
 
   const sizeMap = {
@@ -123,12 +120,15 @@ A styled `<select>` dropdown with label, size variants, and error display.
       aria-describedby={error ? `${id}-error` : undefined}
       class={twMerge("rounded-primary border border-primary-input-border focus:border-primary-focus focus:ring-primary-focus placeholder:opacity-50 disabled:bg-neutral-300/30 disabled:border-neutral-300/30 py-0",
       sizeMap[size], error ? "bg-red-50 border-red-300" : "", restProps.class)}>
-      {@render optionsSnippet?.()}
-      {#each options as option}
-        <option value={option.value} disabled={option.disabled}>
-          {option.key}
-        </option>
-      {/each}
+      {#if typeof options === 'function'}
+        {@render options()}
+      {:else if options}
+        {#each options as option}
+          <option value={option.value} disabled={option.disabled}>
+            {option.key}
+          </option>
+        {/each}
+      {/if}
     </select>
   </div>
   {#if error}
