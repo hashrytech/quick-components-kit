@@ -1,3 +1,10 @@
+# [0.29.0](https://github.com/hashrytech/quick-components-kit/compare/v0.28.0...v0.29.0) (2026-04-26)
+
+
+### Features
+
+* **select:** merge optionsSnippet into options as Option[] | Snippet ([6bf2f12](https://github.com/hashrytech/quick-components-kit/commit/6bf2f1222f43a3db750a2b2a90f9f154822eedc3))
+
 # [0.28.0](https://github.com/hashrytech/quick-components-kit/compare/v0.27.0...v0.28.0) (2026-04-26)
 
 
