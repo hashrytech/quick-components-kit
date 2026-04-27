@@ -1,3 +1,11 @@
+## [0.30.3](https://github.com/hashrytech/quick-components-kit/compare/v0.30.2...v0.30.3) (2026-04-27)
+
+
+### Bug Fixes
+
+* **button:** use dedicated disabled color tokens instead of opacity ([e913162](https://github.com/hashrytech/quick-components-kit/commit/e913162400678fa2d4e367a6c8176faeecf21256))
+* **button:** use dedicated disabled color tokens instead of opacity for primary and secondary variants ([b9afca2](https://github.com/hashrytech/quick-components-kit/commit/b9afca23238698899860246cbb605b2cf56dce7a))
+
 ## [0.30.2](https://github.com/hashrytech/quick-components-kit/compare/v0.30.1...v0.30.2) (2026-04-27)
 
 
