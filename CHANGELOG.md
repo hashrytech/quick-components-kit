@@ -1,3 +1,10 @@
+## [0.30.1](https://github.com/hashrytech/quick-components-kit/compare/v0.30.0...v0.30.1) (2026-04-27)
+
+
+### Bug Fixes
+
+* **text-input:** remove white fringe artifact inside rounded border ([34e9570](https://github.com/hashrytech/quick-components-kit/commit/34e9570e4cb0d2573112d4ddc96ebc28ff888e66))
+
 # [0.30.0](https://github.com/hashrytech/quick-components-kit/compare/v0.29.0...v0.30.0) (2026-04-26)
 
 
