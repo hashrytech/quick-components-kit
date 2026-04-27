@@ -203,12 +203,12 @@
 
     <div class="flex flex-row gap-4 items-center">
         <p>Button Disabled</p>
-        <Button variant="secondary" disabled={true} class="text-white text-base font-semibold">Get Started</Button>
+        <Button variant="secondary" disabled={true} class="text-white text-base font-semibold">Secondary Disabled</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">
         <p>Link Button</p>
-        <LinkButton href="/" class="text-white text-base font-semibold">Get Started</LinkButton>
+        <LinkButton href="/" class="text-white text-base font-semibold">Active Link Button</LinkButton>
     </div>
 </div>
 
