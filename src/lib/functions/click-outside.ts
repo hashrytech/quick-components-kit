@@ -71,8 +71,19 @@ export function clickOutside(
 ): { update(options: ClickOutsideOptions): void; destroy(): void } {
   let { callback, ignoreIds = [], enabled = true } = options;
 
+  // Track whether the pointer went down inside the node. If so, a subsequent
+  // click event that lands outside (due to a drag) should not close the panel.
+  let mousedownInsideNode = false;
+
+  const handleMousedown = (event: MouseEvent) => {
+    mousedownInsideNode = event.target instanceof HTMLElement && node.contains(event.target);
+  };
+
   const handleClick = (event: ClickOutsideEvent) => {
     if (!enabled) return;
+
+    // Drag started inside the node — not a genuine outside click.
+    if (mousedownInsideNode) return;
 
     // Guard against non-HTMLElement targets (SVG elements, text nodes, ShadowRoot)
     const target = event.target;
@@ -93,6 +104,7 @@ export function clickOutside(
     callback(event);
   };
 
+  document.addEventListener('mousedown', handleMousedown, true);
   document.addEventListener('click', handleClick, true);
 
   return {
@@ -100,6 +112,7 @@ export function clickOutside(
       ({ callback, ignoreIds = [], enabled = true } = newOptions);
     },
     destroy() {
+      document.removeEventListener('mousedown', handleMousedown, true);
       document.removeEventListener('click', handleClick, true);
     },
   };

@@ -248,7 +248,7 @@
         <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> modalOpen=true}>Show Modal</Button>
         <Button class="text-white text-base font-semibold bg-sky-500" onclick={()=> overlayInsetOpen=true}>OverlayInsetShow</Button>
         <OverlayInsetPanel bind:open={overlayInsetOpen}>
-            <div class="w-100 h-full bg-sky-200"></div>
+            <div class="w-full h-150 bg-sky-200 mx-auto"></div>
         </OverlayInsetPanel>
     </div>
 
