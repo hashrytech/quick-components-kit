@@ -176,7 +176,7 @@
 
     <div class="flex flex-row gap-4 items-center">
         <p>Active Icon Button</p>
-        <Button class="">
+        <Button variant="secondary" class="">
             {#snippet icon()}
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#000000" viewBox="0 0 256 256">
                     <path d="M185.33,114.21l29.14-27.42.17-.17a32,32,0,0,0-45.26-45.26c0,.06-.11.11-.17.17L141.79,70.67l-83-30.2a8,8,0,0,0-8.39,1.86l-24,24a8,8,0,0,0,1.22,
@@ -203,7 +203,7 @@
 
     <div class="flex flex-row gap-4 items-center">
         <p>Button Disabled</p>
-        <Button disabled={true} class="text-white text-base font-semibold">Get Started</Button>
+        <Button variant="secondary" disabled={true} class="text-white text-base font-semibold">Get Started</Button>
     </div>
 
     <div class="flex flex-row gap-4 items-center">

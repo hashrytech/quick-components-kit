@@ -55,8 +55,8 @@ Passes all native `<button>` attributes through (except `class`, `disabled`, `on
   };
 
   const variantClasses: Record<ButtonVariant, string> = {
-    primary: 'bg-primary-button hover:bg-primary-button-hover text-white disabled:bg-primary-button/60',
-    secondary: 'bg-secondary-button hover:bg-secondary-button-hover text-white disabled:bg-secondary-button/60',
+    primary: 'bg-primary-button hover:bg-primary-button-hover text-white disabled:bg-primary-button-disabled',
+    secondary: 'bg-secondary-button hover:bg-secondary-button-hover text-white disabled:bg-secondary-button-disabled',
     ghost: 'bg-transparent hover:bg-primary-500/10 text-primary-700 disabled:opacity-50',
     danger: 'bg-red-600 hover:bg-red-700 text-white disabled:bg-red-600/60',
   };
