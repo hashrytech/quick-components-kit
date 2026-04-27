@@ -511,7 +511,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 
 		<div
 			class={twMerge(
-				'quick-text-input-control flex flex-row items-center overflow-hidden rounded-primary border border-primary-input-border focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30',
+				'quick-text-input-control flex flex-row items-center overflow-hidden rounded-primary border border-primary-input-border bg-white focus-within:ring focus-within:border-primary-focus focus-within:ring-primary-focus has-[input:disabled]:bg-neutral-300/30 has-[input:disabled]:border-neutral-300/30',
 				error ? 'border-red-300 bg-red-50' : '',
 				textBoxStyle[size],
 				inputWrapperClass
