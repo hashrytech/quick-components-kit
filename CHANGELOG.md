@@ -1,3 +1,10 @@
+## [0.30.2](https://github.com/hashrytech/quick-components-kit/compare/v0.30.1...v0.30.2) (2026-04-27)
+
+
+### Bug Fixes
+
+* **click-outside:** ignore clicks that originated via drag from inside the node ([19ccfe2](https://github.com/hashrytech/quick-components-kit/commit/19ccfe202c7315ff1dfe3884d56614a31610804b))
+
 ## [0.30.1](https://github.com/hashrytech/quick-components-kit/compare/v0.30.0...v0.30.1) (2026-04-27)
 
 
