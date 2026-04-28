@@ -90,7 +90,7 @@
 <ToastContainer />
 
 <form class="flex flex-col gap-4">
-    <div class="flex flex-wrap w-full gap-2">
+    <div class="flex flex-row flex-wrap items-center w-full gap-2">
         <TextInput id="Small" placeholder="Small..." labelText="Small" class="" size="sm" required={true} type="text">
             {#snippet leftIcon()}
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
@@ -103,9 +103,9 @@
             </svg>
             {/snippet}
         </TextInput>        
-        <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={true} />
-        <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={false} />
-        <TextInput id="Small" placeholder="Small..." labelText="Small" class="" size="sm" disabled={false} />
+        <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={true} labelPosition="bottom" />
+        <TextInput id="Medium" placeholder="Medium..." labelText="Medium" class="" size="md" disabled={false} labelPosition="left" />
+        <TextInput id="Small" placeholder="Small..." labelText="Small" class="" size="sm" disabled={false} labelPosition="right" />
         <TextInput id="Large" placeholder="Large (Force Positive Number) ..." labelText="Large" class="" size="lg" max={5} min={2} error="A name is required." forcePositiveNumber={true} type="number" onInput={(e)=> console.log(e)} />
         
         
@@ -329,10 +329,10 @@
     {/each}
     </Select>
 
-    <Select labelPosition="top" id="select1" labelText="Select Example 1" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
+    <Select labelPosition="top" id="select3" labelText="Select Example 3" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
         bind:value={selectValue} size="lg" class="w-64" />
 
-    <Select labelPosition="bottom" id="select1" labelText="Select Example 1" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
+    <Select labelPosition="bottom" id="select4" labelText="Select Example 4" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
         bind:value={selectValue} size="lg" class="w-64" />
 </div>
 

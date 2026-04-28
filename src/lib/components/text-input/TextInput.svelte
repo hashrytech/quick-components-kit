@@ -504,7 +504,7 @@ Native `<input>` attributes (except those listed in props) are forwarded via spr
 			{@render label()}
 		{/if}
 		{#if !label && labelText}
-			<label for={effectiveId} class={twMerge('ml-1 text-sm font-medium text-primary-label-text', labelClass)}
+			<label for={effectiveId} class={twMerge('ml-1 text-sm font-medium text-primary-label-text w-fit', labelClass)}
 				>{labelText}</label
 			>
 		{/if}

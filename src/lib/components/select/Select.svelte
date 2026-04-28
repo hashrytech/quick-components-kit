@@ -147,7 +147,7 @@ type Option = {
 		{#if label}
 		{@render label()}
 		{:else if labelText}
-		<label for={effectiveId} class={twMerge('text-primary-label-text ml-1 text-sm font-medium', labelClass)}>{labelText}</label>
+		<label for={effectiveId} class={twMerge('text-primary-label-text ml-1 text-sm font-medium w-fit', labelClass)}>{labelText}</label>
 		{/if}
 		<select id={effectiveId} name={name ?? effectiveId} bind:value {disabled} {onchange}
 			aria-invalid={!!error}
