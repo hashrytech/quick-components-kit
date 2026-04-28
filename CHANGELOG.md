@@ -1,3 +1,10 @@
+## [0.30.5](https://github.com/hashrytech/quick-components-kit/compare/v0.30.4...v0.30.5) (2026-04-28)
+
+
+### Bug Fixes
+
+* **select:** add w-fit to label to limit focus ([43fcbc3](https://github.com/hashrytech/quick-components-kit/commit/43fcbc304a3d3d5420735d815a08b02019f66b53))
+
 ## [0.30.4](https://github.com/hashrytech/quick-components-kit/compare/v0.30.3...v0.30.4) (2026-04-28)
 
 
