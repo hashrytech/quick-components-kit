@@ -149,11 +149,13 @@ type Option = {
 		{:else if labelText}
 		<label for={effectiveId} class={twMerge('text-primary-label-text ml-1 text-sm font-medium', labelClass)}>{labelText}</label>
 		{/if}
-		<select id={effectiveId} name={name ?? effectiveId} bind:value {disabled} {onchange} aria-describedby={error ? `${effectiveId}-error` : undefined}
-			class={twMerge('rounded-primary border-primary-input-border focus:border-primary-focus focus:ring-primary-focus border py-0 placeholder:opacity-50 disabled:border-neutral-300/30 disabled:bg-neutral-300/30',
+		<select id={effectiveId} name={name ?? effectiveId} bind:value {disabled} {onchange}
+			aria-invalid={!!error}
+			aria-describedby={error && effectiveId ? `${effectiveId}-error` : undefined}
+			class={twMerge('rounded-primary border-primary-input-border focus:border-primary-focus focus:ring-primary-focus border py-0 disabled:border-neutral-300/30 disabled:bg-neutral-300/30',
 			sizeMap[size], error ? 'border-red-300 bg-red-50' : '',	restProps.class)}>
 			{#if options}
-			{#each options as option (option)}
+			{#each options as option (option.value)}
 			<option value={option.value} disabled={option.disabled}>
 				{option.key}
 			</option>
