@@ -121,3 +121,4 @@ Set default theme values for primary and secondary variables:
     --radius-secondary: 0.375rem;
 }
 ```
+FIX
