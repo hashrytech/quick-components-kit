@@ -1,3 +1,10 @@
+## [0.30.4](https://github.com/hashrytech/quick-components-kit/compare/v0.30.3...v0.30.4) (2026-04-28)
+
+
+### Bug Fixes
+
+* **select:** correct each key, add aria-invalid, guard aria-describedby, drop dead placeholder CSS ([51dd3d7](https://github.com/hashrytech/quick-components-kit/commit/51dd3d72851d6727a41a34c9973f782014851fb9))
+
 ## [0.30.3](https://github.com/hashrytech/quick-components-kit/compare/v0.30.2...v0.30.3) (2026-04-27)
 
 
