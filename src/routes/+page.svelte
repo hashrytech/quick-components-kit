@@ -319,14 +319,25 @@
     </Table>
 </div>
 
-<div class="flex flex-col gap-10 items-start justify-start">
-    <Select labelPosition="right" id="select1" labelText="Select Example" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
+<div class="flex flex-row gap-10 items-center justify-start">
+    <Select labelPosition="right" id="select1" labelText="Select Example 1" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
+        bind:value={selectValue} size="lg" class="w-64" />
+    
+    <Select labelPosition="left" id="select2" labelText="Select Example 2" bind:value={selectValue} size="lg" class="w-64">
+    {#each [{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }] as option (option)}
+    <option value={option.value} disabled={option.disabled}>{option.key}</option>
+    {/each}
+    </Select>
+
+    <Select labelPosition="top" id="select1" labelText="Select Example 1" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
+        bind:value={selectValue} size="lg" class="w-64" />
+
+    <Select labelPosition="bottom" id="select1" labelText="Select Example 1" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
         bind:value={selectValue} size="lg" class="w-64" />
 </div>
 
 <TextArea id="textArea1" labelText="Text Area Example" placeholder="Enter your text here..." minlength={10} maxlength={15} class="w-64 resize-none" size="lg" />
 <TextArea id="textArea2" labelText="Text Area 2" placeholder="Enter your text here..." minlength={10} maxlength={15} class="w-64 resize-none" size="md" disabled={true} />
-
 
 <div class="flex flex-col gap-10 items-start justify-start ring ring-primary-500">
 
