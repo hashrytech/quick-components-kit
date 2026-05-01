@@ -38,7 +38,7 @@ Why this is required:
 
 ## Releases
 Push to `main` with Conventional Commits. CI runs `semantic-release` to:
-- calculate semantic version bump (`fix`/`patch`/`perf`/`revert` = patch, `feat` = minor, `BREAKING CHANGE`/`!` = major)
+- calculate semantic version bump (`fix`/`patch`/`perf`/`revert` = patch, `feat` = minor, `BREAKING CHANGE`/`!` = minor)
 - generate release notes from commit messages
 - update `CHANGELOG.md`
 - Tag and create GitHub release
@@ -64,7 +64,7 @@ feat!: remove deprecated button prop
 
 Notes:
 - `patch:` is supported and creates a patch release.
-- `!` or `BREAKING CHANGE:` creates a major release.
+- `!` or `BREAKING CHANGE:` creates a minor release.
 - `docs:`, `chore:`, `style:`, `test:` and other non-release types do not trigger a version bump.
 - If a commit is not a valid Conventional Commit, CI commitlint fails and the release job stops before publishing.
 - Use a lowercase imperative summary. Good: `fix(drawer): add local scroll lock action`. Bad: `patch: Adding disable local scroll action`.
