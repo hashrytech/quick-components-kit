@@ -19,9 +19,10 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 
 ### Mobile drawer
 - `mobileDrawer?`: `boolean` — Render as an edge drawer on mobile/tablet (below the `md` breakpoint). Reverts to a centred modal on desktop. Default: `false`.
-- `direction?`: `"top" | "bottom" | "left" | "right"` — Edge the drawer anchors to on mobile, and the direction the modal flies in from on desktop. Default: `"bottom"`.
+- `drawerDirection?`: `"top" | "bottom" | "left" | "right"` — Edge the drawer anchors to on mobile, and the direction the modal flies in from on desktop. Default: `"bottom"`.
 - `drawerSize?`: `string` — Size of the drawer's constrained dimension on mobile (e.g. `"90vh"`, `"400px"`). `top`/`bottom` control height; `left`/`right` control width. Defaults to `"85vh"` for vertical or `"85vw"` for horizontal drawers.
 - `drawerFill?`: `boolean` — When `true` the drawer always fills `drawerSize` (fixed `height`/`width`). When `false` it shrinks to content up to `drawerSize` (`max-height`/`max-width`). Default: `true`.
+- `drawerDisableContentScroll?`: `boolean` — Prevents the mobile drawer content from scrolling. Default: `false`.
 
 ### Animation
 - `transitionDuration?`: `number` — Transition duration in milliseconds.
@@ -70,7 +71,7 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 ### Right-side drawer on mobile (shrinks to content, max 80vw)
 
 ```svelte
-<Modal bind:open={open} mobileDrawer direction="right" drawerSize="80vw" drawerFill={false}>
+<Modal bind:open={open} mobileDrawer drawerDirection="right" drawerSize="80vw" drawerFill={false}>
   <div class="p-6">...</div>
 </Modal>
 ```
@@ -78,7 +79,7 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 ### Modal that flies in from the top (desktop only)
 
 ```svelte
-<Modal bind:open={open} direction="top">
+<Modal bind:open={open} drawerDirection="top">
   <div class="p-6">...</div>
 </Modal>
 ```
@@ -102,6 +103,7 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 	import { config } from '$lib/configs/config.js';
 	import { fly } from 'svelte/transition';
 	import { trapFocus } from '$lib/actions/trap-focus.js';
+	import { disableLocalScroll } from '$lib/actions/disable-local-scroll.js';
 
 	export type ModalProps = {
 		open?: boolean;
@@ -111,9 +113,10 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 		ariaLabel?: string;
 		inertId?: string;
 		mobileDrawer?: boolean;
-		direction?: 'top' | 'bottom' | 'left' | 'right';
+		drawerDirection?: 'top' | 'bottom' | 'left' | 'right';
 		drawerSize?: string;
 		drawerFill?: boolean;
+		drawerDisableContentScroll?: boolean;
 		rounded?: boolean;
 		size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 		transitionDuration?: number;
@@ -141,14 +144,14 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 		full: 'md:w-screen md:h-screen',
 	};
 
-	const drawerPositionClasses: Record<NonNullable<ModalProps['direction']>, string> = {
+	const drawerPositionClasses: Record<NonNullable<ModalProps['drawerDirection']>, string> = {
 		bottom: 'bottom-0 left-0 right-0 w-full',
 		top: 'top-0 left-0 right-0 w-full',
 		left: 'left-0 top-0 bottom-0 h-full',
 		right: 'right-0 top-0 bottom-0 h-full',
 	};
 
-	const drawerRoundedClasses: Record<NonNullable<ModalProps['direction']>, string> = {
+	const drawerRoundedClasses: Record<NonNullable<ModalProps['drawerDirection']>, string> = {
 		bottom: 'rounded-t-primary',
 		top: 'rounded-b-primary',
 		left: 'rounded-r-primary',
@@ -165,9 +168,10 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 		transitionDuration = config.transitionDuration,
 		transitionDistance = 150,
 		mobileDrawer = false,
-		direction = 'bottom',
+		drawerDirection = 'bottom',
 		drawerSize,
 		drawerFill = true,
+		drawerDisableContentScroll = false,
 		rounded = true,
 		inertId,
 		ariaLabel = 'Modal',
@@ -213,18 +217,18 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 	}
 
 	const isFullSize = $derived(size === 'full');
-	const drawerIsHorizontal = $derived(direction === 'left' || direction === 'right');
+	const drawerIsHorizontal = $derived(drawerDirection === 'left' || drawerDirection === 'right');
 
 	const flyParams = $derived.by(() => {
 		if (mobileDrawer && isMobile) {
-			switch (direction) {
+			switch (drawerDirection) {
 				case 'top':   return { y: -window.innerHeight };
 				case 'left':  return { x: -window.innerWidth };
 				case 'right': return { x: window.innerWidth };
 				default:      return { y: window.innerHeight };
 			}
 		}
-		switch (direction) {
+		switch (drawerDirection) {
 			case 'top':   return { y: -transitionDistance };
 			case 'left':  return { x: -transitionDistance };
 			case 'right': return { x: transitionDistance };
@@ -239,6 +243,12 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 			? (drawerIsHorizontal ? 'width' : 'height')
 			: (drawerIsHorizontal ? 'max-width' : 'max-height');
 		return `${prop}: ${value}`;
+	});
+
+	const innerDrawerStyle = $derived.by(() => {
+		if (!mobileDrawer || !isMobile || drawerIsHorizontal) return undefined;
+		const value = drawerSize ?? '85vh';
+		return drawerFill ? `height: ${value}` : `max-height: ${value}`;
 	});
 </script>
 
@@ -256,8 +266,8 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 			'fixed w-full focus:outline-none bg-white',
 			mobileDrawer
 				? twMerge(
-						drawerPositionClasses[direction],
-						rounded && drawerRoundedClasses[direction],
+						drawerPositionClasses[drawerDirection],
+						rounded && drawerRoundedClasses[drawerDirection],
 						'md:bottom-auto md:right-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:h-auto',
 						rounded && !isFullSize && 'md:rounded-primary',
 						drawerSizeClasses[size]
@@ -273,7 +283,10 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 		in:fly={{ ...flyParams, duration: transitionDuration }}
 		out:fly={{ ...flyParams, duration: transitionDuration }}
 	>
-		<div class={twMerge(
+		<div
+			use:disableLocalScroll={drawerDisableContentScroll}
+			style={innerDrawerStyle}
+			class={twMerge(
 			'w-full overflow-y-auto',
 			mobileDrawer
 				? twMerge(drawerIsHorizontal && 'h-full', isFullSize ? 'md:h-full' : 'md:max-h-[90vh]')

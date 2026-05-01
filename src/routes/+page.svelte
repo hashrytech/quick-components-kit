@@ -259,6 +259,9 @@
             <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Close Modal</Button>
             <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Test Modal</Button>
         </div>
+        {#each drawerItems as item (item)}
+        <p>{item}</p>
+        {/each}
     </Modal>
 </div>
 
