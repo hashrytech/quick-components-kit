@@ -1,3 +1,13 @@
+# [1.0.0](https://github.com/hashrytech/quick-components-kit/compare/v0.30.5...v1.0.0) (2026-05-01)
+
+
+* feat(modal)!: add drawer scroll controls and rename direction prop ([314aae3](https://github.com/hashrytech/quick-components-kit/commit/314aae36a35bbf995cb879d32bc2a3f3f765ff2b))
+
+
+### BREAKING CHANGES
+
+* `direction` is now `drawerDirection` on Modal.
+
 ## [0.30.5](https://github.com/hashrytech/quick-components-kit/compare/v0.30.4...v0.30.5) (2026-04-28)
 
 
