@@ -269,12 +269,15 @@
 
 <div class="flex flex-row gap-10 items-center">
     <div class="flex flex-row gap-4 items-center">
-        <Checkbox id="checkbox1" label="Check Box Active" checked={true} onclick={()=> {console.log("Checkbox clicked")}} onchange={()=> {console.log("Checkbox changed")}} />
+        <Checkbox class="text-center" containerClass="items-center" labelPosition="top" id="checkbox1" labelText="Check Box 1 Active" checked={true} onclick={()=> {console.log("Checkbox 1 clicked")}} onchange={()=> {console.log("Checkbox 1 changed")}} />
+        <Checkbox labelPosition="bottom" id="checkbox2" labelText="Check Box 2 Active" checked={true} onclick={()=> {console.log("Checkbox 2 clicked")}} onchange={()=> {console.log("Checkbox 2 changed")}} />
+        <Checkbox labelPosition="left" id="checkbox3" labelText="Check Box 3 Active" checked={true} onclick={()=> {console.log("Checkbox 3 clicked")}} onchange={()=> {console.log("Checkbox 3 changed")}} />
+        <Checkbox labelPosition="right" id="checkbox4" labelText="Check Box 4 Active" checked={true} onclick={()=> {console.log("Checkbox 4 clicked")}} onchange={()=> {console.log("Checkbox 4 changed")}} />
     </div>
 
     <div class=" inline-flex gap-4 items-center">
-        <Radio id="radio1" label="Radio Button 1" labelPosition="top" containerClass="items-center" name="fruit" value="Apple" bind:group={radioValue} onclick={()=> {console.log("Radio 1 clicked")}} />
-        <Radio id="radio2" label="Radio Button 2" name="fruit" value="Banana" bind:group={radioValue} onchange={()=> {console.log("Radio 2 changed")}} />
+        <Radio id="radio1" labelText="Radio Button 1" labelPosition="top" containerClass="items-center" name="fruit" value="Apple" bind:group={radioValue} onclick={()=> {console.log("Radio 1 clicked")}} />
+        <Radio id="radio2" labelText="Radio Button 2" name="fruit" value="Banana" bind:group={radioValue} onchange={()=> {console.log("Radio 2 changed")}} />
     </div>
 </div>
 
