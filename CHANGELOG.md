@@ -1,3 +1,10 @@
+# [0.32.0](https://github.com/hashrytech/quick-components-kit/compare/v0.31.0...v0.32.0) (2026-05-03)
+
+
+### Features
+
+* **checkbox, radio:** align id/name/aria handling with TextInput pattern ([0026c7a](https://github.com/hashrytech/quick-components-kit/commit/0026c7af8b6f57b2dae613a93ab5ef1ea4caeb27))
+
 # [0.31.0](https://github.com/hashrytech/quick-components-kit/compare/v0.30.5...v0.31.0) (2026-05-01)
 
 
