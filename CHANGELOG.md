@@ -1,3 +1,10 @@
+## [0.32.1](https://github.com/hashrytech/quick-components-kit/compare/v0.32.0...v0.32.1) (2026-05-04)
+
+
+### Bug Fixes
+
+* align TextArea props with TextInput conventions ([2b57ce4](https://github.com/hashrytech/quick-components-kit/commit/2b57ce4366393d3a4c2fc32dd755eea76df03177))
+
 # [0.32.0](https://github.com/hashrytech/quick-components-kit/compare/v0.31.0...v0.32.0) (2026-05-03)
 
 
