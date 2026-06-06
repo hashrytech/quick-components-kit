@@ -107,7 +107,7 @@ type Option = {
 		name,
 		label,
 		labelText = '',
-		labelPosition = 'right',
+		labelPosition = 'top',
 		value = $bindable(),
 		options,
 		size = 'md',
