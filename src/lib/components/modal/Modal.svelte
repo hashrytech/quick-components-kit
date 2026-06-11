@@ -3,6 +3,15 @@
 
 An accessible modal dialog component for Svelte 5 using Tailwind CSS and transitions. Includes focus trapping, overlay support, inert background, scroll locking, and escape key handling. On mobile/tablet viewports it can optionally render as a bottom (or any edge) drawer.
 
+The modal is a flex column: the optional header bar and footer stay pinned while the content
+area between them is the only scroll region. By default the modal shrinks to its content up to
+the size variant's max-height; give it a definite height (e.g. `class="h-[90dvh]"`) for a
+fixed-height modal whose content fills and scrolls.
+
+The header bar is unopinionated: when a `header` snippet is provided it is rendered inside a
+minimal pinned bar (bottom border, inherited text color) that can be themed via `headerClass`.
+What goes in the bar — title, close button, actions — is entirely up to the snippet.
+
 ## Props
 
 ### Behaviour
@@ -10,6 +19,7 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 - `escapeKeyClose?`: `boolean` — Close when the Escape key is pressed. Default: `true`.
 - `clickOutsideClose?`: `boolean` — Close when the backdrop is clicked. Default: `true`.
 - `disableBodyScroll?`: `boolean` — Prevent body scroll while open. Default: `true`.
+- `disableContentScroll?`: `boolean` — Prevents the content area from scrolling while preserving the scrollbar gutter. Default: `false`.
 - `inertId?`: `string` — ID of a DOM element to mark `inert` while the modal is open (accessibility).
 - `ariaLabel?`: `string` — ARIA label for screen readers. Default: `"Modal"`.
 
@@ -18,11 +28,11 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 - `rounded?`: `boolean` — Apply `rounded-primary` corner classes. Set to `false` to remove all rounding. Default: `true`.
 
 ### Mobile drawer
-- `mobileDrawer?`: `boolean` — Render as an edge drawer on mobile/tablet (below the `md` breakpoint). Reverts to a centred modal on desktop. Default: `false`.
+- `mobileDrawer?`: `boolean` — Render as an edge drawer on mobile/tablet (at or below `config.mobileBreakpoint`). Reverts to a centred modal on desktop. Default: `false`.
 - `drawerDirection?`: `"top" | "bottom" | "left" | "right"` — Edge the drawer anchors to on mobile, and the direction the modal flies in from on desktop. Default: `"bottom"`.
-- `drawerSize?`: `string` — Size of the drawer's constrained dimension on mobile (e.g. `"90vh"`, `"400px"`). `top`/`bottom` control height; `left`/`right` control width. Defaults to `"85vh"` for vertical or `"85vw"` for horizontal drawers.
+- `drawerSize?`: `string` — Size of the drawer's constrained dimension on mobile (e.g. `"90dvh"`, `"400px"`). `top`/`bottom` control height; `left`/`right` control width. Defaults to `"85dvh"` for vertical or `"85vw"` for horizontal drawers.
 - `drawerFill?`: `boolean` — When `true` the drawer always fills `drawerSize` (fixed `height`/`width`). When `false` it shrinks to content up to `drawerSize` (`max-height`/`max-width`). Default: `true`.
-- `drawerDisableContentScroll?`: `boolean` — Prevents the mobile drawer content from scrolling. Default: `false`.
+- `drawerDisableContentScroll?`: `boolean` — Deprecated alias of `disableContentScroll`.
 
 ### Animation
 - `transitionDuration?`: `number` — Transition duration in milliseconds.
@@ -30,14 +40,22 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 
 ### Styling
 - `overlayClasses?`: `string` — Extra Tailwind classes for the backdrop overlay.
+- `portalClass?`: `ClassNameValue` — Classes for the portal wrapper, e.g. to change the default `z-50` stacking.
+- `headerClass?`: `ClassNameValue` — Extra Tailwind classes for the header bar, e.g. `bg-neutral-700 text-white border-none` for a dark header.
+- `contentClass?`: `ClassNameValue` — Extra Tailwind classes for the scrollable content wrapper.
+- `footerClass?`: `ClassNameValue` — Extra Tailwind classes for the pinned footer wrapper.
 - `class?`: `ClassNameValue` — Classes passed to the modal container.
 
 ### Events
 - `onopen?`: `() => void` — Called when the modal opens.
-- `onclose?`: `() => void` — Called when the modal closes.
+- `onclose?`: `() => void` — Called when the modal closes (any close path, including programmatic).
 
 ### Content
-- `children?`: `Snippet` — Content rendered inside the modal.
+- `header?`: `Snippet` — Content rendered inside the pinned header bar above the scrollable area.
+- `children?`: `Snippet` — Content rendered inside the scrollable content area.
+- `footer?`: `Snippet` — Content pinned below the scrollable area.
+
+Standard `<div>` attributes (`id`, `data-*`, …) are forwarded to the modal container.
 
 ## Usage
 
@@ -60,10 +78,25 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 </Modal>
 ```
 
+### Pinned header and footer, fixed height — only the content scrolls
+
+```svelte
+<Modal bind:open={open} size="lg" class="h-[90dvh]" headerClass="bg-neutral-700 text-white border-none">
+  {#snippet header()}
+    <h3 class="text-base font-semibold">Order Activity</h3>
+    <button type="button" aria-label="Close modal" onclick={() => open = false}>✕</button>
+  {/snippet}
+  <div class="p-4">Long content…</div>
+  {#snippet footer()}
+    <div class="p-3 bg-neutral-100 border-t border-neutral-300">...</div>
+  {/snippet}
+</Modal>
+```
+
 ### Bottom drawer on mobile, modal on desktop
 
 ```svelte
-<Modal bind:open={open} mobileDrawer drawerSize="90vh">
+<Modal bind:open={open} mobileDrawer drawerSize="90dvh">
   <div class="p-6">...</div>
 </Modal>
 ```
@@ -95,6 +128,7 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 
 <script lang="ts" module>
 	import { type Snippet } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
 	import type { ClassNameValue } from 'tailwind-merge';
 	import { twMerge } from 'tailwind-merge';
 	import { Overlay } from '$lib/components/overlay/index.js';
@@ -105,23 +139,31 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 	import { trapFocus } from '$lib/actions/trap-focus.js';
 	import { disableLocalScroll } from '$lib/actions/disable-local-scroll.js';
 
-	export type ModalProps = {
+	export type ModalProps = Omit<HTMLAttributes<HTMLDivElement>, 'class' | 'children'> & {
 		open?: boolean;
+		header?: Snippet;
+		footer?: Snippet;
 		escapeKeyClose?: boolean;
 		clickOutsideClose?: boolean;
 		disableBodyScroll?: boolean;
+		disableContentScroll?: boolean;
 		ariaLabel?: string;
 		inertId?: string;
 		mobileDrawer?: boolean;
 		drawerDirection?: 'top' | 'bottom' | 'left' | 'right';
 		drawerSize?: string;
 		drawerFill?: boolean;
+		/** @deprecated Use `disableContentScroll` instead. */
 		drawerDisableContentScroll?: boolean;
 		rounded?: boolean;
 		size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 		transitionDuration?: number;
 		transitionDistance?: number;
 		overlayClasses?: string;
+		portalClass?: ClassNameValue;
+		headerClass?: ClassNameValue;
+		contentClass?: ClassNameValue;
+		footerClass?: ClassNameValue;
 		onopen?: () => void;
 		onclose?: () => void;
 		children?: Snippet;
@@ -129,18 +171,18 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 	};
 
 	const sizeClasses: Record<NonNullable<ModalProps['size']>, string> = {
-		sm: 'max-w-sm max-h-[90vh]',
-		md: 'max-w-2xl max-h-[90vh]',
-		lg: 'max-w-4xl max-h-[90vh]',
-		xl: 'max-w-6xl max-h-[90vh]',
+		sm: 'max-w-sm max-h-[90dvh]',
+		md: 'max-w-2xl max-h-[90dvh]',
+		lg: 'max-w-4xl max-h-[90dvh]',
+		xl: 'max-w-6xl max-h-[90dvh]',
 		full: 'w-screen h-screen',
 	};
 
 	const drawerSizeClasses: Record<NonNullable<ModalProps['size']>, string> = {
-		sm: 'md:max-w-sm md:max-h-[90vh]',
-		md: 'md:max-w-2xl md:max-h-[90vh]',
-		lg: 'md:max-w-4xl md:max-h-[90vh]',
-		xl: 'md:max-w-6xl md:max-h-[90vh]',
+		sm: 'md:max-w-sm md:max-h-[90dvh]',
+		md: 'md:max-w-2xl md:max-h-[90dvh]',
+		lg: 'md:max-w-4xl md:max-h-[90dvh]',
+		xl: 'md:max-w-6xl md:max-h-[90dvh]',
 		full: 'md:w-screen md:h-screen',
 	};
 
@@ -162,31 +204,41 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 <script lang="ts">
 	let {
 		open = $bindable(false),
+		header,
+		footer,
 		escapeKeyClose = true,
 		clickOutsideClose = true,
 		disableBodyScroll = true,
+		disableContentScroll,
 		transitionDuration = config.transitionDuration,
 		transitionDistance = 150,
 		mobileDrawer = false,
 		drawerDirection = 'bottom',
 		drawerSize,
 		drawerFill = true,
-		drawerDisableContentScroll = false,
+		drawerDisableContentScroll,
 		rounded = true,
 		inertId,
 		ariaLabel = 'Modal',
 		size = 'md',
 		overlayClasses = '',
+		portalClass,
+		headerClass,
+		contentClass,
+		footerClass,
 		onopen,
 		onclose,
 		children,
-		...props
+		class: className,
+		...rest
 	}: ModalProps = $props();
 
 	let isMobile = $state(false);
 
+	const contentScrollDisabled = $derived(disableContentScroll ?? drawerDisableContentScroll ?? false);
+
 	$effect(() => {
-		const mq = window.matchMedia('(max-width: 767px)');
+		const mq = window.matchMedia(`(max-width: ${config.mobileBreakpoint}px)`);
 		isMobile = mq.matches;
 		const handler = (e: MediaQueryListEvent) => { isMobile = e.matches; };
 		mq.addEventListener('change', handler);
@@ -238,24 +290,19 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 
 	const drawerSizeStyle = $derived.by(() => {
 		if (!mobileDrawer || !isMobile) return undefined;
-		const value = drawerSize ?? (drawerIsHorizontal ? '85vw' : '85vh');
+		const value = drawerSize ?? (drawerIsHorizontal ? '85vw' : '85dvh');
 		const prop = drawerFill
 			? (drawerIsHorizontal ? 'width' : 'height')
 			: (drawerIsHorizontal ? 'max-width' : 'max-height');
 		return `${prop}: ${value}`;
 	});
-
-	const innerDrawerStyle = $derived.by(() => {
-		if (!mobileDrawer || !isMobile || drawerIsHorizontal) return undefined;
-		const value = drawerSize ?? '85vh';
-		return drawerFill ? `height: ${value}` : `max-height: ${value}`;
-	});
 </script>
 
 {#if open}
-<Portal class="fixed z-50">
+<Portal class={twMerge('fixed z-50', portalClass)}>
 	<Overlay {transitionDuration} {disableBodyScroll} class={overlayClasses} onclick={handleOverlayClick} />
 	<div
+		{...rest}
 		use:trapFocus
 		role="dialog"
 		aria-modal="true"
@@ -263,7 +310,7 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 		tabindex="0"
 		style={drawerSizeStyle}
 		class={twMerge(
-			'fixed w-full focus:outline-none bg-white',
+			'fixed w-full flex flex-col overflow-hidden focus:outline-none bg-white',
 			mobileDrawer
 				? twMerge(
 						drawerPositionClasses[drawerDirection],
@@ -277,23 +324,29 @@ An accessible modal dialog component for Svelte 5 using Tailwind CSS and transit
 						rounded && !isFullSize && 'rounded-primary',
 						sizeClasses[size]
 					),
-			props.class
+			className
 		)}
 		use:onKeydown={{ key: 'Escape', callback: handleKeydown }}
 		in:fly={{ ...flyParams, duration: transitionDuration }}
 		out:fly={{ ...flyParams, duration: transitionDuration }}
 	>
+		{#if header}
+		<div class={twMerge('flex flex-row items-center justify-between gap-2 px-4 py-2 w-full min-h-10 shrink-0 border-b border-primary-card-border', headerClass)}>
+			{@render header()}
+		</div>
+		{/if}
+
 		<div
-			use:disableLocalScroll={drawerDisableContentScroll}
-			style={innerDrawerStyle}
-			class={twMerge(
-			'w-full overflow-y-auto',
-			mobileDrawer
-				? twMerge(drawerIsHorizontal && 'h-full', isFullSize ? 'md:h-full' : 'md:max-h-[90vh]')
-				: isFullSize ? 'h-full' : 'max-h-[90vh]'
-		)}>
+			use:disableLocalScroll={contentScrollDisabled}
+			class={twMerge('grow min-h-0 w-full overflow-y-auto overscroll-contain [scrollbar-gutter:stable]', contentClass)}>
 			{@render children?.()}
 		</div>
+
+		{#if footer}
+		<div class={twMerge('w-full shrink-0', footerClass)}>
+			{@render footer()}
+		</div>
+		{/if}
 	</div>
 </Portal>
 {/if}

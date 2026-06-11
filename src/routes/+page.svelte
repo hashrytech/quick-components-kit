@@ -265,16 +265,23 @@
         </OverlayInsetPanel>
     </div>
 
-    <Modal bind:open={modalOpen} mobileDrawer={true} drawerSize="90vh" drawerFill={false}>
+    <Modal bind:open={modalOpen} mobileDrawer={true} drawerSize="90dvh" drawerFill={false}>
+        {#snippet header()}
+        <h3 class="text-base font-semibold">Modal Title</h3>
+        {/snippet}
         <div class="p-4">
-            <h2 class="text-lg font-semibold mb-2">Modal Title</h2>
-            <p class="mb-4">This is a simple modal dialog. You can put any content here.</p>
+            <p class="mb-4">This is a simple modal dialog. The header and footer stay pinned; only this content scrolls.</p>
             <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Close Modal</Button>
             <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Test Modal</Button>
+            {#each drawerItems as item (item)}
+            <p>{item}</p>
+            {/each}
         </div>
-        {#each drawerItems as item (item)}
-        <p>{item}</p>
-        {/each}
+        {#snippet footer()}
+        <div class="flex flex-row justify-end p-3 bg-neutral-100 border-t border-neutral-300">
+            <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> modalOpen=false}>Done</Button>
+        </div>
+        {/snippet}
     </Modal>
 </div>
 

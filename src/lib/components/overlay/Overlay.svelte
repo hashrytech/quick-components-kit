@@ -9,7 +9,10 @@ modals and drawers. Optionally locks body scroll while visible.
 - `disableBodyScroll?: boolean = true` — Locks `<body>` scroll while the overlay is mounted.
 - `transitionDuration?: number` — Fade duration in ms. Defaults to the global `config.transitionDuration`.
 - `children?: Snippet` — Optional content rendered on top of the backdrop.
-- `onclick?: (event: Event) => void` — Click handler (typically closes the parent modal/drawer).
+- `onclick?: (event: Event) => void` — Backdrop dismissal handler (typically closes the parent
+  modal/drawer). Only invoked when the press both started and ended on the backdrop itself, so
+  drag-out gestures (e.g. text selection ending over the backdrop) and clicks on `children` do
+  not trigger it.
 - `class?: ClassNameValue` — Extra classes on the overlay `<div>`.
 
 ## Example
@@ -46,8 +49,23 @@ modals and drawers. Optionally locks body scroll while visible.
 
 <script lang="ts">
   let { disableBodyScroll=true, transitionDuration=config.transitionDuration, onclick, children, ...props }: OverlayProps = $props();
+
+  // Only treat a click as a backdrop dismissal when the press also started on the
+  // backdrop itself — dragging from inside a dialog and releasing over the overlay
+  // (e.g. while selecting text) must not close it.
+  let pressStartedOnBackdrop = false;
+
+  function handlePointerDown(event: PointerEvent) {
+    pressStartedOnBackdrop = event.target === event.currentTarget;
+  }
+
+  function handleClick(event: Event) {
+    const startedOnBackdrop = pressStartedOnBackdrop;
+    pressStartedOnBackdrop = false;
+    if (startedOnBackdrop && event.target === event.currentTarget) onclick?.(event);
+  }
 </script>
 
-<div transition:fade={{duration: transitionDuration}} class={twMerge("fixed inset-0 bg-primary-overlay", props.class)} role="presentation" {onclick} use:disableScroll={disableBodyScroll} >
+<div transition:fade={{duration: transitionDuration}} class={twMerge("fixed inset-0 bg-primary-overlay", props.class)} role="presentation" onpointerdown={handlePointerDown} onclick={handleClick} use:disableScroll={disableBodyScroll} >
   {@render children?.()}
 </div>
