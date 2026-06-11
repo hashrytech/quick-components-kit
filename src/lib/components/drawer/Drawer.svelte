@@ -222,7 +222,7 @@ need only a `max-w-*` class (e.g. `class="max-w-2xl rounded-t-primary"`).
 		</div>
 		{/if}
 
-		<div use:disableLocalScroll={disableContentScroll} class={twMerge('flex-1 min-h-0 w-full overflow-y-auto overscroll-contain [scrollbar-gutter:stable]', contentClass)}>
+		<div use:disableLocalScroll={disableContentScroll} class={twMerge('flex-1 min-h-0 w-full overflow-y-auto overscroll-contain', contentClass)}>
 			{@render children?.()}
 		</div>
 

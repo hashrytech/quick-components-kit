@@ -338,7 +338,7 @@ Standard `<div>` attributes (`id`, `data-*`, …) are forwarded to the modal con
 
 		<div
 			use:disableLocalScroll={contentScrollDisabled}
-			class={twMerge('grow min-h-0 w-full overflow-y-auto overscroll-contain [scrollbar-gutter:stable]', contentClass)}>
+			class={twMerge('grow min-h-0 w-full overflow-y-auto overscroll-contain', contentClass)}>
 			{@render children?.()}
 		</div>
 
