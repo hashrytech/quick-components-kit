@@ -234,8 +234,21 @@
     <div class="flex flex-row gap-4 items-center">
         <p>Hamburger Menu &amp; Top Drawer</p>
         <HamburgerMenu ariaLabel="Toggle Vertical Menu" bind:open={menuVerticalOpen} onclick={()=> {menuVerticalOpen = !menuVerticalOpen}} useCloseBtn={false} />
-        <Drawer bind:open={menuVerticalOpen} position="top" >
-        <div class="flex flex-col gap-4 w-full p-4 bg-primary-500 h-full"></div>
+        <Drawer bind:open={menuVerticalOpen} position="top" size="sm" class="max-w-2xl h-[40vh]">
+            {#snippet header()}
+            <h3 class="text-base font-semibold">Top Drawer</h3>
+            {/snippet}
+            <div class="flex flex-col gap-4 w-full p-4">
+                <p>The title bar and footer stay pinned; only this list scrolls.</p>
+                {#each drawerItems as item (item)}
+                <p>{item}</p>
+                {/each}
+            </div>
+            {#snippet footer()}
+            <div class="flex flex-row justify-end p-3 bg-neutral-100 border-t border-neutral-300">
+                <Button class="text-white text-base font-semibold bg-red-500" onclick={()=> menuVerticalOpen=false}>Done</Button>
+            </div>
+            {/snippet}
         </Drawer>
     </div>
 </div>

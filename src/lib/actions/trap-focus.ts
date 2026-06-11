@@ -19,7 +19,9 @@ export const FOCUSABLE_ELEMENTS = [
  * dialogs, and drawers to ensure keyboard users cannot Tab out of the overlay.
  *
  * Behaviour:
- * - Focuses the first focusable element inside the node on mount.
+ * - Focuses the first focusable element inside the node on mount. If the node has
+ *   no focusable descendants, the node itself is focused instead (dialog containers
+ *   set `tabindex="0"`) so keydown handlers like Escape-to-close work immediately.
  * - Wraps Tab and Shift+Tab at the boundaries of the focusable set.
  * - Skips elements that are disabled, hidden, have `aria-hidden`, or are not
  *   visible via CSS (`display: none`, `visibility: hidden`, `opacity: 0`).
@@ -120,7 +122,7 @@ export function trapFocus(node: HTMLElement) {
     }
   }
 
-  cachedFocusable[0]?.focus();
+  (cachedFocusable[0] ?? node).focus();
   node.addEventListener('keydown', handleKeydown);
 
   return {
