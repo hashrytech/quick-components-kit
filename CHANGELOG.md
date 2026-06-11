@@ -1,3 +1,10 @@
+## [0.32.2](https://github.com/hashrytech/quick-components-kit/compare/v0.32.1...v0.32.2) (2026-06-06)
+
+
+### Bug Fixes
+
+* **select:** default label position to top ([c4e5e5a](https://github.com/hashrytech/quick-components-kit/commit/c4e5e5afd516649e6aa774c04d74ae6744f3b6b3))
+
 ## [0.32.1](https://github.com/hashrytech/quick-components-kit/compare/v0.32.0...v0.32.1) (2026-05-04)
 
 
