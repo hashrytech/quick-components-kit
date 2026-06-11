@@ -315,12 +315,16 @@ Standard `<div>` attributes (`id`, `data-*`, …) are forwarded to the modal con
 				? twMerge(
 						drawerPositionClasses[drawerDirection],
 						rounded && drawerRoundedClasses[drawerDirection],
-						'md:bottom-auto md:right-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:h-auto',
+						// Centered via inset-0 + auto margins (pure layout) rather than a
+						// -translate-50% transform: transforms land the dialog on half-pixel
+						// boundaries when its size is odd, causing visible sub-pixel seams
+						// between the stacked header/content/footer regions.
+						'md:inset-0 md:m-auto md:h-fit',
 						rounded && !isFullSize && 'md:rounded-primary',
 						drawerSizeClasses[size]
 					)
 				: twMerge(
-						'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+						'inset-0 m-auto h-fit',
 						rounded && !isFullSize && 'rounded-primary',
 						sizeClasses[size]
 					),
