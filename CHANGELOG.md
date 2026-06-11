@@ -1,3 +1,10 @@
+# [0.33.0](https://github.com/hashrytech/quick-components-kit/compare/v0.32.2...v0.33.0) (2026-06-11)
+
+
+### Features
+
+* **drawer:** support pinned header and footer regions ([2598001](https://github.com/hashrytech/quick-components-kit/commit/2598001b8ce1a727972ee3c7587b1855666400fb))
+
 ## [0.32.2](https://github.com/hashrytech/quick-components-kit/compare/v0.32.1...v0.32.2) (2026-06-06)
 
 
