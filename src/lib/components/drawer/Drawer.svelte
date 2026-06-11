@@ -217,7 +217,7 @@ need only a `max-w-*` class (e.g. `class="max-w-2xl rounded-t-primary"`).
 		use:onKeydown={{ key: 'Escape', callback: handleKeydown }}
 	>
 		{#if header}
-		<div class={twMerge('flex flex-row items-center justify-between gap-2 px-4 py-2 w-full min-h-10 shrink-0 border-b border-primary-card-border rounded-primary', headerClass)}>
+		<div class={twMerge('w-full shrink-0', headerClass)}>
 			{@render header()}
 		</div>
 		{/if}
