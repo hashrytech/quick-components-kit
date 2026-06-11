@@ -1,3 +1,10 @@
+# [0.34.0](https://github.com/hashrytech/quick-components-kit/compare/v0.33.0...v0.34.0) (2026-06-11)
+
+
+### Features
+
+* **modal:** support pinned header and footer regions ([842199b](https://github.com/hashrytech/quick-components-kit/commit/842199bdf28fb80b364a2474e104209bb258dea9))
+
 # [0.33.0](https://github.com/hashrytech/quick-components-kit/compare/v0.32.2...v0.33.0) (2026-06-11)
 
 
