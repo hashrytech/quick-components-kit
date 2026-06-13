@@ -38,7 +38,7 @@
         {#each filter.values as keyValue}
         {@const isChecked = hasSelectedValue(selectedValues, filter.title, keyValue.value)}
         <div class="flex flex-row gap-2 items-center">
-          <Checkbox checked={isChecked} id={keyValue.key} value={keyValue.value} label={keyValue.value} class="size-4" onchange={()=> onFilter?.(filter.title, keyValue.value)} />
+          <Checkbox checked={isChecked} id={keyValue.key} value={keyValue.value} labelText={keyValue.value} class="size-4" onchange={()=> onFilter?.(filter.title, keyValue.value)} />
           {#if showCounts}
           <p class={twMerge("text-sm", countsClass)}>({keyValue.count})</p>
           {/if}

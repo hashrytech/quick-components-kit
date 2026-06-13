@@ -6,6 +6,7 @@
 	import Drawer from "$lib/components/drawer/Drawer.svelte";	
     import Modal from "$lib/components/modal/Modal.svelte";
 	import Checkbox from "$lib/components/checkbox/Checkbox.svelte";
+	import { DatePicker } from "$lib/components/date-picker/index.js";
 	import Radio from "$lib/components/radio/Radio.svelte";    
 	import TabNavigation from "$lib/components/tab-navigation/TabNavigation.svelte";
     import { Table, TableTh, TableTd } from "$lib/components/table/index.js";
@@ -34,6 +35,9 @@
     let radioValue = $state("Apple");
     let showMultiSelect = $state(true);
     let selectValue = $state("apple");
+    let datePickerOpen = $state(false);
+    let datePickerStart = $state("2026-06-01");
+    let datePickerEnd = $state("2026-06-12");
     const drawerItems = Array.from({ length: 20 }, (_, index) => `Drawer item ${index + 1}`);
 
     /* Drag Drop */
@@ -143,6 +147,23 @@
     <TextInput onLeftIconClick={()=> console.log("Left Icon String Clicked")} id="string icon MD" placeholder="String Icon MD" labelText="String Icon MD" class="" size="md" leftIcon="icon-[ri--search-line]" rightIcon="icon-[ion--add-circle]" />
     <TextInput onRightIconClick={()=> console.log("Right Icon String Clicked")} id="string icon LG" placeholder="String Icon LG" labelText="String Icon LG" class="" size="lg" leftIcon="icon-[ion--add-circle]" rightIcon="icon-[ion--add-circle]" />
 </div>
+<hr />
+
+<div class="flex flex-col gap-4 p-4">
+    <div class="flex flex-row flex-wrap items-start gap-6">
+        <DatePicker
+            labelText="Date Picker" labelClass="text-sm font-medium text-neutral-700" iconClass="text-primary-500"
+            bind:open={datePickerOpen}
+            bind:startDate={datePickerStart}
+            bind:endDate={datePickerEnd}
+        />
+
+        <p class="text-sm text-neutral-600">
+            Selected: {datePickerStart} - {datePickerEnd}
+        </p>
+    </div>
+</div>
+
 <hr />
     
 <div class="flex flex-row flex-wrap gap-10 items-center">
@@ -345,7 +366,7 @@
     </Table>
 </div>
 
-<div class="flex flex-row gap-10 items-center justify-start">
+<div class="flex flex-row flex-wrap gap-10 items-center justify-start">
     <Select labelPosition="right" id="select1" labelText="Select Example 1" options={[{ value: "apple", key: "Apple", disabled: false }, { value: "banana", key: "Banana", disabled: true }, { value: "cherry", key: "Cherry" }]} 
         bind:value={selectValue} size="lg" class="w-64" />
     
