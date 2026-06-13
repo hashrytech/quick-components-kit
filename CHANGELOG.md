@@ -1,3 +1,10 @@
+## [0.34.3](https://github.com/hashrytech/quick-components-kit/compare/v0.34.2...v0.34.3) (2026-06-11)
+
+
+### Bug Fixes
+
+* **modal:** avoid subpixel seams when centering dialogs ([e466688](https://github.com/hashrytech/quick-components-kit/commit/e4666883b9d3c6a956a2d63c15943659e1375ae2))
+
 ## [0.34.2](https://github.com/hashrytech/quick-components-kit/compare/v0.34.1...v0.34.2) (2026-06-11)
 
 ## [0.34.1](https://github.com/hashrytech/quick-components-kit/compare/v0.34.0...v0.34.1) (2026-06-11)
