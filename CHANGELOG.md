@@ -1,3 +1,10 @@
+# [0.35.0](https://github.com/hashrytech/quick-components-kit/compare/v0.34.3...v0.35.0) (2026-06-13)
+
+
+### Features
+
+* **date-picker:** add date range picker component ([6d5b87a](https://github.com/hashrytech/quick-components-kit/commit/6d5b87ab0719d30329c4bba91825456857fd72f1))
+
 ## [0.34.3](https://github.com/hashrytech/quick-components-kit/compare/v0.34.2...v0.34.3) (2026-06-11)
 
 
