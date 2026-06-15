@@ -1,3 +1,11 @@
+# [0.37.0](https://github.com/hashrytech/quick-components-kit/compare/v0.36.0...v0.37.0) (2026-06-15)
+
+
+### Features
+
+* **table view:** Impementing table view that allows selecting columns ([2f579bb](https://github.com/hashrytech/quick-components-kit/commit/2f579bb799c96464d1839d977e3763f05c045467))
+* **table:** add column selection with saved views ([501bae6](https://github.com/hashrytech/quick-components-kit/commit/501bae61e24ff2ac1365b05eb6b09ba7af173e5e))
+
 # [0.36.0](https://github.com/hashrytech/quick-components-kit/compare/v0.35.0...v0.36.0) (2026-06-15)
 
 
