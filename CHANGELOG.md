@@ -1,3 +1,10 @@
+# [0.36.0](https://github.com/hashrytech/quick-components-kit/compare/v0.35.0...v0.36.0) (2026-06-15)
+
+
+### Features
+
+* **calendar:** add mobile-friendly Calendar with optional time picking ([96b0e1e](https://github.com/hashrytech/quick-components-kit/commit/96b0e1eb3719c334c723591247117ccda1fbf91c))
+
 # [0.35.0](https://github.com/hashrytech/quick-components-kit/compare/v0.34.3...v0.35.0) (2026-06-13)
 
 
