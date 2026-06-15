@@ -100,7 +100,8 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
   
 <script lang="ts" module>
     import { onMount, type Snippet } from 'svelte';
-    import type { ClassNameValue } from 'tailwind-merge';    
+    import type { ClassNameValue } from 'tailwind-merge';
+    import type { ColumnDef, ColumnState } from './column.js';
 
     /**
      * Props for the generic Table component
@@ -118,6 +119,19 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 
         /** Function to extract a unique key for each row */
         getKey: (obj: T) => string;
+
+        /**
+         * Optional column registry. When provided, the table renders its own
+         * `<thead>`/desktop `<tbody>` cells from these definitions (in
+         * `columnState` order, skipping hidden columns) instead of the
+         * `headings`/`tableRow` snippets. The mobile path is unaffected and
+         * still uses `tableRowMobile`. When omitted, the table renders exactly
+         * as before via the snippet props (fully backward-compatible).
+         */
+        columns?: ColumnDef<T>[];
+
+        /** Bindable per-column order + visibility for the `columns` path. */
+        columnState?: ColumnState[];
 
         /** Snippet for rendering table headings */
         headings?: Snippet;
@@ -167,11 +181,27 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 <script lang="ts" generics="T">
 	import { twMerge } from "tailwind-merge";
   import {Checkbox} from '$lib/components/checkbox/index.js';
+  import TableTh from './TableTh.svelte';
+  import TableTd from './TableTd.svelte';
+  import { resolveColumns } from './column.js';
 
-  let { showMultiSelect=$bindable(false), selected=$bindable([]), rows=$bindable([]), getKey, headings, tableRow, tableRowMobile, multiSelectTh, multiSelectTd,
+  let { showMultiSelect=$bindable(false), selected=$bindable([]), rows=$bindable([]), getKey, columns, columnState=$bindable(), headings, tableRow, tableRowMobile, multiSelectTh, multiSelectTd,
     tableMobileTdClass, outerDivClass, headingsRowClass, multiSelectThClass, tableRowClass, multiSelectTdClass, tableRowMobileClass, checkboxClass, ...props }: TableProps<T> = $props();
 
   let tableElement: HTMLTableElement | undefined = $state();
+
+  // ── Column-driven render path ─────────────────────────────────────────────
+  // Visible columns in display order (locked columns forced first). Empty when
+  // no `columns` registry is supplied, in which case the snippet path renders.
+  const resolvedColumns = $derived(columns ? resolveColumns(columns, columnState) : []);
+
+  // The sticky/locked first column sits flush-left, shifting right by the width
+  // of the multi-select checkbox column (w-12) when multi-select is enabled.
+  const stickyOffset = $derived(showMultiSelect ? 'left-12' : 'left-0');
+
+  function alignClass(align: 'left' | 'right' | 'center' | undefined): string {
+    return align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : '';
+  }
 
   function addSelected(rowkey: string){
       if(selected.includes(rowkey)){
@@ -226,7 +256,15 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
                 </th>
                 {/if}
 				        {/if}
-                {@render headings?.()}
+                {#if columns}
+                  {#each resolvedColumns as col (col.id)}
+                    <TableTh class={twMerge(col.width, alignClass(col.align), col.sticky ? `sticky ${stickyOffset} z-20` : "", col.headerClass)}>
+                      {#if col.headerCell}{@render col.headerCell()}{:else}{col.label}{/if}
+                    </TableTh>
+                  {/each}
+                {:else}
+                  {@render headings?.()}
+                {/if}
 		    </tr>
         </thead>
 
@@ -235,8 +273,8 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
             {@const rowKey = getKey(row)}
             {@const isSelected = selected.includes(rowKey)}
             
-            {#if tableRow}
-            <tr class={twMerge("group border-t border-primary-table-border text-primary-table-row-text", tableRowMobile ? "hidden md:table-row" : "", 
+            {#if tableRow || columns}
+            <tr class={twMerge("group border-t border-primary-table-border text-primary-table-row-text", tableRowMobile ? "hidden md:table-row" : "",
                 tableRowClass, isSelected ? "bg-primary-table-row-selected" : "hover:bg-primary-table-row-hover bg-white")}>
                 {#if showMultiSelect}
                   {#if multiSelectTd}
@@ -247,7 +285,15 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
                   </td>
                   {/if}
                 {/if}
-                {@render tableRow?.(row)}
+                {#if columns}
+                  {#each resolvedColumns as col (col.id)}
+                    <TableTd class={twMerge(alignClass(col.align), col.sticky ? `sticky ${stickyOffset} z-10` : "", col.cellClass)}>
+                      {@render col.cell(row)}
+                    </TableTd>
+                  {/each}
+                {:else}
+                  {@render tableRow?.(row)}
+                {/if}
             </tr>
             {/if}
 
