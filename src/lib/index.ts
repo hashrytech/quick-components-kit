@@ -14,6 +14,7 @@ export * from './components/radio/index.js';
 export * from './components/select/index.js';
 export * from './components/checkbox/index.js';
 export * from './components/date-picker/index.js';
+export * from './components/calendar/index.js';
 export * from './components/tab-navigation/index.js';
 export * from './components/portal/index.js';
 export * from './components/table/index.js';
