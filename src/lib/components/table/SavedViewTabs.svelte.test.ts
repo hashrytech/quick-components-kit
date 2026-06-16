@@ -65,4 +65,20 @@ describe('SavedViewTabs', () => {
 		await fireEvent.click(screen.getByText('Delete'));
 		expect(ondelete).toHaveBeenCalledWith('v2');
 	});
+
+	it('renders a drag handle per view only when onreorder is provided', () => {
+		const { unmount } = render(SavedViewTabs, { props: { views: VIEWS } });
+		expect(screen.queryAllByLabelText('Reorder view')).toHaveLength(0);
+		unmount();
+
+		render(SavedViewTabs, { props: { views: VIEWS, onreorder: vi.fn() } });
+		expect(screen.getAllByLabelText('Reorder view')).toHaveLength(VIEWS.length);
+	});
+
+	it('still selects a view in the drag-enabled layout', async () => {
+		const onselect = vi.fn();
+		render(SavedViewTabs, { props: { views: VIEWS, onreorder: vi.fn(), onselect } });
+		await fireEvent.click(screen.getByText('Kingston'));
+		expect(onselect).toHaveBeenCalledWith('v2');
+	});
 });

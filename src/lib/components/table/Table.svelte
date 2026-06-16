@@ -258,7 +258,7 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
 				        {/if}
                 {#if columns}
                   {#each resolvedColumns as col (col.id)}
-                    <TableTh class={twMerge(col.width, alignClass(col.align), col.sticky ? `sticky ${stickyOffset} z-20` : "", col.headerClass)}>
+                    <TableTh class={twMerge(col.width, alignClass(col.align), col.sticky ? `sticky ${stickyOffset} z-10` : "", col.headerClass)}>
                       {#if col.headerCell}{@render col.headerCell()}{:else}{col.label}{/if}
                     </TableTh>
                   {/each}
