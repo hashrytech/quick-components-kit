@@ -226,6 +226,11 @@ Class props for theming: `class`, `labelClass`, `triggerClass`, `panelClass`,
 	let viewMonth = $state<ISODateString>(untrack(() => startOfMonth(committed.date ?? today)));
 	let previousOpen = false;
 
+	let fieldEl = $state<HTMLDivElement>();
+	let panelEl = $state<HTMLDivElement>();
+	// Desktop popover placement — auto-flips above the trigger when there isn't room below.
+	let placement = $state<'bottom' | 'top'>('bottom');
+
 	$effect(() => {
 		if (open && !previousOpen) {
 			syncDraftFromValue();
@@ -236,6 +241,34 @@ Class props for theming: `class`, `labelClass`, `triggerClass`, `panelClass`,
 		}
 
 		previousOpen = open;
+	});
+
+	// Decide whether the desktop popover opens below (default) or flips above the trigger,
+	// based on the room available in the viewport. Re-run on open, scroll, and resize.
+	function updatePlacement(): void {
+		if (inline || !open || !fieldEl || typeof window === 'undefined') {
+			return;
+		}
+		// Below `md` the panel renders as a fixed bottom sheet, so flipping does not apply.
+		if (!window.matchMedia('(min-width: 768px)').matches) {
+			placement = 'bottom';
+			return;
+		}
+		const rect = fieldEl.getBoundingClientRect();
+		const gap = 8; // mirrors the 0.5rem trigger gap
+		const panelHeight = panelEl?.offsetHeight ?? 360;
+		const spaceBelow = window.innerHeight - rect.bottom - gap;
+		const spaceAbove = rect.top - gap;
+		// Flip up only when the panel would overflow below and there is more room above.
+		placement = spaceBelow < panelHeight && spaceAbove > spaceBelow ? 'top' : 'bottom';
+	}
+
+	$effect(() => {
+		if (panelVisible && !inline) {
+			updatePlacement();
+		} else {
+			placement = 'bottom';
+		}
 	});
 
 	function syncDraftFromValue(): void {
@@ -366,6 +399,8 @@ Class props for theming: `class`, `labelClass`, `triggerClass`, `panelClass`,
 	}
 </script>
 
+<svelte:window onresize={updatePlacement} onscroll={updatePlacement} />
+
 <div
 	{...rest}
 	{id}
@@ -393,7 +428,7 @@ Class props for theming: `class`, `labelClass`, `triggerClass`, `panelClass`,
 		<input type="hidden" {name} value={submittedValue} />
 	{/if}
 
-	<div class={twMerge('relative flex flex-col gap-1', labelLayout[labelPosition].field)}>
+	<div bind:this={fieldEl} class={twMerge('relative flex flex-col gap-1', labelLayout[labelPosition].field)}>
 		{#if showTrigger}
 			<button
 				id={`${baseId}-trigger`}
@@ -448,6 +483,7 @@ Class props for theming: `class`, `labelClass`, `triggerClass`, `panelClass`,
 
 		{#if panelVisible}
 			<div
+				bind:this={panelEl}
 				id={`${baseId}-panel`}
 				role="dialog"
 				aria-modal={!inline ? 'true' : undefined}
@@ -459,11 +495,14 @@ Class props for theming: `class`, `labelClass`, `triggerClass`, `panelClass`,
 						: twMerge(
 								'z-30',
 								'max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:w-full max-md:rounded-t-2xl max-md:rounded-b-none',
-								'md:rounded-primary md:absolute md:top-[calc(100%+0.5rem)] md:left-0 md:w-[20rem] md:max-w-[calc(100vw-2rem)]'
+								'md:rounded-primary md:absolute md:left-0 md:w-[20rem] md:max-w-[calc(100vw-2rem)]',
+								placement === 'top'
+									? 'md:bottom-[calc(100%+0.5rem)]'
+									: 'md:top-[calc(100%+0.5rem)]'
 							),
 					panelClass
 				)}
-				transition:fly={{ y: inline ? -8 : 12, duration: transitionDuration }}
+				transition:fly={{ y: inline ? -8 : placement === 'top' ? -12 : 12, duration: transitionDuration }}
 			>
 				<div class="flex flex-col gap-4">
 					<CalendarGrid
