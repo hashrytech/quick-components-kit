@@ -1,3 +1,10 @@
+## [0.37.1](https://github.com/hashrytech/quick-components-kit/compare/v0.37.0...v0.37.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* **table:** add drag-reorder to saved view tabs ([02f0e1e](https://github.com/hashrytech/quick-components-kit/commit/02f0e1e8424b2c0a8fe7d1aaa98084ace6013519))
+
 # [0.37.0](https://github.com/hashrytech/quick-components-kit/compare/v0.36.0...v0.37.0) (2026-06-15)
 
 
