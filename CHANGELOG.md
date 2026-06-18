@@ -1,3 +1,5 @@
+## [0.37.2](https://github.com/hashrytech/quick-components-kit/compare/v0.37.1...v0.37.2) (2026-06-18)
+
 ## [0.37.1](https://github.com/hashrytech/quick-components-kit/compare/v0.37.0...v0.37.1) (2026-06-16)
 
 
