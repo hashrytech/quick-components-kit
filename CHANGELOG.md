@@ -1,3 +1,10 @@
+## [0.38.1](https://github.com/hashrytech/quick-components-kit/compare/v0.38.0...v0.38.1) (2026-06-20)
+
+
+### Bug Fixes
+
+* **date-picker:** anchor popover with fixed positioning to escape overflow clipping ([a917d1d](https://github.com/hashrytech/quick-components-kit/commit/a917d1d4c34cab921766eece62139be7c06769cb))
+
 # [0.38.0](https://github.com/hashrytech/quick-components-kit/compare/v0.37.2...v0.38.0) (2026-06-18)
 
 
