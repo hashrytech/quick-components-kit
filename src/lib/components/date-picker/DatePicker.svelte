@@ -115,6 +115,7 @@ Class props are available for theming specific parts:
 	import { Select } from '$lib/components/select/index.js';
 	import { TextInput } from '$lib/components/text-input/index.js';
 	import { onKeydown } from '$lib/actions/on-keydown.js';
+	import { anchoredPosition } from '$lib/actions/anchored-position.js';
 	import { clickOutside } from '$lib/functions/click-outside.js';
 	import { config } from '$lib/configs/config.js';
 	import CalendarMonth from './CalendarMonth.svelte';
@@ -171,6 +172,12 @@ Class props are available for theming specific parts:
 		class: className,
 		...rest
 	}: DatePickerProps = $props();
+
+	// Element refs for anchored popover positioning. The panel is positioned
+	// against the trigger button (or the field wrapper when no trigger is shown).
+	let triggerButtonEl = $state<HTMLElement>();
+	let fieldEl = $state<HTMLElement>();
+	const anchorEl = $derived(triggerButtonEl ?? fieldEl);
 
 	const generatedId = createDatePickerId();
 	const today = getTodayISO();
@@ -427,9 +434,10 @@ Class props are available for theming specific parts:
 		<input type="hidden" name={endName} value={committedRange.endDate ?? ''} />
 	{/if}
 
-	<div class={twMerge('relative flex flex-col gap-1', labelLayout[labelPosition].field)}>
+	<div bind:this={fieldEl} class={twMerge('relative flex flex-col gap-1', labelLayout[labelPosition].field)}>
 		{#if showTrigger}
 			<button
+				bind:this={triggerButtonEl}
 				id={`${baseId}-trigger`}
 				type="button"
 				disabled={disabled || undefined}
@@ -502,9 +510,10 @@ Class props are available for theming specific parts:
 					'rounded-primary border-primary-card-border shadow-secondary border bg-white p-4 text-neutral-800',
 					inline
 						? 'w-full'
-						: 'absolute top-[calc(100%+0.5rem)] left-0 z-20 w-[19rem] max-w-[calc(100vw-2rem)] md:w-[40rem]',
+						: 'fixed top-0 left-0 z-20 w-[19rem] max-w-[calc(100vw-2rem)] md:w-[40rem]',
 					panelClass
 				)}
+				use:anchoredPosition={{ anchor: anchorEl, placement: 'bottom-start', enabled: !inline }}
 				transition:fly={{ y: -8, duration: transitionDuration }}
 			>
 				<div class={twMerge('flex w-full flex-col gap-4', controlsClass)}>

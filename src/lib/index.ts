@@ -21,6 +21,7 @@ export * from './components/table/index.js';
 export * from './components/toast/index.js';
 
 // Actions
+export * from './actions/anchored-position.js';
 export * from './actions/disable-scroll.js';
 export * from './actions/disable-local-scroll.js';
 export * from './actions/on-keydown.js';
