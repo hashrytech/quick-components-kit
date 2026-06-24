@@ -1,3 +1,10 @@
+# [0.40.0](https://github.com/hashrytech/quick-components-kit/compare/v0.39.0...v0.40.0) (2026-06-24)
+
+
+### Features
+
+* **components:** add multi-select controls; make ChoiceCards and SegmentedControl responsive ([f569c86](https://github.com/hashrytech/quick-components-kit/commit/f569c86d9a75e84c39edf3dad540dd6be9aa5183))
+
 # [0.39.0](https://github.com/hashrytech/quick-components-kit/compare/v0.38.1...v0.39.0) (2026-06-24)
 
 
