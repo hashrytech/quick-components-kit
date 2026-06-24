@@ -1,3 +1,10 @@
+# [0.39.0](https://github.com/hashrytech/quick-components-kit/compare/v0.38.1...v0.39.0) (2026-06-24)
+
+
+### Features
+
+* **components:** add SegmentedControl, ChoiceCards and InlineSentence; fix calendar grid spacing ([ef4cee9](https://github.com/hashrytech/quick-components-kit/commit/ef4cee9d82d34dbd8fb3ae06de39c807374b9918))
+
 ## [0.38.1](https://github.com/hashrytech/quick-components-kit/compare/v0.38.0...v0.38.1) (2026-06-20)
 
 
