@@ -22,6 +22,10 @@
 	import { flip } from 'svelte/animate';
 	import DragDropProviderSmart from '$lib/components/drag-drop/DragDropProviderSmart.svelte';
 	import OverlayInsetPanel from '$lib/components/overlay-inset-panel/OverlayInsetPanel.svelte';
+	import IconTile from '$lib/components/icon-tile/IconTile.svelte';
+	import SegmentedToolbar from '$lib/components/segmented-toolbar/SegmentedToolbar.svelte';
+	import ToggleList from '$lib/components/toggle-list/ToggleList.svelte';
+	import MasterChecklist from '$lib/components/master-checklist/MasterChecklist.svelte';
 
 	/* Globally available state variables for toast */
 	toastIcons['info'] = 'icon-[ion--information-circle]';
@@ -50,6 +54,23 @@
 	let datePickerOpen = $state(false);
 	let datePickerStart = $state('2026-06-01');
 	let datePickerEnd = $state('2026-06-12');
+
+	/* New multi-select demos: IconTile, SegmentedToolbar, ToggleList, MasterChecklist */
+	let iconTileVertical = $state<(string | number)[]>(['pickup', 'dining']);
+	let iconTileHorizontal = $state<(string | number)[]>(['delivery']);
+	let iconTileCustom = $state<(string | number)[]>(['shipping', 'retail']);
+	let iconTileError = $state<(string | number)[]>([]);
+	let iconTileDisabled = $state<(string | number)[]>(['pickup']);
+	let segToolbarWrap = $state<(string | number)[]>(['pickup', 'dining']);
+	let segToolbarInline = $state<(string | number)[]>(['delivery', 'shipping']);
+	let segToolbarSize = $state<(string | number)[]>(['retail', 'pickup']);
+	let segToolbarDisabled = $state<(string | number)[]>(['dining', 'delivery']);
+	let toggleListDefault = $state<(string | number)[]>(['pickup', 'delivery']);
+	let toggleListCompact = $state<(string | number)[]>(['dining']);
+	let toggleListError = $state<(string | number)[]>([]);
+	let masterChecklistOrderTypes = $state<(string | number)[]>(['pickup', 'delivery']);
+	let masterChecklistCustomIcon = $state<(string | number)[]>(['dining', 'retail']);
+	let masterChecklistError = $state<(string | number)[]>(['shipping']);
 
 	/* Calendar */
 	let calendarDate = $state<string | null>('2026-06-14');
@@ -513,12 +534,10 @@
 			>Show Modal</Button
 		>
 		<Button
+			id="overlay-inset-trigger"
 			class="bg-sky-500 text-base font-semibold text-white"
 			onclick={() => (overlayInsetOpen = true)}>OverlayInsetShow</Button
 		>
-		<OverlayInsetPanel bind:open={overlayInsetOpen}>
-			<div class="mx-auto h-150 w-full bg-sky-200"></div>
-		</OverlayInsetPanel>
 	</div>
 
 	<Modal bind:open={modalOpen} mobileDrawer={true} drawerSize="90dvh" drawerFill={false}>
@@ -554,8 +573,35 @@
 
 <hr />
 
-<div class="flex flex-row items-center gap-10">
-	<div class="flex flex-row items-center gap-4">
+<div class="flex flex-col gap-4">
+	<p class="font-medium">
+		OverlayInsetPanel (renders inside the nearest <code>relative</code> ancestor)
+	</p>
+	<!-- The panel is absolutely positioned, so it needs a positioned, sized parent.
+	     The trigger sits outside that box and is registered via clickOutsideIgnoreIds. -->
+	<div
+		class="rounded-primary relative h-56 w-full max-w-md overflow-hidden border border-neutral-300 bg-neutral-50 p-4"
+	>
+		<p class="text-sm text-neutral-600">
+			This box is the positioned ancestor. Press “OverlayInsetShow” and the inset panel slides in,
+			dimming and blurring this content. Click the dimmed area to close.
+		</p>
+		<OverlayInsetPanel
+			bind:open={overlayInsetOpen}
+			clickOutsideIgnoreIds={['overlay-inset-trigger']}
+			panelClasses="rounded-primary bg-white p-4 shadow-primary"
+		>
+			<div class="flex h-32 w-full items-center justify-center bg-sky-200 text-sm text-sky-900">
+				Inset panel content
+			</div>
+		</OverlayInsetPanel>
+	</div>
+</div>
+
+<hr />
+
+<div class="flex flex-row flex-wrap items-center gap-x-10 gap-y-4">
+	<div class="flex flex-row flex-wrap items-center gap-4">
 		<Checkbox
 			class="text-center"
 			containerClass="items-center"
@@ -608,7 +654,7 @@
 		/>
 	</div>
 
-	<div class=" inline-flex items-center gap-4">
+	<div class="flex flex-wrap items-center gap-4">
 		<Radio
 			id="radio1"
 			labelText="Radio Button 1"
@@ -888,7 +934,7 @@
 			id="card-discount-mode"
 			labelText="How the discount applies"
 			columns={2}
-			containerClass="min-w-[28rem]"
+			rootClass="w-full sm:w-[28rem]"
 			bind:value={cardDiscountMode}
 			onchange={(v) => console.log('Card discount mode:', v)}
 			options={[
@@ -911,7 +957,7 @@
 			id="card-order-scope"
 			labelText="Which orders qualify"
 			columns={2}
-			containerClass="min-w-[28rem]"
+			rootClass="w-full sm:w-[28rem]"
 			bind:value={cardOrderScope}
 			options={[
 				{
@@ -983,7 +1029,7 @@
 		<InlineSentence
 			id="sentence-discount-mode"
 			labelText="How the discount applies"
-			rootClass="min-w-[26rem]"
+			rootClass="w-full sm:w-[26rem]"
 			bind:value={sentenceMode}
 			onchange={(v) => console.log('Sentence mode:', v)}
 			options={[
@@ -1007,7 +1053,7 @@
 		<InlineSentence
 			id="sentence-order-scope"
 			labelText="Which orders qualify"
-			rootClass="min-w-[26rem]"
+			rootClass="w-full sm:w-[26rem]"
 			bind:value={sentenceScope}
 			options={[
 				{
@@ -1037,7 +1083,7 @@
 	<InlineSentence
 		id="sentence-billing"
 		labelText="Billing cycle"
-		rootClass="min-w-[26rem]"
+		rootClass="w-full sm:w-[26rem]"
 		prefix="Bill customers"
 		suffix="and renew the plan automatically."
 		icon="icon-[ion--card]"
@@ -1051,6 +1097,435 @@
 	/>
 
 	<p class="text-sm text-neutral-600">Selected: {sentenceBilling}</p>
+</div>
+
+<hr />
+
+<div class="flex flex-col gap-6 p-4">
+	<p class="font-medium">
+		Icon Tile (multi-select group covering both the vertical-tile and horizontal-row looks, mobile
+		responsive and wraps)
+	</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-10">
+		<IconTile
+			id="icon-tile-vertical"
+			labelText="Vertical tiles (iconPosition top, bare icon)"
+			iconPosition="top"
+			iconBadge={false}
+			bind:value={iconTileVertical}
+			options={[
+				{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+				{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+				{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+				{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+				{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+			]}
+		/>
+
+		<IconTile
+			id="icon-tile-horizontal"
+			labelText="Horizontal rows (iconPosition left, icon badge)"
+			iconPosition="left"
+			bind:value={iconTileHorizontal}
+			options={[
+				{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+				{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+				{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+				{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+				{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+			]}
+		/>
+	</div>
+
+	<p class="text-sm text-neutral-600">Selected: {JSON.stringify(iconTileVertical)}</p>
+	<p class="text-sm text-neutral-600">Selected: {JSON.stringify(iconTileHorizontal)}</p>
+
+	<p class="font-medium">Custom selected icon and large size</p>
+
+	<IconTile
+		id="icon-tile-custom"
+		labelText="Star badge, large tiles"
+		size="lg"
+		selectedIcon="icon-[ion--star]"
+		bind:value={iconTileCustom}
+		options={[
+			{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+			{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+			{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+			{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+			{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+		]}
+	/>
+
+	<p class="text-sm text-neutral-600">Selected: {JSON.stringify(iconTileCustom)}</p>
+
+	<p class="font-medium">Error and disabled states</p>
+
+	<IconTile
+		id="icon-tile-error"
+		labelText="Pick at least one order type"
+		error="Please select at least one order type."
+		bind:value={iconTileError}
+		options={[
+			{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+			{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+			{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+			{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+			{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+		]}
+	/>
+
+	<p class="text-sm text-neutral-600">Selected: {JSON.stringify(iconTileError)}</p>
+
+	<IconTile
+		id="icon-tile-disabled"
+		labelText="Disabled group"
+		disabled={true}
+		bind:value={iconTileDisabled}
+		options={[
+			{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+			{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+			{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+			{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+			{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+		]}
+	/>
+
+	<p class="text-sm text-neutral-600">Selected: {JSON.stringify(iconTileDisabled)}</p>
+</div>
+
+<hr />
+
+<div class="flex flex-col gap-6 p-4">
+	<div class="flex flex-col gap-2">
+		<p class="font-medium">Default wrap behaviour</p>
+		<p class="text-sm text-neutral-600">
+			Narrow the window to watch the bar wrap into a connected grid on mobile.
+		</p>
+		<SegmentedToolbar
+			id="seg-toolbar-wrap"
+			labelText="Order types"
+			bind:value={segToolbarWrap}
+			options={[
+				{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+				{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+				{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+				{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+				{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+			]}
+		/>
+		<p class="text-sm text-neutral-600">Selected: {JSON.stringify(segToolbarWrap)}</p>
+	</div>
+
+	<div class="flex flex-col gap-2">
+		<p class="font-medium">Inline row (wrap=false)</p>
+		<SegmentedToolbar
+			id="seg-toolbar-inline"
+			labelText="Order types"
+			wrap={false}
+			bind:value={segToolbarInline}
+			options={[
+				{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+				{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+				{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+				{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+				{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+			]}
+		/>
+		<p class="text-sm text-neutral-600">Selected: {JSON.stringify(segToolbarInline)}</p>
+	</div>
+
+	<div class="flex flex-col gap-2">
+		<p class="font-medium">Large size (size=lg)</p>
+		<SegmentedToolbar
+			id="seg-toolbar-size"
+			labelText="Order types"
+			size="lg"
+			bind:value={segToolbarSize}
+			options={[
+				{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+				{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+				{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+				{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+				{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+			]}
+		/>
+		<p class="text-sm text-neutral-600">Selected: {JSON.stringify(segToolbarSize)}</p>
+	</div>
+
+	<div class="flex flex-col gap-2">
+		<p class="font-medium">Disabled with error</p>
+		<SegmentedToolbar
+			id="seg-toolbar-disabled"
+			labelText="Order types"
+			disabled
+			error="Select at least one order type."
+			bind:value={segToolbarDisabled}
+			options={[
+				{ value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+				{ value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle]' },
+				{ value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant]' },
+				{ value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube]' },
+				{ value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront]' }
+			]}
+		/>
+		<p class="text-sm text-neutral-600">Selected: {JSON.stringify(segToolbarDisabled)}</p>
+	</div>
+</div>
+
+<hr />
+
+<div class="flex flex-col gap-6 p-4">
+	<p class="font-medium">ToggleList</p>
+
+	<div class="flex flex-row flex-wrap gap-10">
+		<div class="flex max-w-sm flex-col gap-2">
+			<p class="font-medium">Default size, with descriptions</p>
+			<ToggleList
+				id="toggle-list-default"
+				labelText="Order types"
+				bind:value={toggleListDefault}
+				options={[
+					{
+						value: 'pickup',
+						title: 'Pickup',
+						description: 'Customer collects in store.',
+						icon: 'icon-[ion--bag-handle]'
+					},
+					{
+						value: 'delivery',
+						title: 'Delivery',
+						description: 'Couriered to the customer.',
+						icon: 'icon-[ion--bicycle]'
+					},
+					{
+						value: 'dining',
+						title: 'Dining',
+						description: 'Eaten in at a table.',
+						icon: 'icon-[ion--restaurant]'
+					},
+					{
+						value: 'shipping',
+						title: 'Shipping',
+						description: 'Posted via a carrier.',
+						icon: 'icon-[ion--cube]'
+					},
+					{
+						value: 'retail',
+						title: 'Retail',
+						description: 'Over-the-counter sale.',
+						icon: 'icon-[ion--storefront]'
+					}
+				]}
+			/>
+			<p class="text-sm text-neutral-600">Selected: {JSON.stringify(toggleListDefault)}</p>
+		</div>
+
+		<div class="flex max-w-xs flex-col gap-2">
+			<p class="font-medium">Compact (size="sm"), no descriptions</p>
+			<ToggleList
+				id="toggle-list-compact"
+				labelText="Order types"
+				size="sm"
+				bind:value={toggleListCompact}
+				options={[
+					{ value: 'pickup', title: 'Pickup', icon: 'icon-[ion--bag-handle]' },
+					{ value: 'delivery', title: 'Delivery', icon: 'icon-[ion--bicycle]' },
+					{ value: 'dining', title: 'Dining', icon: 'icon-[ion--restaurant]' },
+					{ value: 'shipping', title: 'Shipping', icon: 'icon-[ion--cube]' },
+					{ value: 'retail', title: 'Retail', icon: 'icon-[ion--storefront]' }
+				]}
+			/>
+			<p class="text-sm text-neutral-600">Selected: {JSON.stringify(toggleListCompact)}</p>
+		</div>
+	</div>
+
+	<div class="flex max-w-sm flex-col gap-2">
+		<p class="font-medium">With error message and a disabled row</p>
+		<ToggleList
+			id="toggle-list-error"
+			labelText="Order types"
+			bind:value={toggleListError}
+			options={[
+				{
+					value: 'pickup',
+					title: 'Pickup',
+					description: 'Customer collects in store.',
+					icon: 'icon-[ion--bag-handle]'
+				},
+				{
+					value: 'delivery',
+					title: 'Delivery',
+					description: 'Couriered to the customer.',
+					icon: 'icon-[ion--bicycle]'
+				},
+				{
+					value: 'dining',
+					title: 'Dining',
+					description: 'Eaten in at a table.',
+					icon: 'icon-[ion--restaurant]'
+				},
+				{
+					value: 'shipping',
+					title: 'Shipping',
+					description: 'Posted via a carrier.',
+					icon: 'icon-[ion--cube]',
+					disabled: true
+				},
+				{
+					value: 'retail',
+					title: 'Retail',
+					description: 'Over-the-counter sale.',
+					icon: 'icon-[ion--storefront]'
+				}
+			]}
+			error="Select at least one order type."
+		/>
+		<p class="text-sm text-neutral-600">Selected: {JSON.stringify(toggleListError)}</p>
+	</div>
+</div>
+
+<hr />
+
+<div class="flex flex-col gap-6 p-4">
+	<p class="font-medium">Master Checklist (select-all header, indeterminate state, live count)</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-10">
+		<MasterChecklist
+			id="master-checklist-order-types"
+			labelText="Order types"
+			masterLabel="All order types"
+			showCount={true}
+			rootClass="max-w-md flex-1"
+			bind:value={masterChecklistOrderTypes}
+			options={[
+				{
+					value: 'pickup',
+					title: 'Pickup',
+					description: 'Customer collects in store.',
+					icon: 'icon-[ion--bag-handle]'
+				},
+				{
+					value: 'delivery',
+					title: 'Delivery',
+					description: 'Couriered to the customer.',
+					icon: 'icon-[ion--bicycle]'
+				},
+				{
+					value: 'dining',
+					title: 'Dining',
+					description: 'Eaten in at a table.',
+					icon: 'icon-[ion--restaurant]'
+				},
+				{
+					value: 'shipping',
+					title: 'Shipping',
+					description: 'Posted via a carrier.',
+					icon: 'icon-[ion--cube]'
+				},
+				{
+					value: 'retail',
+					title: 'Retail',
+					description: 'Over-the-counter sale.',
+					icon: 'icon-[ion--storefront]'
+				}
+			]}
+		/>
+
+		<MasterChecklist
+			id="master-checklist-custom-icon"
+			labelText="Custom tick icon, no count badge"
+			masterLabel="Select every type"
+			selectedIcon="icon-[ion--checkmark-circle]"
+			showCount={false}
+			rootClass="max-w-md flex-1"
+			bind:value={masterChecklistCustomIcon}
+			options={[
+				{
+					value: 'pickup',
+					title: 'Pickup',
+					description: 'Customer collects in store.',
+					icon: 'icon-[ion--bag-handle]'
+				},
+				{
+					value: 'delivery',
+					title: 'Delivery',
+					description: 'Couriered to the customer.',
+					icon: 'icon-[ion--bicycle]'
+				},
+				{
+					value: 'dining',
+					title: 'Dining',
+					description: 'Eaten in at a table.',
+					icon: 'icon-[ion--restaurant]'
+				},
+				{
+					value: 'shipping',
+					title: 'Shipping',
+					description: 'Posted via a carrier.',
+					icon: 'icon-[ion--cube]'
+				},
+				{
+					value: 'retail',
+					title: 'Retail',
+					description: 'Over-the-counter sale.',
+					icon: 'icon-[ion--storefront]'
+				}
+			]}
+		/>
+	</div>
+
+	<p class="text-sm text-neutral-600">
+		Selected: {JSON.stringify(masterChecklistOrderTypes)} / {JSON.stringify(
+			masterChecklistCustomIcon
+		)}
+	</p>
+
+	<p class="font-medium">With an error message</p>
+
+	<MasterChecklist
+		id="master-checklist-error"
+		labelText="Order types (at least two required)"
+		masterLabel="All order types"
+		error="Please select at least two order types."
+		rootClass="max-w-md"
+		bind:value={masterChecklistError}
+		options={[
+			{
+				value: 'pickup',
+				title: 'Pickup',
+				description: 'Customer collects in store.',
+				icon: 'icon-[ion--bag-handle]'
+			},
+			{
+				value: 'delivery',
+				title: 'Delivery',
+				description: 'Couriered to the customer.',
+				icon: 'icon-[ion--bicycle]'
+			},
+			{
+				value: 'dining',
+				title: 'Dining',
+				description: 'Eaten in at a table.',
+				icon: 'icon-[ion--restaurant]'
+			},
+			{
+				value: 'shipping',
+				title: 'Shipping',
+				description: 'Posted via a carrier.',
+				icon: 'icon-[ion--cube]'
+			},
+			{
+				value: 'retail',
+				title: 'Retail',
+				description: 'Over-the-counter sale.',
+				icon: 'icon-[ion--storefront]'
+			}
+		]}
+	/>
+
+	<p class="text-sm text-neutral-600">Selected: {JSON.stringify(masterChecklistError)}</p>
 </div>
 
 <hr />
@@ -1087,7 +1562,7 @@
 	</ul>
 
 	<div
-		class="flex w-fit flex-row gap-2 overflow-x-auto p-2 ring"
+		class="flex max-w-full flex-row gap-2 overflow-x-auto p-2 ring"
 		use:dragDropZone={{ items, getItemId: itemId('id'), axis: 'x', constrainToContainer: true }}
 		onconsider={sync}
 		onfinalize={sync}

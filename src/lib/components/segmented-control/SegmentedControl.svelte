@@ -120,7 +120,7 @@ type SegmentOption = {
 	// Per-variant track (the `radiogroup` wrapper) styling.
 	const trackVariantMap: Record<SegmentedControlVariant, string> = {
 		pill: 'gap-1 bg-neutral-100 p-1',
-		solid: 'gap-0 overflow-hidden bg-white divide-x divide-primary-input-border'
+		solid: 'gap-0 bg-white divide-x divide-primary-input-border'
 	};
 
 	// Per-variant segment shape.
@@ -244,7 +244,7 @@ type SegmentOption = {
 		aria-invalid={error ? true : undefined}
 		aria-describedby={error && effectiveId ? `${effectiveId}-error` : undefined}
 		class={twMerge(
-			'rounded-primary border-primary-input-border inline-flex flex-row border',
+			'rounded-primary border-primary-input-border inline-flex max-w-full flex-row overflow-x-auto border',
 			trackVariantMap[variant],
 			fullWidth && 'flex w-full',
 			containerClass
@@ -263,10 +263,10 @@ type SegmentOption = {
 				onclick={() => select(option)}
 				onkeydown={(event) => handleKeydown(event, index)}
 				class={twMerge(
-					'focus-visible:ring-primary-focus flex flex-row items-center justify-center transition-colors select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-inset',
+					'focus-visible:ring-primary-focus flex flex-row items-center justify-center whitespace-nowrap transition-colors select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-inset',
 					segmentVariantMap[variant],
 					sizeMap[size],
-					fullWidth && 'flex-1',
+					fullWidth ? 'flex-1' : 'shrink-0',
 					segmentStateClass(variant, selected),
 					isDisabled ? 'cursor-default opacity-50' : 'cursor-pointer',
 					segmentClass,

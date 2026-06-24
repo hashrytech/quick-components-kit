@@ -20,7 +20,7 @@ and roving `tabindex`. The label is rendered as a `<p>` and wired to the group v
 - `value?: string | number` — Bindable selected value.
 - `options: ChoiceCardOption[]` — Cards to render (see type below).
 - `size?: 'sm' | 'md' | 'lg'` — Padding, icon, and text size. Default: `'md'`.
-- `columns?: number` — Fixed number of equal columns. Omit for a responsive auto-fit grid.
+- `columns?: number` — Equal columns from the `sm` breakpoint up (collapses to one column on mobile). Omit for a responsive auto-fit grid.
 - `showCheck?: boolean` — Show the check indicator on the active card. Default: `true`.
 - `checkIcon?: string` — Iconify class for the check indicator. Default: `'icon-[ion--checkmark]'`.
 - `disabled?: boolean` — Disables the whole group.
@@ -194,10 +194,14 @@ type ChoiceCardOption = {
 	const selectedExists = $derived(options.some((o) => o.value === value && !o.disabled));
 	const firstEnabledValue = $derived(options.find((o) => !o.disabled)?.value);
 
-	// A fixed column count wins via inline style; otherwise the responsive auto-fit
-	// grid class on the container takes over so any number of cards wraps cleanly.
-	const gridStyle = $derived(
-		columns ? `grid-template-columns: repeat(${columns}, minmax(0, 1fr));` : undefined
+	// `columns` applies a fixed column count from the `sm` breakpoint up (passed through a
+	// CSS var so the dynamic value survives), collapsing to a single column on mobile so the
+	// cards never overflow a phone. Without it the grid uses a responsive auto-fit layout.
+	const gridStyle = $derived(columns ? `--qck-cols: ${columns};` : undefined);
+	const gridColumnsClass = $derived(
+		columns
+			? 'grid-cols-1 sm:[grid-template-columns:repeat(var(--qck-cols),minmax(0,1fr))]'
+			: '[grid-template-columns:repeat(auto-fit,minmax(13rem,1fr))]'
 	);
 
 	// Roving tabindex: the selected card is tabbable; if nothing is selected,
@@ -264,10 +268,7 @@ type ChoiceCardOption = {
 		aria-invalid={error ? true : undefined}
 		aria-describedby={error && effectiveId ? `${effectiveId}-error` : undefined}
 		style={gridStyle}
-		class={twMerge(
-			'grid [grid-template-columns:repeat(auto-fit,minmax(13rem,1fr))] gap-4',
-			containerClass
-		)}
+		class={twMerge('grid gap-4', gridColumnsClass, containerClass)}
 	>
 		{#each options as option, index (option.value)}
 			{@const selected = option.value === value}
@@ -285,7 +286,7 @@ type ChoiceCardOption = {
 					'rounded-primary focus-visible:ring-primary-focus flex flex-col border-2 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
 					tokens.card,
 					selected
-						? 'border-primary-input-accent bg-primary-50'
+						? 'border-primary-400 bg-primary-50'
 						: 'border-primary-card-border bg-white hover:border-neutral-400',
 					isDisabled ? 'cursor-default opacity-60' : 'cursor-pointer',
 					cardClass,
