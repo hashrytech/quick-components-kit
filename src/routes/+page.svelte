@@ -12,6 +12,9 @@
 	import TabNavigation from '$lib/components/tab-navigation/TabNavigation.svelte';
 	import { Table, TableTh, TableTd } from '$lib/components/table/index.js';
 	import Select from '$lib/components/select/Select.svelte';
+	import SegmentedControl from '$lib/components/segmented-control/SegmentedControl.svelte';
+	import ChoiceCards from '$lib/components/choice-cards/ChoiceCards.svelte';
+	import InlineSentence from '$lib/components/inline-sentence/InlineSentence.svelte';
 	import TextArea from '$lib/components/text-area/TextArea.svelte';
 	import ToastContainer from '$lib/components/toast/ToastContainer.svelte';
 	import { showToast, toastIcons, toastOptions } from '$lib/components/toast/index.js';
@@ -35,6 +38,15 @@
 	let radioValue = $state('Apple');
 	let showMultiSelect = $state(true);
 	let selectValue = $state('apple');
+	let discountMode = $state('automatic');
+	let orderScope = $state('any');
+	let segmentSize = $state<'sm' | 'md' | 'lg'>('md');
+	let cardDiscountMode = $state('automatic');
+	let cardOrderScope = $state('any');
+	let cardDelivery = $state('standard');
+	let sentenceMode = $state('automatic');
+	let sentenceScope = $state('first');
+	let sentenceBilling = $state('monthly');
 	let datePickerOpen = $state(false);
 	let datePickerStart = $state('2026-06-01');
 	let datePickerEnd = $state('2026-06-12');
@@ -732,6 +744,316 @@
 		class="w-64"
 	/>
 </div>
+
+<hr />
+
+<div class="flex flex-col gap-6 p-4">
+	<p class="font-medium">Segmented Control — pill variant (icon segmented, single select)</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-10">
+		<SegmentedControl
+			id="discount-mode"
+			labelText="How the discount applies"
+			bind:value={discountMode}
+			onchange={(v) => console.log('Discount mode:', v)}
+			options={[
+				{ value: 'automatic', key: 'Automatic', icon: 'icon-[ion--flash]' },
+				{ value: 'coupon', key: 'Coupon code', icon: 'icon-[ion--pricetag]' }
+			]}
+		/>
+
+		<SegmentedControl
+			id="order-scope"
+			labelText="Which orders qualify"
+			bind:value={orderScope}
+			options={[
+				{ value: 'any', key: 'Any order', icon: 'icon-[ion--bag-handle]' },
+				{ value: 'first', key: 'First order', icon: 'icon-[ion--ribbon]' }
+			]}
+		/>
+	</div>
+
+	<p class="text-sm text-neutral-600">Selected: {discountMode} / {orderScope}</p>
+
+	<p class="font-medium">Solid variant (filled selection, no layout shift on toggle)</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-10">
+		<SegmentedControl
+			id="discount-mode-solid"
+			variant="solid"
+			labelText="How the discount applies"
+			bind:value={discountMode}
+			options={[
+				{ value: 'automatic', key: 'Automatic' },
+				{ value: 'coupon', key: 'Coupon code' }
+			]}
+		/>
+
+		<SegmentedControl
+			id="order-scope-solid"
+			variant="solid"
+			labelText="Which orders qualify"
+			bind:value={orderScope}
+			options={[
+				{ value: 'any', key: 'Any order' },
+				{ value: 'first', key: 'First order only' }
+			]}
+		/>
+	</div>
+
+	<p class="font-medium">Fully custom colours / size / weight via class props</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-10">
+		<SegmentedControl
+			id="custom-pill"
+			labelText="Custom pill"
+			labelClass="text-base font-bold text-emerald-700"
+			containerClass="bg-emerald-50 border-emerald-300"
+			segmentClass="text-base [--qck-seg-fw:700]"
+			selectedClass="bg-emerald-600 text-white font-bold shadow-none"
+			unselectedClass="text-emerald-700 hover:bg-emerald-100 hover:text-emerald-900"
+			value="weekly"
+			options={[
+				{ value: 'weekly', key: 'Weekly' },
+				{ value: 'monthly', key: 'Monthly' }
+			]}
+		/>
+
+		<SegmentedControl
+			id="custom-solid"
+			variant="solid"
+			labelText="Custom solid"
+			labelClass="text-base font-bold text-indigo-700"
+			containerClass="border-indigo-300"
+			segmentClass="text-base [--qck-seg-fw:700]"
+			selectedClass="bg-indigo-600 text-white font-bold"
+			unselectedClass="text-indigo-700 hover:bg-indigo-50"
+			value="grid"
+			options={[
+				{ value: 'grid', key: 'Grid', icon: 'icon-[ion--grid]' },
+				{ value: 'list', key: 'List', icon: 'icon-[ion--list]' }
+			]}
+			iconClass="text-current"
+		/>
+	</div>
+
+	<p class="font-medium">Full width, sizes, disabled state &amp; no icons</p>
+
+	<div class="flex max-w-md flex-col gap-4">
+		<SegmentedControl
+			id="segment-size"
+			labelText="Size (full width)"
+			fullWidth
+			bind:value={segmentSize}
+			options={[
+				{ value: 'sm', key: 'Small' },
+				{ value: 'md', key: 'Medium' },
+				{ value: 'lg', key: 'Large' }
+			]}
+		/>
+
+		<SegmentedControl
+			id="plan"
+			labelText="Plan ({segmentSize})"
+			size={segmentSize}
+			value="monthly"
+			options={[
+				{ value: 'monthly', key: 'Monthly', icon: 'icon-[ion--calendar]' },
+				{ value: 'yearly', key: 'Yearly', icon: 'icon-[ion--calendar-number]' },
+				{ value: 'lifetime', key: 'Lifetime', icon: 'icon-[ion--infinite]', disabled: true }
+			]}
+		/>
+
+		<SegmentedControl
+			id="status"
+			labelText="Status (disabled)"
+			disabled
+			value="active"
+			error="This field is locked while the order is processing."
+			options={[
+				{ value: 'active', key: 'Active' },
+				{ value: 'paused', key: 'Paused' }
+			]}
+		/>
+	</div>
+</div>
+
+<hr />
+
+<div class="flex flex-col gap-6 p-4">
+	<p class="font-medium">Choice Cards (icon + title + one-line explanation, single select)</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-10">
+		<ChoiceCards
+			id="card-discount-mode"
+			labelText="How the discount applies"
+			columns={2}
+			containerClass="min-w-[28rem]"
+			bind:value={cardDiscountMode}
+			onchange={(v) => console.log('Card discount mode:', v)}
+			options={[
+				{
+					value: 'automatic',
+					title: 'Automatic',
+					description: 'Applies on its own when the order qualifies.',
+					icon: 'icon-[ion--flash]'
+				},
+				{
+					value: 'coupon',
+					title: 'Coupon code',
+					description: 'Only applies when a matching code is entered.',
+					icon: 'icon-[ion--pricetag]'
+				}
+			]}
+		/>
+
+		<ChoiceCards
+			id="card-order-scope"
+			labelText="Which orders qualify"
+			columns={2}
+			containerClass="min-w-[28rem]"
+			bind:value={cardOrderScope}
+			options={[
+				{
+					value: 'any',
+					title: 'Any order',
+					description: 'Every order can use this discount.',
+					icon: 'icon-[ion--bag-handle]'
+				},
+				{
+					value: 'first',
+					title: 'First order only',
+					description: "Only a customer's very first order.",
+					icon: 'icon-[ion--ribbon]'
+				}
+			]}
+		/>
+	</div>
+
+	<p class="text-sm text-neutral-600">Selected: {cardDiscountMode} / {cardOrderScope}</p>
+
+	<p class="font-medium">More than two choices (responsive auto-fit grid)</p>
+
+	<ChoiceCards
+		id="card-delivery"
+		labelText="Delivery speed"
+		bind:value={cardDelivery}
+		options={[
+			{
+				value: 'standard',
+				title: 'Standard',
+				description: '3–5 business days, no extra cost.',
+				icon: 'icon-[ion--cube]'
+			},
+			{
+				value: 'express',
+				title: 'Express',
+				description: 'Next business day, flat fee.',
+				icon: 'icon-[ion--rocket]'
+			},
+			{
+				value: 'pickup',
+				title: 'Store pickup',
+				description: 'Ready in 2 hours at your store.',
+				icon: 'icon-[ion--storefront]'
+			},
+			{
+				value: 'courier',
+				title: 'Same-day courier',
+				description: 'Within 4 hours in select cities.',
+				icon: 'icon-[ion--bicycle]'
+			},
+			{
+				value: 'freight',
+				title: 'Freight',
+				description: 'For bulky orders. Quoted per item.',
+				icon: 'icon-[ion--boat]',
+				disabled: true
+			}
+		]}
+	/>
+</div>
+
+<hr />
+
+<div class="flex flex-col gap-6 p-4">
+	<p class="font-medium">Inline Sentence (settings as editable prose — tap the gold word)</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-10">
+		<InlineSentence
+			id="sentence-discount-mode"
+			labelText="How the discount applies"
+			rootClass="min-w-[26rem]"
+			bind:value={sentenceMode}
+			onchange={(v) => console.log('Sentence mode:', v)}
+			options={[
+				{
+					value: 'automatic',
+					label: 'automatic',
+					icon: 'icon-[ion--flash]',
+					prefix: 'This discount is',
+					suffix: '— it applies on its own the moment an order qualifies.'
+				},
+				{
+					value: 'coupon',
+					label: 'a coupon code',
+					icon: 'icon-[ion--pricetag]',
+					prefix: 'This discount needs',
+					suffix: '— it only applies when a matching code is entered.'
+				}
+			]}
+		/>
+
+		<InlineSentence
+			id="sentence-order-scope"
+			labelText="Which orders qualify"
+			rootClass="min-w-[26rem]"
+			bind:value={sentenceScope}
+			options={[
+				{
+					value: 'any',
+					label: 'any order',
+					icon: 'icon-[ion--bag-handle]',
+					prefix: 'Eligible for',
+					suffix: '— every order can use this discount.'
+				},
+				{
+					value: 'first',
+					label: 'the first order only',
+					icon: 'icon-[ion--ribbon]',
+					prefix: 'Eligible for',
+					suffix: "— a customer's very first order, nothing after."
+				}
+			]}
+		/>
+	</div>
+
+	<p class="text-sm text-neutral-600">Selected: {sentenceMode} / {sentenceScope}</p>
+
+	<p class="font-medium">
+		Shared start/end text &amp; icon via component-level props (only the word flips)
+	</p>
+
+	<InlineSentence
+		id="sentence-billing"
+		labelText="Billing cycle"
+		rootClass="min-w-[26rem]"
+		prefix="Bill customers"
+		suffix="and renew the plan automatically."
+		icon="icon-[ion--card]"
+		iconClass="text-current"
+		bind:value={sentenceBilling}
+		options={[
+			{ value: 'monthly', label: 'every month' },
+			{ value: 'yearly', label: 'once a year' },
+			{ value: 'weekly', label: 'every week', icon: 'icon-[ion--time]' }
+		]}
+	/>
+
+	<p class="text-sm text-neutral-600">Selected: {sentenceBilling}</p>
+</div>
+
+<hr />
 
 <TextArea
 	id="textArea1"

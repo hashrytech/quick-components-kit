@@ -73,6 +73,15 @@ currently in view, as a start-of-month ISO date) and reacts to `onselect`.
 	const viewYear = $derived(getYear(viewMonth));
 	const viewMonthIndex = $derived(getMonthIndex(viewMonth));
 	const monthDays = $derived(getCalendarMonthDays(viewMonth, weekStartsOn));
+	// The month grid is generated as a fixed 6 weeks; drop any trailing week that holds
+	// no day of the current month so there is no empty row (and dead space) below the dates.
+	const visibleDays = $derived.by(() => {
+		let end = monthDays.length;
+		while (end >= 7 && !monthDays.slice(end - 7, end).some((day) => day.inCurrentMonth)) {
+			end -= 7;
+		}
+		return monthDays.slice(0, end);
+	});
 	const weekdayLabels = $derived(getWeekdayLabels(locale, weekStartsOn));
 	const monthLabels = $derived(getMonthLabels(locale, monthLabelStyle));
 	const yearPage = $derived(getYearPage(viewYear));
@@ -266,7 +275,7 @@ currently in view, as a start-of-month ISO date) and reacts to `onselect`.
 		</div>
 
 		<div class="grid grid-cols-7 gap-0.5 px-2 pb-1 text-center">
-			{#each monthDays as day (day.iso)}
+			{#each visibleDays as day (day.iso)}
 				{#if day.inCurrentMonth}
 					<button
 						type="button"
