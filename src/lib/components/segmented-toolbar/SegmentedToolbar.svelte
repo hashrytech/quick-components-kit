@@ -23,6 +23,7 @@ hidden input is emitted per selected value.
 - `options: SegmentedToolbarOption[]` — Segments to render (see type below).
 - `size?: 'sm' | 'md' | 'lg'` — Padding and text/icon size. Default: `'md'`.
 - `wrap?: boolean` — Allow the bar to wrap into a grid on narrow screens. Default: `true`. Set `false` to keep one inline row at all widths.
+- `fullWidth?: boolean` — Stretch the track to fill its container and size every segment equally. Default: `false`.
 - `disabled?: boolean` — Disables the whole toolbar.
 - `error?: string` — Error message shown below; also sets `aria-invalid`/`aria-describedby`.
 - `iconClass?: ClassNameValue` — Extra classes on every segment icon (merged before each option's `iconClass`).
@@ -41,7 +42,7 @@ hidden input is emitted per selected value.
 type SegmentedToolbarOption = {
   value: string | number;     // selected value
   label: string;              // display label
-  icon?: string;              // Iconify class string, e.g. 'icon-[ion--bag-handle]'
+  icon?: string;              // Iconify class string for the glyph (from your installed icon set)
   iconClass?: ClassNameValue; // extra classes for this segment's icon
   disabled?: boolean;         // disables this individual segment
 };
@@ -60,11 +61,11 @@ type SegmentedToolbarOption = {
   labelText="Order types"
   bind:value={orderTypes}
   options={[
-    { value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle-outline]' },
-    { value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle-outline]' },
-    { value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant-outline]' },
-    { value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube-outline]' },
-    { value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront-outline]' },
+    { value: 'pickup', label: 'Pickup' },
+    { value: 'delivery', label: 'Delivery' },
+    { value: 'dining', label: 'Dining' },
+    { value: 'shipping', label: 'Shipping' },
+    { value: 'retail', label: 'Retail' },
   ]}
 />
 ```
@@ -93,6 +94,7 @@ type SegmentedToolbarOption = {
 		options: SegmentedToolbarOption[];
 		size?: SegmentedToolbarSize;
 		wrap?: boolean;
+		fullWidth?: boolean;
 		disabled?: boolean;
 		error?: string;
 		iconClass?: ClassNameValue;
@@ -140,6 +142,7 @@ type SegmentedToolbarOption = {
 		options,
 		size = 'md',
 		wrap = true,
+		fullWidth = false,
 		disabled = false,
 		error,
 		iconClass,
@@ -161,6 +164,27 @@ type SegmentedToolbarOption = {
 	}
 
 	const tokens = $derived(sizeMap[size]);
+
+	// `fullWidth` stretches the track to fill its container and grows every segment equally;
+	// otherwise the track hugs its content (and `wrap` still lets it wrap into a grid on mobile).
+	const trackLayout = $derived(
+		fullWidth
+			? wrap
+				? 'flex w-full flex-wrap sm:flex-nowrap'
+				: 'flex w-full flex-nowrap'
+			: wrap
+				? 'flex w-full flex-wrap sm:inline-flex sm:w-auto sm:flex-nowrap'
+				: 'inline-flex flex-nowrap'
+	);
+	const segmentLayout = $derived(
+		fullWidth
+			? wrap
+				? 'grow basis-[28%] sm:basis-0'
+				: 'grow basis-0'
+			: wrap
+				? 'grow basis-[28%] sm:grow-0 sm:basis-auto'
+				: ''
+	);
 
 	function isSelected(option: SegmentedToolbarOption): boolean {
 		return (value ?? []).includes(option.value);
@@ -194,9 +218,7 @@ type SegmentedToolbarOption = {
 		aria-describedby={error && effectiveId ? `${effectiveId}-error` : undefined}
 		class={twMerge(
 			'rounded-primary border-primary-input-border bg-primary-input-border gap-px overflow-hidden border',
-			wrap
-				? 'flex w-full flex-wrap sm:inline-flex sm:w-auto sm:flex-nowrap'
-				: 'inline-flex flex-nowrap',
+			trackLayout,
 			containerClass
 		)}
 	>
@@ -212,7 +234,7 @@ type SegmentedToolbarOption = {
 				onclick={() => toggle(option)}
 				class={twMerge(
 					'focus-visible:ring-primary-focus flex flex-col items-center justify-center font-medium transition-colors select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-inset sm:flex-row',
-					wrap && 'grow basis-[28%] sm:grow-0 sm:basis-auto',
+					segmentLayout,
 					tokens.segment,
 					selected
 						? 'bg-primary-input-accent text-white'

@@ -42,7 +42,7 @@ type ToggleListOption = {
   value: string | number;     // selected value
   title: string;              // row heading
   description?: string;       // one-line explanation
-  icon?: string;              // Iconify class string, e.g. 'icon-[ion--bag-handle]'
+  icon?: string;              // Iconify class string for the glyph (from your installed icon set)
   iconClass?: ClassNameValue; // extra classes for this row's icon
   disabled?: boolean;         // disables this individual row
 };
@@ -61,9 +61,9 @@ type ToggleListOption = {
   labelText="Order types"
   bind:value={orderTypes}
   options={[
-    { value: 'pickup', title: 'Pickup', icon: 'icon-[ion--bag-handle-outline]' },
-    { value: 'delivery', title: 'Delivery', icon: 'icon-[ion--bicycle-outline]' },
-    { value: 'dining', title: 'Dining', icon: 'icon-[ion--restaurant-outline]' },
+    { value: 'pickup', title: 'Pickup' },
+    { value: 'delivery', title: 'Delivery' },
+    { value: 'dining', title: 'Dining' },
   ]}
 />
 ```

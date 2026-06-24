@@ -22,8 +22,8 @@ native Space / Enter toggles them). When `name` is set, a hidden input is emitte
 - `size?: 'sm' | 'md' | 'lg'` — Padding, icon, and text size. Default: `'md'`.
 - `masterLabel?: string` — Text for the master header row. Default: `'Select all'`.
 - `showCount?: boolean` — Show the count badge in the master row. Default: `true`.
-- `selectedIcon?: string` — Iconify class for the checkbox tick. Default: `'icon-[ion--checkmark]'`.
-- `indeterminateIcon?: string` — Iconify class for the master's indeterminate mark. Default: `'icon-[ion--remove]'`.
+- `selectedIcon?: string` — Iconify class for the checkbox tick. Omit to use the built-in raw-SVG checkmark (no icon-set dependency).
+- `indeterminateIcon?: string` — Iconify class for the master's indeterminate mark. Omit to use the built-in raw-SVG dash (no icon-set dependency).
 - `disabled?: boolean` — Disables the whole group.
 - `error?: string` — Error message shown below; also sets `aria-invalid`/`aria-describedby`.
 - `onchange?: (value: (string | number)[]) => void` — Called with the new selected-values array.
@@ -48,7 +48,7 @@ type MasterChecklistOption = {
   value: string | number;     // selected value
   title: string;              // row heading
   description?: string;       // one-line explanation
-  icon?: string;              // Iconify class string, e.g. 'icon-[ion--bag-handle]'
+  icon?: string;              // Iconify class string for the glyph (from your installed icon set)
   iconClass?: ClassNameValue; // extra classes for this row's icon
   disabled?: boolean;         // disables this individual row
 };
@@ -68,9 +68,9 @@ type MasterChecklistOption = {
   masterLabel="All order types"
   bind:value={orderTypes}
   options={[
-    { value: 'pickup', title: 'Pickup', icon: 'icon-[ion--bag-handle-outline]' },
-    { value: 'delivery', title: 'Delivery', icon: 'icon-[ion--bicycle-outline]' },
-    { value: 'dining', title: 'Dining', icon: 'icon-[ion--restaurant-outline]' },
+    { value: 'pickup', title: 'Pickup' },
+    { value: 'delivery', title: 'Delivery' },
+    { value: 'dining', title: 'Dining' },
   ]}
 />
 ```
@@ -177,8 +177,8 @@ type MasterChecklistOption = {
 		size = 'md',
 		masterLabel = 'Select all',
 		showCount = true,
-		selectedIcon = 'icon-[ion--checkmark]',
-		indeterminateIcon = 'icon-[ion--remove]',
+		selectedIcon,
+		indeterminateIcon,
 		disabled = false,
 		error,
 		onchange,
@@ -241,6 +241,36 @@ type MasterChecklistOption = {
 	}
 </script>
 
+<!-- Built-in raw-SVG marks so the component needs no icon set; overridable via
+     `selectedIcon` / `indeterminateIcon`. Colour follows `currentColor`. -->
+{#snippet checkSvg(cls: string)}
+	<svg
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="3"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+		class={cls}
+	>
+		<path d="M5 13l4 4L19 7" />
+	</svg>
+{/snippet}
+{#snippet dashSvg(cls: string)}
+	<svg
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="3"
+		stroke-linecap="round"
+		aria-hidden="true"
+		class={cls}
+	>
+		<path d="M6 12h12" />
+	</svg>
+{/snippet}
+
 <div class={twMerge('flex flex-col gap-1', rootClass)}>
 	{#if label}
 		{@render label()}
@@ -288,9 +318,17 @@ type MasterChecklistOption = {
 				)}
 			>
 				{#if allSelected}
-					<Icon icon={selectedIcon} class={tokens.boxIcon} />
+					{#if selectedIcon}
+						<Icon icon={selectedIcon} class={tokens.boxIcon} />
+					{:else}
+						{@render checkSvg(tokens.boxIcon)}
+					{/if}
 				{:else if masterState === 'mixed'}
-					<Icon icon={indeterminateIcon} class={tokens.boxIcon} />
+					{#if indeterminateIcon}
+						<Icon icon={indeterminateIcon} class={tokens.boxIcon} />
+					{:else}
+						{@render dashSvg(tokens.boxIcon)}
+					{/if}
 				{/if}
 			</span>
 			<span class={twMerge('flex-1 font-semibold text-neutral-800', tokens.title)}>
@@ -339,7 +377,11 @@ type MasterChecklistOption = {
 						)}
 					>
 						{#if selected}
-							<Icon icon={selectedIcon} class={tokens.boxIcon} />
+							{#if selectedIcon}
+								<Icon icon={selectedIcon} class={tokens.boxIcon} />
+							{:else}
+								{@render checkSvg(tokens.boxIcon)}
+							{/if}
 						{/if}
 					</span>
 

@@ -30,7 +30,7 @@ Space / Enter toggles it). When `name` is set, a hidden input is emitted per sel
 - `iconBadge?: boolean` — Render the icon inside a rounded badge (the image-1 look). When `false`, the icon renders larger and bare (the image-2 look). Default: `true`.
 - `columns?: number` — Fixed number of equal columns. Omit for a responsive auto-fit grid.
 - `showCheck?: boolean` — Show the check badge on selected tiles. Default: `true`.
-- `selectedIcon?: string` — Iconify class for the selected (check) badge icon. Default: `'icon-[ion--checkmark]'`.
+- `selectedIcon?: string` — Iconify class for the selected (check) badge icon. Omit to use the built-in raw-SVG checkmark (no icon-set dependency).
 - `selectedIconClass?: ClassNameValue` — Extra classes on the selected-badge icon.
 - `disabled?: boolean` — Disables the whole group.
 - `error?: string` — Error message shown below; also sets `aria-invalid`/`aria-describedby`.
@@ -53,7 +53,7 @@ Space / Enter toggles it). When `name` is set, a hidden input is emitted per sel
 type IconTileOption = {
   value: string | number;     // selected value
   label: string;              // tile label
-  icon?: string;              // Iconify class string, e.g. 'icon-[ion--bag-handle]'
+  icon?: string;              // Iconify class string for the glyph (from your installed icon set)
   iconClass?: ClassNameValue; // extra classes for this tile's icon
   disabled?: boolean;         // disables this individual tile
 };
@@ -74,11 +74,9 @@ type IconTileOption = {
   iconBadge={false}
   bind:value={orderTypes}
   options={[
-    { value: 'pickup', label: 'Pickup', icon: 'icon-[ion--bag-handle-outline]' },
-    { value: 'delivery', label: 'Delivery', icon: 'icon-[ion--bicycle-outline]' },
-    { value: 'dining', label: 'Dining', icon: 'icon-[ion--restaurant-outline]' },
-    { value: 'shipping', label: 'Shipping', icon: 'icon-[ion--cube-outline]' },
-    { value: 'retail', label: 'Retail', icon: 'icon-[ion--storefront-outline]' },
+    { value: 'pickup', label: 'Pickup' },
+    { value: 'delivery', label: 'Delivery' },
+    { value: 'dining', label: 'Dining' },
   ]}
 />
 ```
@@ -196,7 +194,7 @@ type IconTileOption = {
 		iconBadge = true,
 		columns,
 		showCheck = true,
-		selectedIcon = 'icon-[ion--checkmark]',
+		selectedIcon,
 		selectedIconClass,
 		disabled = false,
 		error,
@@ -296,7 +294,22 @@ type IconTileOption = {
 							checkClass
 						)}
 					>
-						<Icon icon={selectedIcon} class={twMerge(tokens.checkIcon, selectedIconClass)} />
+						{#if selectedIcon}
+							<Icon icon={selectedIcon} class={twMerge(tokens.checkIcon, selectedIconClass)} />
+						{:else}
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="3"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+								class={twMerge(tokens.checkIcon, selectedIconClass)}
+							>
+								<path d="M5 13l4 4L19 7" />
+							</svg>
+						{/if}
 					</span>
 				{/if}
 

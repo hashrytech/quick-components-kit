@@ -23,7 +23,7 @@ Enter / Space (or Arrow keys) to cycle. When `name` is set, a hidden input mirro
 - `suffix?: string` — End text after the gold word, shared by all options. Overridden per choice by `option.suffix`.
 - `icon?: string` — Iconify class shown inside the gold word, shared by all options. Overridden per choice by `option.icon`.
 - `hint?: string` — Helper line under the sentence. Default: `'tap the gold word to switch'`. Pass `''` to hide.
-- `hintIcon?: string` — Iconify class shown before the hint. Default: `'icon-[ion--hand-left-outline]'`.
+- `hintIcon?: string` — Iconify class shown before the hint. Omit to use the built-in raw-SVG pointer (no icon-set dependency).
 - `size?: 'sm' | 'md' | 'lg'` — Sentence text size. Default: `'md'`.
 - `disabled?: boolean` — Disables cycling.
 - `error?: string` — Error message shown below; also sets `aria-invalid`/`aria-describedby`.
@@ -63,8 +63,8 @@ type InlineSentenceOption = {
   labelText="How the discount applies"
   bind:value={mode}
   options={[
-    { value: 'automatic', label: 'automatic', icon: 'icon-[ion--flash]', prefix: 'This discount is', suffix: '— it applies on its own the moment an order qualifies.' },
-    { value: 'coupon', label: 'a coupon code', icon: 'icon-[ion--pricetag]', prefix: 'This discount needs', suffix: '— it only applies when a matching code is entered.' },
+    { value: 'automatic', label: 'automatic', prefix: 'This discount is', suffix: '— it applies on its own the moment an order qualifies.' },
+    { value: 'coupon', label: 'a coupon code', prefix: 'This discount needs', suffix: '— it only applies when a matching code is entered.' },
   ]}
 />
 ```
@@ -140,7 +140,7 @@ type InlineSentenceOption = {
 		suffix,
 		icon,
 		hint = 'tap the gold word to switch',
-		hintIcon = 'icon-[ion--hand-left-outline]',
+		hintIcon,
 		size = 'md',
 		disabled = false,
 		error,
@@ -256,7 +256,23 @@ type InlineSentenceOption = {
 				id={effectiveId ? `${effectiveId}-hint` : undefined}
 				class={twMerge('mt-2 flex items-center gap-1 text-xs text-neutral-400', hintClass)}
 			>
-				{#if hintIcon}<Icon icon={hintIcon} class="size-3.5" />{/if}
+				{#if hintIcon}
+					<Icon icon={hintIcon} class="size-3.5" />
+				{:else}
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+						class="size-3.5"
+					>
+						<path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+						<path d="m13 13 6 6" />
+					</svg>
+				{/if}
 				{hint}
 			</p>
 		{/if}

@@ -22,7 +22,7 @@ and roving `tabindex`. The label is rendered as a `<p>` and wired to the group v
 - `size?: 'sm' | 'md' | 'lg'` — Padding, icon, and text size. Default: `'md'`.
 - `columns?: number` — Equal columns from the `sm` breakpoint up (collapses to one column on mobile). Omit for a responsive auto-fit grid.
 - `showCheck?: boolean` — Show the check indicator on the active card. Default: `true`.
-- `checkIcon?: string` — Iconify class for the check indicator. Default: `'icon-[ion--checkmark]'`.
+- `checkIcon?: string` — Iconify class for the check indicator. Omit to use the built-in raw-SVG checkmark (no icon-set dependency).
 - `disabled?: boolean` — Disables the whole group.
 - `error?: string` — Error message shown below; also sets `aria-invalid`/`aria-describedby`.
 - `onchange?: (value: string | number) => void` — Called with the newly selected value.
@@ -46,7 +46,7 @@ type ChoiceCardOption = {
   value: string | number;     // selected value
   title: string;              // card heading
   description?: string;       // one-line explanation
-  icon?: string;              // Iconify class string, e.g. 'icon-[ion--flash]'
+  icon?: string;              // Iconify class string for the glyph (from your installed icon set)
   iconClass?: ClassNameValue; // extra classes for this card's icon
   disabled?: boolean;         // disables this individual card
 };
@@ -65,8 +65,8 @@ type ChoiceCardOption = {
   labelText="How the discount applies"
   bind:value={mode}
   options={[
-    { value: 'automatic', title: 'Automatic', description: 'Applies on its own when the order qualifies.', icon: 'icon-[ion--flash]' },
-    { value: 'coupon', title: 'Coupon code', description: 'Only applies when a matching code is entered.', icon: 'icon-[ion--pricetag]' },
+    { value: 'automatic', title: 'Automatic', description: 'Applies on its own when the order qualifies.' },
+    { value: 'coupon', title: 'Coupon code', description: 'Only applies when a matching code is entered.' },
   ]}
 />
 ```
@@ -163,7 +163,7 @@ type ChoiceCardOption = {
 		size = 'md',
 		columns,
 		showCheck = true,
-		checkIcon = 'icon-[ion--checkmark]',
+		checkIcon,
 		disabled = false,
 		error,
 		onchange,
@@ -316,7 +316,22 @@ type ChoiceCardOption = {
 								checkClass
 							)}
 						>
-							<Icon icon={checkIcon} class="size-4" />
+							{#if checkIcon}
+								<Icon icon={checkIcon} class="size-4" />
+							{:else}
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="3"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									aria-hidden="true"
+									class="size-4"
+								>
+									<path d="M5 13l4 4L19 7" />
+								</svg>
+							{/if}
 						</span>
 					{/if}
 				</div>
