@@ -1,3 +1,10 @@
+## [0.40.1](https://github.com/hashrytech/quick-components-kit/compare/v0.40.0...v0.40.1) (2026-06-24)
+
+
+### Bug Fixes
+
+* **components:** replace built-in ion icons with raw SVG ([9706371](https://github.com/hashrytech/quick-components-kit/commit/97063710a37cf1c13b72050c5d46d6884f9f8c6a))
+
 # [0.40.0](https://github.com/hashrytech/quick-components-kit/compare/v0.39.0...v0.40.0) (2026-06-24)
 
 
