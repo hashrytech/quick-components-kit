@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { dragDropZone, itemId } from './index.js';
+import { dragDropZone, itemId, registerContextOnElement, unregisterContextFromElement } from './index.js';
+import type { Zone } from './context.js';
 
 // ─── jsdom stubs ──────────────────────────────────────────────────────────────
 
@@ -725,6 +726,214 @@ describe('DragDropEvent info', () => {
         const startEvent = events.find((e) => (e.detail as { info: { trigger: string } }).info.trigger === 'dragStarted');
         expect((startEvent!.detail as { info: { zoneId: string } }).info.zoneId).toBe('test-zone');
 
+        action.destroy();
+    });
+});
+
+// ─── cross-zone registration (deferred when the context registers late) ────────
+
+describe('cross-zone registration', () => {
+    afterEach(() => { document.body.innerHTML = ''; });
+
+    function makeMiniContext() {
+        const zones = new Map<string, Zone<Item>>();
+        return {
+            registerZone: (z: Zone<Item>) => zones.set(z.zoneId, z),
+            deregisterZone: (id: string) => zones.delete(id),
+            getRegisteredZones: () => [...zones.values()],
+            getActiveDrag: () => null,
+            setActiveDrag: () => {}
+        };
+    }
+
+    function makeChildZone(parent: HTMLElement, items: Item[], group: string) {
+        const node = document.createElement('ul');
+        for (const _item of items) {
+            const li = document.createElement('li');
+            const handle = document.createElement('button');
+            handle.dataset.dndHandle = 'true';
+            li.appendChild(handle);
+            node.appendChild(li);
+        }
+        parent.appendChild(node);
+        const action = dragDropZone<Item>(node, { items, getItemId: itemId('id'), group });
+        return { node, action };
+    }
+
+    it('registers a zone even when the context is registered AFTER the zone action runs', async () => {
+        const parent = document.createElement('div');
+        document.body.appendChild(parent);
+
+        // Zones created FIRST — the parent has no registered context yet, mirroring
+        // Svelte mounting a child zone before the parent provider's action runs.
+        const a = makeChildZone(parent, [makeItem('a')], 'cols');
+        const b = makeChildZone(parent, [makeItem('b')], 'cols');
+
+        const ctx = makeMiniContext();
+        expect(ctx.getRegisteredZones()).toHaveLength(0);
+
+        // Context registered LATE on the ancestor — the deferred re-resolve must
+        // still pick it up and register both zones (the cross-zone drop bug fix).
+        registerContextOnElement(parent, ctx);
+        await Promise.resolve(); // flush the queueMicrotask(registerInContext)
+
+        const zones = ctx.getRegisteredZones();
+        expect(zones).toHaveLength(2);
+        expect(zones.every((z) => z.group === 'cols')).toBe(true);
+
+        a.action.destroy();
+        b.action.destroy();
+        unregisterContextFromElement(parent);
+        expect(ctx.getRegisteredZones()).toHaveLength(0); // destroy deregisters
+    });
+
+    it('registers immediately when the context already exists (no deferral needed)', () => {
+        const parent = document.createElement('div');
+        document.body.appendChild(parent);
+        const ctx = makeMiniContext();
+        registerContextOnElement(parent, ctx); // context FIRST
+
+        const a = makeChildZone(parent, [makeItem('a')], 'cols');
+        expect(ctx.getRegisteredZones()).toHaveLength(1); // synchronous, no microtask
+
+        a.action.destroy();
+        unregisterContextFromElement(parent);
+    });
+});
+
+// ─── deferCrossZoneInsert (item not shown in target until drop) ────────────────
+
+describe('deferCrossZoneInsert', () => {
+    afterEach(() => { document.body.innerHTML = ''; vi.restoreAllMocks(); });
+
+    function miniCtx() {
+        const zones = new Map<string, Zone<Item>>();
+        return {
+            registerZone: (z: Zone<Item>) => zones.set(z.zoneId, z),
+            deregisterZone: (id: string) => zones.delete(id),
+            getRegisteredZones: () => [...zones.values()],
+            getActiveDrag: () => null,
+            setActiveDrag: () => {}
+        };
+    }
+
+    function buildZone(parent: HTMLElement, items: Item[], defer: boolean) {
+        const node = document.createElement('ul');
+        for (const _it of items) {
+            const li = document.createElement('li');
+            const handle = document.createElement('button');
+            handle.dataset.dndHandle = 'true';
+            li.appendChild(handle);
+            node.appendChild(li);
+        }
+        parent.appendChild(node);
+        const action = dragDropZone<Item>(node, {
+            items, getItemId: itemId('id'), group: 'g',
+            ...(defer ? { deferCrossZoneInsert: true } : {})
+        });
+        return { node, action };
+    }
+
+    function triggerOf(e: { detail: unknown }): string {
+        return (e.detail as { info: { trigger: string } }).info.trigger;
+    }
+
+    function run(defer: boolean) {
+        const parent = document.createElement('div');
+        document.body.appendChild(parent);
+        const ctx = miniCtx();
+        registerContextOnElement(parent, ctx); // context FIRST => synchronous zone registration
+
+        const src = buildZone(parent, [makeItem('a')], defer);
+        const tgt = buildZone(parent, [makeItem('b')], defer);
+
+        // Geometry: source on the left (x 0..100), target on the right (x 200..300).
+        mockRect(src.node, { top: 0, bottom: 100, left: 0, right: 100, width: 100, height: 100 });
+        mockRect(tgt.node, { top: 0, bottom: 100, left: 200, right: 300, width: 100, height: 100 });
+        mockRect(src.node.children[0] as HTMLElement, { top: 0, bottom: 50, left: 0, right: 100, width: 100, height: 50 });
+        mockRect(tgt.node.children[0] as HTMLElement, { top: 0, bottom: 50, left: 200, right: 300, width: 100, height: 50 });
+
+        const srcEvents = collectEvents(src.node);
+        const tgtEvents = collectEvents(tgt.node);
+
+        pointerDown(src.node.children[0] as HTMLElement, 50, 25);
+        pointerMove(50, 30);   // begin drag, still inside source
+        pointerMove(250, 50);  // hover into the target zone
+
+        const result = {
+            tgtDraggedOver: tgtEvents.filter((e) => triggerOf(e) === 'draggedOverIndex').length,
+            srcRemoved: srcEvents.filter((e) => triggerOf(e) === 'removedFromZone').length
+        };
+
+        pointerUp(250, 50);
+        src.action.destroy();
+        tgt.action.destroy();
+        unregisterContextFromElement(parent);
+        return result;
+    }
+
+    it('does NOT insert the dragged item into the target during hover; source still shows it removed', () => {
+        const r = run(true);
+        expect(r.tgtDraggedOver).toBe(0);            // target list unchanged until drop
+        expect(r.srcRemoved).toBeGreaterThanOrEqual(1); // source shows the gap during drag
+    });
+
+    it('default (flag omitted) DOES live-insert into the target during hover', () => {
+        const r = run(false);
+        expect(r.tgtDraggedOver).toBeGreaterThanOrEqual(1); // locks the unchanged default
+    });
+});
+
+// ─── placeholder helpers: hideDraggedSource + dragstart onActiveItemChange + cursor ──
+
+describe('hideDraggedSource + dragstart signals', () => {
+    afterEach(() => { document.body.innerHTML = ''; vi.restoreAllMocks(); });
+
+    function startDragOn(node: HTMLElement) {
+        const item = node.children[0] as HTMLElement;
+        mockRect(item, { top: 0, bottom: 40, left: 0, right: 100, width: 100, height: 40 });
+        mockRect(node, { top: 0, bottom: 200, left: 0, right: 100, width: 100, height: 200 });
+        pointerDown(item, 50, 20);
+        pointerMove(50, 30); // exceeds 4px threshold -> startPointerDrag
+        return item;
+    }
+
+    it('hides the dragged source node by default', () => {
+        const { node, action } = makeZone([makeItem('a'), makeItem('b')]);
+        const item = startDragOn(node);
+        expect(item.style.visibility).toBe('hidden');
+        pointerUp(50, 30);
+        action.destroy();
+    });
+
+    it('does NOT hide the source when hideDraggedSource:false (and drop is a no-op safe path)', () => {
+        const { node, action } = makeZone([makeItem('a'), makeItem('b')], { hideDraggedSource: false });
+        const item = startDragOn(node);
+        expect(item.style.visibility).not.toBe('hidden');
+        expect(() => pointerUp(50, 30)).not.toThrow();
+        action.destroy();
+    });
+
+    it('fires onActiveItemChange with the item at drag start and undefined at end', () => {
+        const calls: Array<{ id: string | undefined; trigger: string | undefined }> = [];
+        const { node, action } = makeZone([makeItem('a')], {
+            onActiveItemChange: (d) => calls.push({ id: d.item?.id, trigger: d.trigger })
+        });
+        startDragOn(node);
+        expect(calls[0]).toEqual({ id: 'a', trigger: 'dragStarted' });
+        pointerUp(50, 30);
+        expect(calls.at(-1)).toEqual({ id: undefined, trigger: undefined });
+        action.destroy();
+    });
+
+    it('sets the grabbing cursor on the handle at pointerdown and restores it (press without drag)', () => {
+        const { node, action } = makeZone([makeItem('a')]);
+        const item = node.children[0] as HTMLElement;
+        const handle = item.querySelector('[data-dnd-handle]') as HTMLElement;
+        pointerDown(item, 50, 20);
+        expect(handle.style.cursor).toBe('grabbing'); // immediate, before any move
+        pointerUp(50, 20); // released before the drag threshold -> resetDragState restores
+        expect(handle.style.cursor).not.toBe('grabbing');
         action.destroy();
     });
 });

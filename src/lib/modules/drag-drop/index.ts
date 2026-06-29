@@ -7,6 +7,8 @@ import {
 import {
     generateZoneId,
     resolveContextFromElement,
+    registerContextOnElement,
+    unregisterContextFromElement,
     isValidTarget,
     findZoneContainingPointer,
     type InternalDragDropContext,
@@ -41,8 +43,14 @@ import {
 } from './preview.js';
 
 export type { Zone };
-export type { DragDropContext } from './context.js';
+export type { DragDropContext, InternalDragDropContext } from './context.js';
 export { createDragDropContext } from './context.js';
+// Establish a multi-zone cross-zone context in a consuming app: call
+// ``createDragDropContext`` during component init, then register it on an
+// ancestor element of the sibling zones so their ``dragDropZone`` actions resolve
+// it via the DOM (the actions don't read Svelte ``getContext``). The single-zone
+// ``DragDropProvider`` uses these internally; multi-zone consumers need them too.
+export { registerContextOnElement, unregisterContextFromElement } from './context.js';
 
 // ─── Public types ────────────────────────────────────────────────────────────
 
@@ -98,6 +106,22 @@ export type DragDropZoneOptions<T extends object> = {
     /** Reorder direction. Use `'x'` for rows and `'y'` for stacked lists. */
     axis?: 'x' | 'y' | 'both';
     swapThreshold?: number;
+    /**
+     * Cross-zone only. When true, a dragged item is NOT inserted into a TARGET
+     * zone's list while hovering — only the floating preview moves; the item is
+     * committed to the target on drop (finalize). The source zone still shows the
+     * item removed during the drag, and within-a-single-zone live reordering is
+     * unaffected. Default false preserves the existing live cross-zone preview.
+     */
+    deferCrossZoneInsert?: boolean;
+    /**
+     * When false, the dragged source DOM node is NOT hidden (visibility:hidden)
+     * during the drag, so a consumer can render that slot as its own
+     * placeholder/gap (identify the dragged item via ``onActiveItemChange``, which
+     * fires once with the item at drag start and once with ``undefined`` at the
+     * end). Default true preserves the existing hide-the-source behaviour.
+     */
+    hideDraggedSource?: boolean;
     /** Restricts cross-zone movement; items can only be sorted within this zone. */
     lockToContainer?: boolean;
     /** Keeps preview movement, reordering, and drop resolution inside this zone's bounds. */
@@ -187,8 +211,10 @@ export function dragDropZone<T extends object>(
     const ownerDocument = node.ownerDocument;
     const resolvedZoneId = initialOptions.zoneId ?? generateZoneId();
 
-    // Context resolved by walking the DOM (parent provider registers via WeakMap)
-    const ctx = resolveContextFromElement<T>(node);
+    // Context resolved by walking the DOM (parent provider registers via WeakMap).
+    // ``let`` (not ``const``): a sibling/ancestor provider may register its context
+    // AFTER this zone's action runs, so we re-resolve on setup (see registerInContext).
+    let ctx = resolveContextFromElement<T>(node);
 
     // Save initial cursor/select styles for restoration
     const rootEl = ownerDocument.documentElement;
@@ -213,6 +239,7 @@ export function dragDropZone<T extends object>(
     let sourceIndex: number | null = null;
     let sourceElement: HTMLElement | null = null;
     let pointerStart = { x: 0, y: 0 };
+    let pressedHandle: HTMLElement | null = null;
     let draggedIndex: number | null = null;
     let previewItems: T[] = [...options.items];
     let originalItems: T[] = [...options.items];
@@ -238,6 +265,7 @@ export function dragDropZone<T extends object>(
     // Cross-zone state
     let currentZoneId = resolvedZoneId;
     let ghostTargetZoneOriginalItems: T[] = [];
+    let destroyed = false;
 
     // Keyboard drag state
     let isKeyboardDragging = false;
@@ -487,7 +515,7 @@ export function dragDropZone<T extends object>(
         lastDragClientX = startPoint.clientX;
         lastDragClientY = startPoint.clientY;
 
-        savedSourceStyle = hideDragSource(sourceElement);
+        savedSourceStyle = (options.hideDraggedSource ?? true) ? hideDragSource(sourceElement) : null;
         sourceEl = sourceElement;
 
         if (options.dragClass) sourceElement.classList.add(options.dragClass);
@@ -503,6 +531,8 @@ export function dragDropZone<T extends object>(
         runAutoScroll(startPoint.clientX, startPoint.clientY);
 
         options.onDragStart?.({ item: previewItems[sourceIndex], index: sourceIndex });
+        // Let consumers learn the dragged item id immediately (for placeholder rendering).
+        options.onActiveItemChange?.({ item: previewItems[sourceIndex], index: sourceIndex, trigger: 'dragStarted' });
 
         if (ctx) {
             ctx.setActiveDrag({
@@ -525,6 +555,14 @@ export function dragDropZone<T extends object>(
     function resetDragState(): void {
         isDragging = false;
         stopAutoScroll();
+
+        // Restore the handle cursor (covers the press-without-drag path too).
+        if (pressedHandle) {
+            if (pressedHandle.dataset.dndGrabPrev) pressedHandle.style.cursor = pressedHandle.dataset.dndGrabPrev;
+            else pressedHandle.style.removeProperty('cursor');
+            delete pressedHandle.dataset.dndGrabPrev;
+            pressedHandle = null;
+        }
 
         if (sourceEl) {
             if (savedSourceStyle) restoreDragSource(sourceEl, savedSourceStyle);
@@ -589,8 +627,9 @@ export function dragDropZone<T extends object>(
 
     function getValidTargetZones(): Zone<T>[] {
         if (!ctx || options.lockToContainer || options.constrainToContainer) return [];
-        return ctx.getRegisteredZones().filter((z) =>
-            isValidTarget(ctx, options.group, z, resolvedZoneId)
+        const resolved = ctx; // ``ctx`` is now ``let``; pin a non-null local for the closure
+        return resolved.getRegisteredZones().filter((z) =>
+            isValidTarget(resolved, options.group, z, resolvedZoneId)
         );
     }
 
@@ -669,28 +708,33 @@ export function dragDropZone<T extends object>(
             currentZoneId = targetZone.zoneId;
             setAriaDropEffect(targetZone.element, 'move', options.disableAria ?? false);
 
-            // Compute insertion in target zone
-            const targetChildren = Array.from(targetZone.element.children).filter(
-                (c): c is HTMLElement => c instanceof HTMLElement && c.dataset.dndItem === 'true'
-            );
-            const targetRects = new Map(targetChildren.map((c) => [c, c.getBoundingClientRect()]));
-            const targetInsertIdx = getInsertionIndex(
-                targetChildren, targetRects, -1, clientX, clientY,
-                options.axis ?? 'y', options.swapThreshold ?? 0.5
-            );
-            const draggedItem2 = previewItems[draggedIndex] ?? ({} as T);
-            const targetItems = [...ghostTargetZoneOriginalItems];
-            const clampedIdx = Math.min(targetInsertIdx, targetItems.length);
-            targetItems.splice(clampedIdx, 0, draggedItem2);
+            // Live target preview: insert the ghost into the target zone on hover.
+            // Skipped under ``deferCrossZoneInsert`` so the item only appears in the
+            // target on drop (handlePointerUp recomputes the index from the live DOM).
+            if (!(options.deferCrossZoneInsert ?? false)) {
+                // Compute insertion in target zone
+                const targetChildren = Array.from(targetZone.element.children).filter(
+                    (c): c is HTMLElement => c instanceof HTMLElement && c.dataset.dndItem === 'true'
+                );
+                const targetRects = new Map(targetChildren.map((c) => [c, c.getBoundingClientRect()]));
+                const targetInsertIdx = getInsertionIndex(
+                    targetChildren, targetRects, -1, clientX, clientY,
+                    options.axis ?? 'y', options.swapThreshold ?? 0.5
+                );
+                const draggedItem2 = previewItems[draggedIndex] ?? ({} as T);
+                const targetItems = [...ghostTargetZoneOriginalItems];
+                const clampedIdx = Math.min(targetInsertIdx, targetItems.length);
+                targetItems.splice(clampedIdx, 0, draggedItem2);
 
-            targetZone.element.dispatchEvent(
-                new CustomEvent<DragDropEvent<T>>('consider', {
-                    detail: {
-                        items: targetItems,
-                        info: { id: options.getItemId(draggedItem2), source, trigger: 'draggedOverIndex', zoneId: targetZone.zoneId }
-                    }
-                })
-            );
+                targetZone.element.dispatchEvent(
+                    new CustomEvent<DragDropEvent<T>>('consider', {
+                        detail: {
+                            items: targetItems,
+                            info: { id: options.getItemId(draggedItem2), source, trigger: 'draggedOverIndex', zoneId: targetZone.zoneId }
+                        }
+                    })
+                );
+            }
         }
     }
 
@@ -706,6 +750,14 @@ export function dragDropZone<T extends object>(
         const handleSel = options.handleSelector ?? '[data-dnd-handle]';
         const handle = event.target instanceof Element ? event.target.closest(handleSel) : null;
         if (!handle) return;
+
+        // Immediate "grabbing" (closed hand) feedback on press, before the drag
+        // threshold is crossed; restored on every exit path in resetDragState.
+        pressedHandle = handle instanceof HTMLElement ? handle : null;
+        if (pressedHandle) {
+            pressedHandle.dataset.dndGrabPrev = pressedHandle.style.cursor;
+            pressedHandle.style.cursor = 'grabbing';
+        }
 
         const nextIndex = getZoneIndex(event.target);
         const nextElement = getZoneItem(event.target);
@@ -886,6 +938,7 @@ export function dragDropZone<T extends object>(
         }
 
         options.onDragStart?.({ item, index });
+        options.onActiveItemChange?.({ item, index, trigger: 'dragStarted' });
         dispatchEvent('consider', previewItems, index, 'dragStarted', 'keyboard');
         emitAnnouncement(previewItems, index, 'dragStarted', 'keyboard');
     }
@@ -1036,14 +1089,30 @@ export function dragDropZone<T extends object>(
 
     // ── Setup ─────────────────────────────────────────────────────────────────
 
+    function registerInContext(): void {
+        if (destroyed) return;
+        // Re-resolve: a context-provider element may register AFTER this zone's
+        // action runs (Svelte does not guarantee a parent's ``use:`` action fires
+        // before a child's), so the initial resolve at line ~199 can miss it.
+        if (!ctx) ctx = resolveContextFromElement<T>(node);
+        if (ctx) {
+            ctx.registerZone({
+                zoneId: resolvedZoneId,
+                group: options.group,
+                element: node,
+                getItems: () => previewItems,
+                isActive: () => isDragging
+            });
+        }
+    }
+
     if (ctx) {
-        ctx.registerZone({
-            zoneId: resolvedZoneId,
-            group: options.group,
-            element: node,
-            getItems: () => previewItems,
-            isActive: () => isDragging
-        });
+        registerInContext();
+    } else {
+        // Defer one microtask: an ancestor provider registers its context during the
+        // same synchronous mount flush, so it is resolvable by the time this fires —
+        // long before any user drag. A no-op when there is genuinely no provider.
+        queueMicrotask(registerInContext);
     }
 
     syncChildren();
@@ -1063,6 +1132,7 @@ export function dragDropZone<T extends object>(
             syncChildren();
         },
         destroy() {
+            destroyed = true;
             if (ctx) ctx.deregisterZone(resolvedZoneId);
             node.removeEventListener('pointerdown', handlePointerDown, true);
             node.removeEventListener('keydown', handleKeyDown);

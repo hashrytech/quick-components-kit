@@ -87,6 +87,9 @@ export function createDragPreview(
   previewEl.style.willChange = 'transform';
   previewEl.style.boxSizing = 'border-box';
   previewEl.style.cursor = 'grabbing';
+  // The floating clone is detached from its list, so a cloned <li> would render a
+  // stray UA list marker (disc). Suppress it for any list-item-based item.
+  previewEl.style.listStyle = 'none';
 
   if (options.previewClass) {
     previewEl.classList.add(options.previewClass);
