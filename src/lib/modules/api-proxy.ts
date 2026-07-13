@@ -36,7 +36,13 @@ export interface RestApiProxyConfig {
 
 
 export const defaultRequestHeaders = ['authorization', 'content-type', 'accept', 'accept-language', 'cookie', 'x-csrftoken', 'referer', 'user-agent', 'x-requested-with'];
-export const defaultResponseHeaders = ['content-type', 'content-length', 'cache-control', 'etag'];
+export const defaultResponseHeaders = ['content-type', 'cache-control', 'etag'];
+// fetch() transparently decompresses gzip/br upstream bodies but leaves the
+// upstream's Content-Encoding and (compressed) Content-Length in the response
+// headers. Re-serving those with the decoded body truncates or corrupts the
+// response in the browser, so they must never be forwarded — the runtime
+// recomputes framing for the proxied Response.
+const strippedResponseHeaders = ['content-encoding', 'content-length', 'transfer-encoding', 'connection'];
 
 /**
  * Creates a set of SvelteKit request handlers for proxying API calls securely.
@@ -112,22 +118,19 @@ export function createProxyHandlers(config: RestApiProxyConfig): Record<string, 
 			await new Promise((resolve) => setTimeout(resolve, baseDelay * 2 ** (attempt - 1)));
 		}
 
-		if(config.safeResponseHeaders && config.safeResponseHeaders.length > 0) {
-			const responseHeaders = new Headers();
-			for (const [key, value] of proxyResponse.headers) {
-				if (config.safeResponseHeaders.includes(key.toLowerCase()) && value != null) {
-					responseHeaders.set(key, value);
-				}
-			}
+		const allowedHeaders = config.safeResponseHeaders && config.safeResponseHeaders.length > 0 ? config.safeResponseHeaders : null;
+		const responseHeaders = new Headers();
+		for (const [key, value] of proxyResponse.headers) {
+			const lowerKey = key.toLowerCase();
+			if (strippedResponseHeaders.includes(lowerKey)) continue;
+			if (allowedHeaders && !allowedHeaders.includes(lowerKey)) continue;
+			if (value != null) responseHeaders.set(key, value);
+		}
 
-			return new Response(proxyResponse.body, {
-				status: proxyResponse.status,
-				headers: responseHeaders
-			});
-		}
-		else{
-			return proxyResponse;
-		}
+		return new Response(proxyResponse.body, {
+			status: proxyResponse.status,
+			headers: responseHeaders
+		});
 	}
 
 	return {
