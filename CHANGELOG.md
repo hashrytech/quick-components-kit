@@ -1,3 +1,10 @@
+# [0.41.0](https://github.com/hashrytech/quick-components-kit/compare/v0.40.1...v0.41.0) (2026-06-29)
+
+
+### Features
+
+* **drag-drop:** add cross-zone drag support with deferCrossZoneInsert and hideDraggedSource options ([2cb2ed0](https://github.com/hashrytech/quick-components-kit/commit/2cb2ed01c1556a2587e55745868ac8479e07b951))
+
 ## [0.40.1](https://github.com/hashrytech/quick-components-kit/compare/v0.40.0...v0.40.1) (2026-06-24)
 
 
