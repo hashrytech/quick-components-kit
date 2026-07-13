@@ -1,3 +1,10 @@
+## [0.41.1](https://github.com/hashrytech/quick-components-kit/compare/v0.41.0...v0.41.1) (2026-07-13)
+
+
+### Bug Fixes
+
+* **api-proxy:** strip content-encoding and framing headers from proxied responses ([62a2a87](https://github.com/hashrytech/quick-components-kit/commit/62a2a8763336512d2fbcc2b710cfd80aa2aca4c3))
+
 # [0.41.0](https://github.com/hashrytech/quick-components-kit/compare/v0.40.1...v0.41.0) (2026-06-29)
 
 
