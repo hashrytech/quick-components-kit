@@ -13,6 +13,26 @@ function getInput(): HTMLInputElement {
 const baseProps = { id: 'field', 'data-testid': 'field', debounceDelay: 0 } as const;
 
 describe('MoneyInput', () => {
+	it('displays a loaded 4dp value as 2dp without any interaction', () => {
+		render(MoneyInputHarness, { value: '1250.0000', inputProps: { ...baseProps } });
+
+		expect(getInput().value).toBe('1250.00');
+	});
+
+	it('displays a 4dp value pushed in after a save refresh as 2dp', async () => {
+		const { rerender } = render(MoneyInputHarness, { value: '10.00', inputProps: { ...baseProps } });
+
+		await rerender({ value: '25.0000' });
+
+		expect(getInput().value).toBe('25.00');
+	});
+
+	it('does not rewrite the bound model on load — only the display', () => {
+		render(MoneyInputHarness, { value: '1250.0000', inputProps: { ...baseProps } });
+
+		expect(getBoundValue()).toBe('1250.0000');
+	});
+
 	it('normalizes a loaded 4dp value to 2dp on blur', async () => {
 		render(MoneyInputHarness, { value: '1250.0000', inputProps: { ...baseProps } });
 

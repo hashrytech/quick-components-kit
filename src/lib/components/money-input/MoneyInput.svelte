@@ -32,6 +32,23 @@
 	// items are legitimate; typed negatives clamp to the floor on commit.
 	const effectiveMin = $derived(allowNegative ? min : Math.max(min ?? 0, 0));
 
+	// Display normalization: a bound value carrying MORE than 2 decimals
+	// can only come from outside the field (initial load, or the caller
+	// replacing its model with a fresh 4dp API response after a save) —
+	// typing is already capped at 2dp. Render those as 2dp without
+	// mutating the caller's model; the model itself only changes when the
+	// user edits (commit) or blurs the field.
+	function toDisplay(bound: string | number | null | undefined): string {
+		if (bound === null || bound === undefined || bound === '') return '';
+		const text = String(bound);
+		if (!/^-?\d+\.\d{3,}$/.test(text)) return text;
+		try {
+			return new Decimal(text).toFixed(2, Decimal.ROUND_HALF_UP);
+		} catch {
+			return text;
+		}
+	}
+
 	// 2dp-on-entry policy: normalize whatever is committed at blur, so a
 	// loaded 4dp value ("1250.0000") becomes "1250.00" the moment the
 	// field is touched. Empty stays empty (required-ness is the caller's
@@ -57,7 +74,7 @@
 </script>
 
 <TextInput
-	bind:value
+	bind:value={() => toDisplay(value), (v) => (value = v)}
 	type="number"
 	inputmode="decimal"
 	step={0.01}
