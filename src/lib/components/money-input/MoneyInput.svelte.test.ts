@@ -67,6 +67,22 @@ describe('MoneyInput', () => {
 		expect(getBoundValue()).toBe('0.00');
 	});
 
+	it('clamps a loaded negative value when the field is blurred', async () => {
+		render(MoneyInputHarness, { value: '-5.0000', inputProps: { ...baseProps } });
+
+		await fireEvent.blur(getInput());
+
+		expect(getBoundValue()).toBe('0.00');
+	});
+
+	it('does not let a negative min bypass the default non-negative policy', async () => {
+		render(MoneyInputHarness, { value: '-5.0000', inputProps: { ...baseProps, min: -10 } });
+
+		await fireEvent.blur(getInput());
+
+		expect(getBoundValue()).toBe('0.00');
+	});
+
 	it('accepts negatives when allowNegative is set', async () => {
 		render(MoneyInputHarness, { value: '', inputProps: { ...baseProps, allowNegative: true } });
 
