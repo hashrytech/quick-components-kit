@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { TextInput } from '$lib/components/text-input/index.js';
+	import { MoneyInput } from '$lib/components/money-input/index.js';
 	import Button from '$lib/components/button/Button.svelte';
 	import LinkButton from '$lib/components/link-button/LinkButton.svelte';
 	import HamburgerMenu from '$lib/components/hamburger-menu/HamburgerMenu.svelte';
@@ -51,6 +52,14 @@
 	let sentenceMode = $state('automatic');
 	let sentenceScope = $state('first');
 	let sentenceBilling = $state('monthly');
+	/* Money Input */
+	let moneyBasic = $state('');
+	let moneyLoaded = $state('1250.0000');
+	let moneyAdjustment = $state('-5.50');
+	let moneyMinFee = $state('');
+	let moneyDisabled = $state('99.99');
+	let moneyRequired = $state('');
+
 	let datePickerOpen = $state(false);
 	let datePickerStart = $state('2026-06-01');
 	let datePickerEnd = $state('2026-06-12');
@@ -282,6 +291,73 @@
 		rightIcon="icon-[ion--add-circle]"
 	/>
 </div>
+<hr />
+
+<div class="flex flex-col gap-4 p-4">
+	<p class="font-medium">
+		Money Input (2dp entry policy — commits to two decimal places on blur, floors at 0 by default)
+	</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-6">
+		<div class="flex flex-col gap-1">
+			<MoneyInput
+				id="money-basic"
+				labelText="Price"
+				placeholder="0.00"
+				leftIcon="icon-[ion--cash-outline]"
+				bind:value={moneyBasic}
+			/>
+			<p class="text-sm text-neutral-600">Value: {moneyBasic === '' ? '—' : moneyBasic}</p>
+		</div>
+
+		<div class="flex flex-col gap-1">
+			<MoneyInput
+				id="money-loaded"
+				labelText="Loaded 4dp value (blur to normalize)"
+				bind:value={moneyLoaded}
+			/>
+			<p class="text-sm text-neutral-600">Value: {moneyLoaded}</p>
+		</div>
+
+		<div class="flex flex-col gap-1">
+			<MoneyInput
+				id="money-adjustment"
+				labelText="Adjustment (allowNegative)"
+				allowNegative
+				bind:value={moneyAdjustment}
+			/>
+			<p class="text-sm text-neutral-600">Value: {moneyAdjustment}</p>
+		</div>
+
+		<div class="flex flex-col gap-1">
+			<MoneyInput
+				id="money-min-fee"
+				labelText="Fee (min 5.00)"
+				placeholder="5.00 or more"
+				min={5}
+				bind:value={moneyMinFee}
+			/>
+			<p class="text-sm text-neutral-600">Value: {moneyMinFee === '' ? '—' : moneyMinFee}</p>
+		</div>
+	</div>
+
+	<p class="font-medium">Sizes, error and disabled states</p>
+
+	<div class="flex flex-row flex-wrap items-start gap-6">
+		<MoneyInput id="money-sm" labelText="Small" size="sm" placeholder="0.00" />
+		<MoneyInput id="money-lg" labelText="Large" size="lg" placeholder="0.00" />
+		<MoneyInput
+			id="money-required"
+			labelText="Amount (required)"
+			placeholder="0.00"
+			required
+			error="An amount is required."
+			bind:value={moneyRequired}
+		/>
+		<MoneyInput id="money-disabled" labelText="Disabled" disabled bind:value={moneyDisabled} />
+	</div>
+</div>
+
 <hr />
 
 <div class="flex flex-col gap-4 p-4">

@@ -2,6 +2,7 @@
 
 export * from './components/icon/index.js';
 export * from './components/text-input/index.js';
+export * from './components/money-input/index.js';
 export * from './components/text-area/index.js';
 export * from './components/button/index.js';
 export * from './components/link-button/index.js';
@@ -45,6 +46,7 @@ export * from './modules/api-proxy.js';
 export * from './modules/crypto.js';
 export * from './modules/problem-details.js';
 export * from './modules/navigation-state.js';
+export * from './modules/money.js';
 
 // Functions
 export * from './functions/object-to-form-data.js';

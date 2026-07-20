@@ -751,17 +751,19 @@ export function dragDropZone<T extends object>(
         const handle = event.target instanceof Element ? event.target.closest(handleSel) : null;
         if (!handle) return;
 
+        const nextIndex = getZoneIndex(event.target);
+        const nextElement = getZoneItem(event.target);
+        if (nextIndex === null || !nextElement) return;
+
         // Immediate "grabbing" (closed hand) feedback on press, before the drag
         // threshold is crossed; restored on every exit path in resetDragState.
+        // Set only after the item checks above — an early return would otherwise
+        // leave the inline cursor stuck on the handle with no reset path.
         pressedHandle = handle instanceof HTMLElement ? handle : null;
         if (pressedHandle) {
             pressedHandle.dataset.dndGrabPrev = pressedHandle.style.cursor;
             pressedHandle.style.cursor = 'grabbing';
         }
-
-        const nextIndex = getZoneIndex(event.target);
-        const nextElement = getZoneItem(event.target);
-        if (nextIndex === null || !nextElement) return;
 
         pointerSource = event.pointerType === 'touch' ? 'touch' : 'pointer';
         activePointerId = event.pointerId;
