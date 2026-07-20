@@ -1,3 +1,15 @@
+# [0.42.0](https://github.com/hashrytech/quick-components-kit/compare/v0.41.1...v0.42.0) (2026-07-20)
+
+
+### Bug Fixes
+
+* **money-input:** enforce bounds for loaded values ([bf17828](https://github.com/hashrytech/quick-components-kit/commit/bf17828ef80ca7c724ef7f99e735db285ac49638))
+
+
+### Features
+
+* **money-input:** add MoneyInput component and money module with 2dp entry policy ([4c3a292](https://github.com/hashrytech/quick-components-kit/commit/4c3a292976e81efe18715820e58bf2b83bbe24fe))
+
 ## [0.41.1](https://github.com/hashrytech/quick-components-kit/compare/v0.41.0...v0.41.1) (2026-07-13)
 
 
