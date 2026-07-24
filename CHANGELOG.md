@@ -1,3 +1,10 @@
+## [0.42.1](https://github.com/hashrytech/quick-components-kit/compare/v0.42.0...v0.42.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* **money-input:** render loaded >2dp values as 2dp without mutating the model ([458e4d2](https://github.com/hashrytech/quick-components-kit/commit/458e4d22ad3458a44bdfcbbb85e999688bbd1826))
+
 # [0.42.0](https://github.com/hashrytech/quick-components-kit/compare/v0.41.1...v0.42.0) (2026-07-20)
 
 
