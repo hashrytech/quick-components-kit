@@ -1,3 +1,10 @@
+## [0.42.2](https://github.com/hashrytech/quick-components-kit/compare/v0.42.1...v0.42.2) (2026-07-24)
+
+
+### Bug Fixes
+
+* **table:** don't mark select-all checked when there are no rows ([6f28bfb](https://github.com/hashrytech/quick-components-kit/commit/6f28bfb25f5428e1cf91dfd7fa80139093441ff5))
+
 ## [0.42.1](https://github.com/hashrytech/quick-components-kit/compare/v0.42.0...v0.42.1) (2026-07-20)
 
 
