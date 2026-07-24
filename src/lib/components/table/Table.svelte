@@ -252,7 +252,7 @@ Supports both desktop and mobile rendering, multi-select checkboxes, and custom 
                   {@render multiSelectTh()}
                 {:else}
                 <th class={twMerge("w-12 px-4 py-2 text-center bg-inherit sticky left-0", multiSelectThClass)}>
-                    <Checkbox id="header-multiselect-checkbox" onchange={handleSelectAll} checked={ rows ? selected.length === rows.length: false} class={checkboxClass} />
+                    <Checkbox id="header-multiselect-checkbox" onchange={handleSelectAll} checked={ rows && rows.length > 0 ? selected.length === rows.length: false} class={checkboxClass} />
                 </th>
                 {/if}
 				        {/if}
