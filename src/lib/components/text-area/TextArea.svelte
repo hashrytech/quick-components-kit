@@ -207,8 +207,7 @@ A multi-line text input with label, size variants, debounced input, and error di
 				sizeStyle[size],
 				inputClass
 			)}
-		>
-		</textarea>
+		></textarea>
 	</div>
 
 	{#if error}
