@@ -3,6 +3,42 @@ import { redirect } from "@sveltejs/kit";
 import { getProblemDetail, isProblemDetail, type ProblemDetail } from "./problem-details.js";
 import { browser } from "$app/environment";
 
+const MAX_ERROR_TEXT_LENGTH = 2_000;
+
+function isJsonContentType(contentType: string): boolean {
+    const mediaType = contentType.split(';', 1)[0].trim().toLowerCase();
+    return mediaType === 'application/json' || mediaType.endsWith('+json');
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function messageFromJson(value: unknown): string | undefined {
+    if (typeof value === 'string') {
+        return value.trim() || undefined;
+    }
+    if (!isRecord(value)) {
+        return value === undefined || value === null ? undefined : JSON.stringify(value);
+    }
+
+    for (const key of ['detail', 'message', 'error']) {
+        const candidate = value[key];
+        if (typeof candidate === 'string' && candidate.trim()) {
+            return candidate.trim();
+        }
+    }
+    return JSON.stringify(value);
+}
+
+function boundedErrorText(value: string): string | undefined {
+    const trimmed = value.trim();
+    if (!trimmed) return undefined;
+    return trimmed.length <= MAX_ERROR_TEXT_LENGTH
+        ? trimmed
+        : `${trimmed.slice(0, MAX_ERROR_TEXT_LENGTH)}…`;
+}
+
 /**
  * @file This module defines a generic REST API client for SvelteKit applications.
  * It provides methods for standard HTTP operations (GET, POST, PUT, PATCH, DELETE),
@@ -310,20 +346,55 @@ export class FetchClient {
         }
 
         if (!response.ok) {
-            let errorMessage = response.statusText;
+            const fallbackMessage = response.statusText || `HTTP ${response.status}`;
+            let errorMessage = fallbackMessage;
             let errorJson: object | undefined;
-            // Clone the response before reading body for error parsing,
-            // so original response body is still available if responseType is 'raw'.
-            const errorResponseClone = response.clone();
+            const contentType = response.headers.get('Content-Type') ?? '';
+            let errorBody = '';
+
             try {
-                // Attempt to parse a more descriptive error message from JSON response
-                errorJson = await errorResponseClone.json();
-                errorMessage = (errorJson as { message?: string }).message || (errorJson as { error?: string }).error || JSON.stringify(errorJson);
-            } 
-            catch (e) {
-                // If response is not JSON, use default status text or log parsing error
-                console.warn('API Client: Failed to parse error response as JSON.', e);
+                // Keep the original response body available to interceptors and
+                // callers requesting a raw response.
+                errorBody = await response.clone().text();
+            } catch {
+                // An unreadable error body is still a valid HTTP error. Status
+                // and statusText remain enough to produce a useful result.
             }
+
+            if (errorBody && isJsonContentType(contentType)) {
+                try {
+                    const parsedError: unknown = JSON.parse(errorBody);
+                    errorMessage = messageFromJson(parsedError) ?? fallbackMessage;
+                    if (isRecord(parsedError)) {
+                        errorJson = parsedError;
+                    }
+                } catch {
+                    // A proxy can mislabel a plain or truncated response as
+                    // JSON. Treat it as an upstream HTTP failure without
+                    // emitting a noisy JSON SyntaxError stack trace.
+                }
+            } else if (
+                errorBody
+                && (
+                    contentType.toLowerCase().startsWith('text/plain')
+                    || (!contentType && !errorBody.trimStart().startsWith('<'))
+                )
+            ) {
+                errorMessage = boundedErrorText(errorBody) ?? fallbackMessage;
+            }
+
+            // Non-JSON responses do not carry the API's RFC 7807 envelope.
+            // Normalize them so every consumer receives the same error shape
+            // while preserving the upstream status code.
+            if (!errorJson) {
+                errorJson = getProblemDetail({
+                    status: response.status,
+                    title: fallbackMessage,
+                    type: '/exceptions/fetch-error/',
+                    detail: errorMessage
+                });
+            }
+
             throw new FetchError(errorMessage, response.status, errorJson);
         }
 
