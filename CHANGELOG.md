@@ -1,3 +1,10 @@
+## [0.42.4](https://github.com/hashrytech/quick-components-kit/compare/v0.42.3...v0.42.4) (2026-07-29)
+
+
+### Bug Fixes
+
+* **fetch-client:** normalize non-JSON error responses to problem details ([b5e7759](https://github.com/hashrytech/quick-components-kit/commit/b5e775922381a47693656be2d81067d4fd89aca7))
+
 ## [0.42.3](https://github.com/hashrytech/quick-components-kit/compare/v0.42.2...v0.42.3) (2026-07-27)
 
 
