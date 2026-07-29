@@ -1,3 +1,10 @@
+## [0.42.3](https://github.com/hashrytech/quick-components-kit/compare/v0.42.2...v0.42.3) (2026-07-27)
+
+
+### Bug Fixes
+
+* **text-area:** remove stray whitespace inside textarea element ([97816d6](https://github.com/hashrytech/quick-components-kit/commit/97816d6606ea7eb5adeaeb606436c0b49f6c8bb2))
+
 ## [0.42.2](https://github.com/hashrytech/quick-components-kit/compare/v0.42.1...v0.42.2) (2026-07-24)
 
 
