@@ -53,11 +53,44 @@ export * from './functions/object-to-form-data.js';
 export * from './functions/compare-objects.js';
 export * from './functions/click-outside.js';
 
-// UI Components
+// UI Components — storefront sections, `<section>/<variant-N>`.
+//
+// Tier A: tenant-composable, each backed by a Web_Component record in the API
+// (header_1, footer_1, product_list_1, banner_1, featured_products_1).
 export * from './ui/headers/header-1/index.js';
 export * from './ui/footers/footer-1/index.js';
 export * from './ui/banners/banner-1/index.js';
 export * from './ui/featured-products/featured-products-1/index.js';
+export * from './ui/product-list/product-list-1/index.js';
+
+// Tier B: application components for the fixed storefront routes (product
+// detail, cart, checkout, confirmation). Same kit and theming, not
+// tenant-pickable in v1 — promoting one later is just adding a record.
+export * from './ui/price/price-1/index.js';
+export * from './ui/availability-badge/availability-badge-1/index.js';
+export * from './ui/quantity-stepper/quantity-stepper-1/index.js';
+export * from './ui/product-card/product-card-1/index.js';
+export * from './ui/variant-selector/variant-selector-1/index.js';
+export * from './ui/product-detail/product-detail-1/index.js';
+export * from './ui/cart-summary/cart-summary-1/index.js';
+export * from './ui/empty-cart/empty-cart-1/index.js';
+export * from './ui/totals-breakdown/totals-breakdown-1/index.js';
+export * from './ui/contact-form/contact-form-1/index.js';
+export * from './ui/address-form/address-form-1/index.js';
+export * from './ui/order-type-selector/order-type-selector-1/index.js';
+export * from './ui/location-picker/location-picker-1/index.js';
+export * from './ui/order-confirmation/order-confirmation-1/index.js';
+export * from './ui/resume-payment/resume-payment-1/index.js';
+export * from './ui/alerts/alert-1/index.js';
+export * from './ui/spinner/spinner-1/index.js';
+export * from './ui/store-404/store-404-1/index.js';
+export * from './ui/friendly-error/friendly-error-1/index.js';
+
+// Previously built but never exported, so no consumer could import them.
+export * from './ui/searchbox/index.js';
+export * from './ui/breadcrumbs/breadcrumbs-1/index.js';
+export * from './ui/order-product-line-item/order-product-line-item-1/index.js';
+export * from './ui/product-list-navigation/product-list-navigation-1/index.js';
+export * from './ui/product-filters/product-filter-1/index.js';
 
 // Add more components here...
-

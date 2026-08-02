@@ -2,6 +2,7 @@
 	import type { PageProps } from './$types.js';
     import { Header1, Footer1, Banner1, FeaturedProducts1, TextInput, Select, Overlay, onKeydown } from "$lib/index.js";
 	import ProductList1 from '$lib/ui/product-list/product-list-1/ProductList1.svelte';
+	import type { PublicProductCard } from '$lib/ui/product-card/product-card-1/ProductCard1.svelte';
 	import type { ProductFilter1List } from '$lib/ui/product-filters/product-filter-1/ProductFilter1.svelte';
 	import ProductFilter1 from '$lib/ui/product-filters/product-filter-1/ProductFilter1.svelte';
 	import { Searchbox } from '$lib/ui/searchbox/index.js';
@@ -47,19 +48,21 @@
         { key: "Price: High to Low", value: "price-desc" }
     ];
 
-    let products: {uid: string, title: string, description?: string, price: string, price_compare: string, image: string, badges?: string[], swatches?: string[]}[] = [];
+    // Mirrors the storefront API's public product-card payload. Note the
+    // demo deliberately includes a sold-out item: sold-out products stay
+    // listed and the card disables add-to-cart rather than hiding them.
+    let products: PublicProductCard[] = [];
 
     for(let i = 0; i < 8; i++)
     {
       products.push({
         uid: crypto.randomUUID(),
-        title: "Random Name " + (i + 1),
-        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged." + (i + 1),
-        price: "49",
-        price_compare: "69",
-        image: "https://placehold.co/400x300",
-        badges: ["PRE-ORDER"],
-        swatches: ["#1e293b", "#0f172a"]
+        name: "Random Name " + (i + 1),
+        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book." + (i + 1),
+        price_min: "49.00",
+        price_max: "49.00",
+        media: { url: "https://placehold.co/400x300", alt_text: "Placeholder product image" },
+        available: i !== 2
       });
     }
 
@@ -133,7 +136,7 @@
         
         <div class="flex flex-row gap-2">
             <ProductFilter1 {filters} bind:selectedValues {onFilter} class="hidden sm:block" />
-            <ProductList1 {products} />
+            <ProductList1 {products} currency="JMD" />
         </div>
     </main>
 
