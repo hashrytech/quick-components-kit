@@ -1,3 +1,10 @@
+# [0.43.0](https://github.com/hashrytech/quick-components-kit/compare/v0.42.4...v0.43.0) (2026-08-02)
+
+
+### Features
+
+* **ui:** add storefront component set for product, cart and checkout routes ([613b303](https://github.com/hashrytech/quick-components-kit/commit/613b303283bb4c5cdfbf4485fe891c36fb9cf8a1))
+
 ## [0.42.4](https://github.com/hashrytech/quick-components-kit/compare/v0.42.3...v0.42.4) (2026-07-29)
 
 
