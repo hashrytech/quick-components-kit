@@ -1,3 +1,10 @@
+## [0.43.1](https://github.com/hashrytech/quick-components-kit/compare/v0.43.0...v0.43.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* **actions:** defer trapFocus initial focus and ref-count disableScroll locks ([b596438](https://github.com/hashrytech/quick-components-kit/commit/b596438910cf50f79eec5171b8f4a3f782eeba39))
+
 # [0.43.0](https://github.com/hashrytech/quick-components-kit/compare/v0.42.4...v0.43.0) (2026-08-02)
 
 
