@@ -44,22 +44,36 @@ test.describe('Modal', () => {
 
 	test('focus moves inside the modal when it opens', async ({ page }) => {
 		await page.getByRole('button', { name: 'Show Modal' }).click();
-		const focusedTag = await page.evaluate(() => document.activeElement?.tagName.toLowerCase());
-		const focusedInModal = await page.evaluate(() =>
-			document.querySelector('[role="dialog"]')?.contains(document.activeElement)
-		);
-		expect(focusedInModal).toBe(true);
-		expect(focusedTag).toBe('button');
+		await expect(page.getByRole('button', { name: 'Close Modal' })).toBeFocused();
 	});
 
 	test('Tab key stays within the modal', async ({ page }) => {
 		await page.getByRole('button', { name: 'Show Modal' }).click();
+		const close = page.getByRole('button', { name: 'Close Modal' });
+		const test = page.getByRole('button', { name: 'Test Modal' });
+		const done = page.getByRole('button', { name: 'Done' }).last();
+		await expect(close).toBeFocused();
 		await page.keyboard.press('Tab');
+		await expect(test).toBeFocused();
 		await page.keyboard.press('Tab');
-		const focusedInModal = await page.evaluate(() =>
-			document.querySelector('[role="dialog"]')?.contains(document.activeElement)
-		);
-		expect(focusedInModal).toBe(true);
+		await expect(done).toBeFocused();
+	});
+
+	test('restores the page position and trigger focus when it closes', async ({ page }) => {
+		const trigger = page.getByRole('button', { name: 'Show Modal' });
+		await trigger.scrollIntoViewIfNeeded();
+		const before = await page.evaluate(() => ({ x: window.scrollX, y: window.scrollY }));
+
+		await trigger.click();
+		const close = page.getByRole('button', { name: 'Close Modal' });
+		await expect(close).toBeFocused();
+		await close.click();
+
+		await expect(page.getByRole('dialog', { name: 'Modal' })).not.toBeVisible();
+		await expect(trigger).toBeFocused();
+		await expect
+			.poll(() => page.evaluate(() => ({ x: window.scrollX, y: window.scrollY })))
+			.toEqual(before);
 	});
 
 	test('reopens after being closed', async ({ page }) => {

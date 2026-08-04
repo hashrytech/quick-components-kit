@@ -1,81 +1,151 @@
 /**
  * @action disableScroll
  *
- * Svelte action that disables page scrolling by applying `position: fixed` to `<body>`
- * and preserving the current scroll offset so the page does not jump when the lock
- * is applied or removed.
+ * Svelte action that disables page scrolling by applying fixed positioning to
+ * the body while preserving the current page offset.
  *
- * Prefer this over `lockScroll` when you need to prevent the layout shift caused by a
- * disappearing scrollbar (e.g. modals, full-screen drawers). The scroll position is
- * captured at the moment the lock is applied, not at mount time, so it is safe to mount
- * the action with `enabled = false` and toggle it later.
+ * Locks are shared per document. Nested modals and drawers capture the page
+ * position once and restore it only after the final overlay closes.
  *
  * Reactive: update the boolean parameter to toggle the lock without remounting.
  *
- * @param node - The element the action is bound to (required by Svelte, otherwise unused).
- * @param enabled - Whether to apply the lock immediately. Default: `true`.
- *
- * @example
- * ```svelte
- * <!-- Always locked while mounted -->
- * <div use:disableScroll />
- *
- * <!-- Reactively toggle — safe to start disabled -->
- * <script>
- *   let modalOpen = $state(false);
- * </script>
- * <div use:disableScroll={modalOpen} />
- * ```
+ * @param node - An element in the document whose page should be locked.
+ * @param enabled - Whether to apply the lock immediately. Default: true.
  */
+
+type ScrollLockSnapshot = {
+	scrollX: number;
+	scrollY: number;
+	bodyPosition: string;
+	bodyWidth: string;
+	bodyTop: string;
+	bodyLeft: string;
+	rootOverflowY: string;
+	rootScrollBehavior: string;
+};
+
+type ScrollLockState = {
+	count: number;
+	snapshot: ScrollLockSnapshot;
+};
+
+type PendingBehaviorRestore = {
+	behavior: string;
+	cancel: () => void;
+};
+
+const activeLocks = new WeakMap<Document, ScrollLockState>();
+const pendingBehaviorRestores = new WeakMap<Document, PendingBehaviorRestore>();
+
+function cancelPendingBehaviorRestore(doc: Document) {
+	const pending = pendingBehaviorRestores.get(doc);
+	if (!pending) return;
+
+	pending.cancel();
+	doc.documentElement.style.scrollBehavior = pending.behavior;
+	pendingBehaviorRestores.delete(doc);
+}
+
+function acquireScrollLock(doc: Document) {
+	const view = doc.defaultView;
+	if (!view) return;
+
+	const existing = activeLocks.get(doc);
+	if (existing) {
+		existing.count += 1;
+		return;
+	}
+
+	cancelPendingBehaviorRestore(doc);
+
+	const body = doc.body;
+	const root = doc.documentElement;
+	const snapshot: ScrollLockSnapshot = {
+		scrollX: view.scrollX,
+		scrollY: view.scrollY,
+		bodyPosition: body.style.position,
+		bodyWidth: body.style.width,
+		bodyTop: body.style.top,
+		bodyLeft: body.style.left,
+		rootOverflowY: root.style.overflowY,
+		rootScrollBehavior: root.style.scrollBehavior
+	};
+
+	activeLocks.set(doc, { count: 1, snapshot });
+
+	body.style.top = `-${snapshot.scrollY}px`;
+	body.style.left = `-${snapshot.scrollX}px`;
+	if (root.scrollHeight > root.clientHeight) {
+		root.style.overflowY = 'scroll';
+	}
+	body.style.position = 'fixed';
+	body.style.width = '100%';
+}
+
+function releaseScrollLock(doc: Document) {
+	const view = doc.defaultView;
+	const state = activeLocks.get(doc);
+	if (!view || !state) return;
+
+	state.count -= 1;
+	if (state.count > 0) return;
+
+	activeLocks.delete(doc);
+
+	const body = doc.body;
+	const root = doc.documentElement;
+	const { snapshot } = state;
+
+	body.style.position = snapshot.bodyPosition;
+	body.style.width = snapshot.bodyWidth;
+	body.style.top = snapshot.bodyTop;
+	body.style.left = snapshot.bodyLeft;
+	root.style.overflowY = snapshot.rootOverflowY;
+	root.style.scrollBehavior = 'auto';
+	view.scrollTo(snapshot.scrollX, snapshot.scrollY);
+
+	// Keep restoration non-animated for the frame in which body positioning is
+	// removed. If another overlay opens in that frame, cancel this callback and
+	// restore the original value before taking the new snapshot.
+	const pending: PendingBehaviorRestore = {
+		behavior: snapshot.rootScrollBehavior,
+		cancel: () => {}
+	};
+	const restore = () => {
+		if (pendingBehaviorRestores.get(doc) !== pending) return;
+		if (!activeLocks.has(doc)) root.style.scrollBehavior = pending.behavior;
+		pendingBehaviorRestores.delete(doc);
+	};
+
+	if (view.requestAnimationFrame) {
+		const frame = view.requestAnimationFrame(restore);
+		pending.cancel = () => view.cancelAnimationFrame(frame);
+	} else {
+		const timer = view.setTimeout(restore, 0);
+		pending.cancel = () => view.clearTimeout(timer);
+	}
+	pendingBehaviorRestores.set(doc, pending);
+}
+
 export function disableScroll(node: HTMLElement, enabled = true) {
-  const originalBodyPosition = document.body.style.position;
-  const originalBodyWidth = document.body.style.width;
-  const originalTop = document.body.style.top;
-  const originalOverflow = document.documentElement.style.overflowY;
+	const doc = node.ownerDocument;
+	let locked = false;
 
-  const hasVerticalScrollbar =
-    document.documentElement.scrollHeight > document.documentElement.clientHeight;
+	function setLocked(next: boolean) {
+		if (next === locked) return;
+		locked = next;
+		if (locked) acquireScrollLock(doc);
+		else releaseScrollLock(doc);
+	}
 
-  // Captured at lock time inside applyLock, not at mount — avoids locking to a
-  // stale position when enabled starts false and toggles true after user has scrolled.
-  let scrollTop = 0;
+	setLocked(enabled);
 
-  function applyLock() {
-    scrollTop = window.scrollY;
-    document.body.style.top = `-${scrollTop}px`;
-    if (hasVerticalScrollbar) {
-      document.documentElement.style.overflowY = 'scroll';
-    }
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-  }
-
-  function removeLock() {
-    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
-    document.body.style.position = originalBodyPosition;
-    document.body.style.width = originalBodyWidth;
-    document.body.style.top = originalTop;
-    document.documentElement.style.overflowY = originalOverflow;
-    document.documentElement.style.scrollBehavior = 'auto';
-    window.scrollTo(0, scrollTop);
-
-    // Restore scroll behavior after the frame so scrollTo doesn't animate
-    requestAnimationFrame(() => {
-      document.documentElement.style.scrollBehavior = originalScrollBehavior;
-    });
-  }
-
-  if (enabled) applyLock();
-
-  return {
-    update(newValue: boolean) {
-      if (newValue === enabled) return;
-      enabled = newValue;
-      if (enabled) applyLock();
-      else removeLock();
-    },
-    destroy() {
-      if (enabled) removeLock();
-    }
-  };
+	return {
+		update(newValue: boolean) {
+			setLocked(newValue);
+		},
+		destroy() {
+			setLocked(false);
+		}
+	};
 }

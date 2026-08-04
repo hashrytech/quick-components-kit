@@ -48,29 +48,24 @@ test.describe('Drawer — left position', () => {
 
 	test('focus moves inside the drawer when it opens', async ({ page }) => {
 		await page.getByRole('button', { name: 'Toggle Horizontal Menu' }).click();
-		const focusedInDrawer = await page.evaluate(() => {
-			const dialogs = document.querySelectorAll('[role="dialog"]');
-			return Array.from(dialogs).some((d) => d.contains(document.activeElement));
-		});
-		expect(focusedInDrawer).toBe(true);
+		await expect(page.getByRole('button', { name: 'Close Drawer' })).toBeFocused();
 	});
 
 	test('Tab key stays within the drawer', async ({ page }) => {
 		await page.getByRole('button', { name: 'Toggle Horizontal Menu' }).click();
+		const close = page.getByRole('button', { name: 'Close Drawer' });
+		const next = page.getByRole('button', { name: 'Test Trap' });
+		await expect(close).toBeFocused();
 		await page.keyboard.press('Tab');
+		await expect(next).toBeFocused();
 		await page.keyboard.press('Tab');
-		const focusedInDrawer = await page.evaluate(() => {
-			const dialogs = document.querySelectorAll('[role="dialog"]');
-			return Array.from(dialogs).some((d) => d.contains(document.activeElement));
-		});
-		expect(focusedInDrawer).toBe(true);
+		await expect(close).toBeFocused();
 	});
 
 	test('left drawer is positioned on the left edge', async ({ page }) => {
 		await page.getByRole('button', { name: 'Toggle Horizontal Menu' }).click();
 		const dialog = page.getByRole('dialog', { name: 'Drawer' }).first();
-		const box = await dialog.boundingBox();
-		expect(box?.x).toBe(0);
+		await expect.poll(async () => (await dialog.boundingBox())?.x).toBeCloseTo(0, 1);
 	});
 
 	test('reopens after being closed', async ({ page }) => {

@@ -1,15 +1,15 @@
 export const FOCUSABLE_ELEMENTS = [
-  'a[href]',
-  'area[href]',
-  'input:not([disabled]):not([type="hidden"]):not([aria-hidden])',
-  'select:not([disabled]):not([aria-hidden])',
-  'textarea:not([disabled]):not([aria-hidden])',
-  'button:not([disabled]):not([aria-hidden])',
-  'iframe',
-  'object',
-  'embed',
-  '[contenteditable]',
-  '[tabindex]:not([tabindex^="-"])',
+	'a[href]',
+	'area[href]',
+	'input:not([disabled]):not([type="hidden"]):not([aria-hidden])',
+	'select:not([disabled]):not([aria-hidden])',
+	'textarea:not([disabled]):not([aria-hidden])',
+	'button:not([disabled]):not([aria-hidden])',
+	'iframe',
+	'object',
+	'embed',
+	'[contenteditable]',
+	'[tabindex]:not([tabindex^="-"])'
 ];
 
 /**
@@ -54,82 +54,95 @@ export const FOCUSABLE_ELEMENTS = [
  * ```
  */
 export function trapFocus(node: HTMLElement) {
-  const previous = document.activeElement as HTMLElement | null;
+	const previous = document.activeElement as HTMLElement | null;
+	let destroyed = false;
 
-  let cachedFocusable: HTMLElement[] = [];
+	let cachedFocusable: HTMLElement[] = [];
 
-  function computeFocusable(): HTMLElement[] {
-    return Array.from(
-      node.querySelectorAll<HTMLElement>(FOCUSABLE_ELEMENTS.join(','))
-    ).filter((el) => {
-      if (el.hasAttribute('disabled')) return false;
-      if (el.hidden) return false;
+	function focusWithoutScrolling(element: HTMLElement | null) {
+		if (!element) return;
+		try {
+			element.focus({ preventScroll: true });
+		} catch {
+			// Older browsers do not accept FocusOptions.
+			element.focus();
+		}
+	}
 
-      // Only walk up to node — ancestors above the dialog are irrelevant
-      let current: HTMLElement | null = el;
-      while (current && current !== node) {
-        if (current.getAttribute('aria-hidden') === 'true') return false;
-        current = current.parentElement;
-      }
+	function computeFocusable(): HTMLElement[] {
+		return Array.from(node.querySelectorAll<HTMLElement>(FOCUSABLE_ELEMENTS.join(','))).filter(
+			(el) => {
+				if (el.hasAttribute('disabled')) return false;
+				if (el.hidden) return false;
 
-      const style = getComputedStyle(el);
-      if (
-        style.display === 'none' ||
-        style.visibility === 'hidden' ||
-        style.opacity === '0'
-      )
-        return false;
+				// Only walk up to node — ancestors above the dialog are irrelevant
+				let current: HTMLElement | null = el;
+				while (current && current !== node) {
+					if (current.getAttribute('aria-hidden') === 'true') return false;
+					current = current.parentElement;
+				}
 
-      return true;
-    });
-  }
+				const style = getComputedStyle(el);
+				if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0')
+					return false;
 
-  // Rebuild the cache whenever the node's subtree changes so handleKeydown
-  // never has to re-query the DOM on every Tab press
-  const observer = new MutationObserver(() => {
-    cachedFocusable = computeFocusable();
-  });
+				return true;
+			}
+		);
+	}
 
-  observer.observe(node, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['disabled', 'aria-hidden', 'hidden', 'tabindex'],
-  });
+	// Rebuild the cache whenever the node's subtree changes so handleKeydown
+	// never has to re-query the DOM on every Tab press
+	const observer = new MutationObserver(() => {
+		cachedFocusable = computeFocusable();
+	});
 
-  cachedFocusable = computeFocusable();
+	observer.observe(node, {
+		childList: true,
+		subtree: true,
+		attributes: true,
+		attributeFilter: ['disabled', 'aria-hidden', 'hidden', 'tabindex']
+	});
 
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key !== 'Tab') return;
+	cachedFocusable = computeFocusable();
 
-    const elements = cachedFocusable;
-    if (elements.length === 0) return;
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key !== 'Tab') return;
 
-    const first = elements[0];
-    const last = elements[elements.length - 1];
-    const active = document.activeElement as HTMLElement;
+		const elements = cachedFocusable;
+		if (elements.length === 0) return;
 
-    if (event.shiftKey) {
-      if (active === first || !elements.includes(active)) {
-        last.focus();
-        event.preventDefault();
-      }
-    } else {
-      if (active === last || !elements.includes(active)) {
-        first.focus();
-        event.preventDefault();
-      }
-    }
-  }
+		const first = elements[0];
+		const last = elements[elements.length - 1];
+		const active = document.activeElement as HTMLElement;
 
-  (cachedFocusable[0] ?? node).focus();
-  node.addEventListener('keydown', handleKeydown);
+		if (event.shiftKey) {
+			if (active === first || !elements.includes(active)) {
+				last.focus();
+				event.preventDefault();
+			}
+		} else {
+			if (active === last || !elements.includes(active)) {
+				first.focus();
+				event.preventDefault();
+			}
+		}
+	}
 
-  return {
-    destroy() {
-      observer.disconnect();
-      node.removeEventListener('keydown', handleKeydown);
-      previous?.focus();
-    }
-  };
+	node.addEventListener('keydown', handleKeydown);
+
+	// Portal moves its subtree to document.body during mount. Focusing before that
+	// move makes Chromium/WebKit drop focus, so wait until mounting has settled.
+	queueMicrotask(() => {
+		if (!destroyed) focusWithoutScrolling(cachedFocusable[0] ?? node);
+	});
+
+	return {
+		destroy() {
+			destroyed = true;
+			observer.disconnect();
+			node.removeEventListener('keydown', handleKeydown);
+			focusWithoutScrolling(previous);
+		}
+	};
 }
