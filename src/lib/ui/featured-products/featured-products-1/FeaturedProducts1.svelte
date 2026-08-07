@@ -35,8 +35,10 @@
       {#each products as product}
       <a href={`/products/${product.uid}`} class="border border-primary-card-border shadow-primary rounded-primary overflow-hidden bg-white">
         
-        <div class="aspect-[4/3] rounded-primary">
-          <img src={product.image} alt={product.title} class={twMerge("object-cover w-full h-[250px]", imageClass)} />
+        <!-- 3:4 portrait + contain, matching ProductCard1: cover in a landscape
+             frame crops full-length products to a mid-section slice. -->
+        <div class="aspect-[3/4] rounded-primary overflow-hidden">
+          <img src={product.image} alt={product.title} class={twMerge("object-contain w-full h-full", imageClass)} loading="lazy" />
         </div>
 
         <div class="p-3">

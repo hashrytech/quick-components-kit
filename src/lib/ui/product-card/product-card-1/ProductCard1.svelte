@@ -55,12 +55,18 @@
 		restProps.class
 	)}
 >
-	<a href={href ?? `/products/${product.uid}`} class="block aspect-[4/3] overflow-hidden">
+	<!-- 3:4 PORTRAIT tile with `contain`, not the old landscape 4/3 + cover.
+	     Product photography is overwhelmingly portrait or square (a measured
+	     catalog came out almost entirely at exactly 3:4 once delivery-side
+	     trim removed the padding), and cover in a landscape frame crops a
+	     full-length garment to a mid-section slice. Contain shows the whole
+	     product; with trimmed sources the letterboxing is minimal. -->
+	<a href={href ?? `/products/${product.uid}`} class="block aspect-[3/4] overflow-hidden">
 		{#if product.media?.url}
 			<img
 				src={product.media.url}
 				alt={product.media.alt_text || product.name}
-				class="h-[250px] w-full object-cover"
+				class="h-full w-full object-contain"
 				loading="lazy"
 			/>
 		{:else}
@@ -70,7 +76,7 @@
 			     twice to a screen reader, since the heading below already
 			     carries it. -->
 			<div
-				class="flex h-[250px] w-full items-center justify-center bg-neutral-100 text-sm text-neutral-400"
+				class="flex h-full w-full items-center justify-center bg-neutral-100 text-sm text-neutral-400"
 				aria-hidden="true"
 			>
 				No image
