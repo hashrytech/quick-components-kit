@@ -6,7 +6,9 @@
 		uid: string;
 		name: string;
 		description?: string;
-		media?: { url: string; alt_text?: string }[];
+		/** `thumb_url` is a small derivative for the gallery thumbnails; older
+		 *  payloads omit it and the thumbnails fall back to `url`. */
+		media?: { url: string; thumb_url?: string; alt_text?: string }[];
 		/** Base price for variantless products. */
 		price?: string | null;
 		price_compare?: string | null;
@@ -85,10 +87,13 @@
 							aria-label={`Show image ${index + 1}`}
 							onclick={() => (activeImage = index)}
 						>
+							<!-- thumb_url is the small derivative — a 64px button must not
+							     download the 1280px main-image rendition. -->
 							<img
-								src={media.url}
+								src={media.thumb_url ?? media.url}
 								alt={media.alt_text || product.name}
 								class="size-full object-cover"
+								loading="lazy"
 							/>
 						</button>
 					{/each}
