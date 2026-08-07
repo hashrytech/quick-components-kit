@@ -1,3 +1,10 @@
+# [0.44.0](https://github.com/hashrytech/quick-components-kit/compare/v0.43.1...v0.44.0) (2026-08-07)
+
+
+### Features
+
+* **ui:** portrait 3:4 product tiles with contain instead of landscape cover ([7a759a5](https://github.com/hashrytech/quick-components-kit/commit/7a759a524c346f1631e98087cd6d1aff0540b0d4))
+
 ## [0.43.1](https://github.com/hashrytech/quick-components-kit/compare/v0.43.0...v0.43.1) (2026-08-04)
 
 
