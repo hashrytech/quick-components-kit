@@ -1,3 +1,10 @@
+# [0.45.0](https://github.com/hashrytech/quick-components-kit/compare/v0.44.0...v0.45.0) (2026-08-07)
+
+
+### Features
+
+* **ui:** use the small thumb_url derivative for gallery thumbnails ([905385b](https://github.com/hashrytech/quick-components-kit/commit/905385bfac987771c372a9af2902eb06d2cbd24b))
+
 # [0.44.0](https://github.com/hashrytech/quick-components-kit/compare/v0.43.1...v0.44.0) (2026-08-07)
 
 
