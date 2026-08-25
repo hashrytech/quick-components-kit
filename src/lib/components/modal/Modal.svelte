@@ -20,6 +20,7 @@ What goes in the bar — title, close button, actions — is entirely up to the 
 - `clickOutsideClose?`: `boolean` — Close when the backdrop is clicked. Default: `true`.
 - `disableBodyScroll?`: `boolean` — Prevent body scroll while open. Default: `true`.
 - `disableContentScroll?`: `boolean` — Prevents the content area from scrolling while preserving the scrollbar gutter. Default: `false`.
+- `contentOverflowVisible?`: `boolean` — Lets positioned content such as dropdowns extend over the pinned footer instead of being clipped. This disables the content area's overflow scrolling. Default: `false`.
 - `inertId?`: `string` — ID of a DOM element to mark `inert` while the modal is open (accessibility).
 - `ariaLabel?`: `string` — ARIA label for screen readers. Default: `"Modal"`.
 
@@ -147,6 +148,7 @@ Standard `<div>` attributes (`id`, `data-*`, …) are forwarded to the modal con
 		clickOutsideClose?: boolean;
 		disableBodyScroll?: boolean;
 		disableContentScroll?: boolean;
+		contentOverflowVisible?: boolean;
 		ariaLabel?: string;
 		inertId?: string;
 		mobileDrawer?: boolean;
@@ -210,6 +212,7 @@ Standard `<div>` attributes (`id`, `data-*`, …) are forwarded to the modal con
 		clickOutsideClose = true,
 		disableBodyScroll = true,
 		disableContentScroll,
+		contentOverflowVisible = false,
 		transitionDuration = config.transitionDuration,
 		transitionDistance = 150,
 		mobileDrawer = false,
@@ -235,7 +238,9 @@ Standard `<div>` attributes (`id`, `data-*`, …) are forwarded to the modal con
 
 	let isMobile = $state(false);
 
-	const contentScrollDisabled = $derived(disableContentScroll ?? drawerDisableContentScroll ?? false);
+	const contentScrollDisabled = $derived(
+		!contentOverflowVisible && (disableContentScroll ?? drawerDisableContentScroll ?? false)
+	);
 
 	$effect(() => {
 		const mq = window.matchMedia(`(max-width: ${config.mobileBreakpoint}px)`);
@@ -342,7 +347,16 @@ Standard `<div>` attributes (`id`, `data-*`, …) are forwarded to the modal con
 
 		<div
 			use:disableLocalScroll={contentScrollDisabled}
-			class={twMerge('grow min-h-0 w-full overflow-y-auto overscroll-contain', contentClass)}>
+			class={twMerge(
+				'grow min-h-0 w-full',
+				contentOverflowVisible
+					? 'relative z-10'
+					: 'overflow-y-auto overscroll-contain',
+				contentClass,
+				// Apply this last so axis-specific overflow classes supplied by a wrapper
+				// cannot turn `visible` into computed `auto` and clip floating content.
+				contentOverflowVisible && 'overflow-visible'
+			)}>
 			{@render children?.()}
 		</div>
 

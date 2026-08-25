@@ -82,10 +82,17 @@ type PaidPayment = {
 	amount?: string;
 	type?: { id?: string } | null;
 	payment_type?: { id?: string } | null;
+	status?: { id?: string } | string | null;
+	date_created?: string | Date | null;
 };
 
 export function orderAmountPaid(payments: PaidPayment[] | null | undefined): number {
 	return (payments ?? []).reduce((sum, p) => {
+		const statusId = typeof p.status === 'string' ? p.status : p.status?.id;
+		// Persisted rows count only after the API confirms success. A new
+		// client-side payment has no status or date yet and must still update
+		// the order editor preview before it is submitted.
+		if (statusId ? statusId !== 'success' : Boolean(p.date_created)) return sum;
 		const amount = Number.parseFloat(p.amount ?? '0');
 		if (!Number.isFinite(amount)) return sum;
 		const typeId = (p.type ?? p.payment_type)?.id ?? '';

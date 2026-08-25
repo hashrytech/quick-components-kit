@@ -314,11 +314,16 @@ export class FetchClient {
             }
         }
 
+        // Spread `options` FIRST: it carries fetch options like cache and
+        // credentials, but it also still contains the caller's raw `headers`.
+        // Spread last it would REPLACE the merged `requestHeaders`, dropping
+        // the default Content-Type (JSON bodies then go up as text/plain and
+        // JSON APIs refuse them with 415) and the Authorization header.
         let request = new Request(url, {
+            ...options,
             method: method,
             headers: requestHeaders,
             body: processedBody,
-            ...options // Spread other fetch options like cache, credentials etc.
         });
 
         // Apply request interceptors sequentially

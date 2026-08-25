@@ -10,10 +10,36 @@ import {
 	getCurrencyMeta,
 	inverseRate,
 	normalizeCurrencyCode,
+	orderAmountPaid,
 	roundForCurrency,
 	type CurrencyCode,
 	type CurrencyMeta
 } from './money.js';
+
+describe('orderAmountPaid', () => {
+	it('counts successful charges and subtracts successful refunds', () => {
+		expect(orderAmountPaid([
+			{ amount: '100.00', type: { id: 'online_link' }, status: { id: 'success' }, date_created: '2026-08-14' },
+			{ amount: '25.00', type: { id: 'refund' }, status: 'success', date_created: '2026-08-14' }
+		])).toBe(75);
+	});
+
+	it('does not count failed, declined, or pending persisted payments', () => {
+		expect(orderAmountPaid([
+			{ amount: '100.00', status: { id: 'failed' }, date_created: '2026-08-14' },
+			{ amount: '100.00', status: { id: 'declined' }, date_created: '2026-08-14' },
+			{ amount: '100.00', status: { id: 'pending' }, date_created: '2026-08-14' }
+		])).toBe(0);
+	});
+
+	it('does not count a persisted legacy row without a status', () => {
+		expect(orderAmountPaid([{ amount: '100.00', status: null, date_created: '2026-08-14' }])).toBe(0);
+	});
+
+	it('counts an unsaved client-side payment in the order editor preview', () => {
+		expect(orderAmountPaid([{ amount: '100.00', type: { id: 'cash' } }])).toBe(100);
+	});
+});
 
 describe('CURRENCIES registry', () => {
 	it('contains JMD with the expected metadata', () => {
