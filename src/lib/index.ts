@@ -56,9 +56,12 @@ export * from './functions/click-outside.js';
 // UI Components — storefront sections, `<section>/<variant-N>`.
 //
 // Tier A: tenant-composable, each backed by a Web_Component record in the API
-// (header_1, footer_1, product_list_1, banner_1, featured_products_1).
+// (header_1, header_2, footer_1, footer_2, product_list_1, banner_1,
+// featured_products_1).
 export * from './ui/headers/header-1/index.js';
+export * from './ui/headers/header-2/index.js';
 export * from './ui/footers/footer-1/index.js';
+export * from './ui/footers/footer-2/index.js';
 export * from './ui/banners/banner-1/index.js';
 export * from './ui/featured-products/featured-products-1/index.js';
 export * from './ui/product-list/product-list-1/index.js';
@@ -85,6 +88,11 @@ export * from './ui/alerts/alert-1/index.js';
 export * from './ui/spinner/spinner-1/index.js';
 export * from './ui/store-404/store-404-1/index.js';
 export * from './ui/friendly-error/friendly-error-1/index.js';
+
+// Preview metadata for the tenant-composable components — labels and sample
+// props, so the admin builder can render each design live instead of shipping
+// screenshots that go stale.
+export * from './ui/component-previews.js';
 
 // Previously built but never exported, so no consumer could import them.
 export * from './ui/searchbox/index.js';

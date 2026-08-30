@@ -1,67 +1,39 @@
 <script lang="ts">
 	import type { PageProps } from './$types.js';
-  import { Header1, Footer1, Banner1, FeaturedProducts1 } from "$lib/index.js";
+  import { Banner1, COMPONENT_PREVIEWS, SAMPLE_PRODUCTS } from "$lib/index.js";
 	import Searchbox from '$lib/ui/searchbox/Searchbox.svelte';
 
 	let { data }: PageProps = $props();
 
-  let products: {uid: string, title: string, price: string, price_compare: string, image: string, badges?: string[], swatches?: string[]}[] = [
-    {
-      uid: crypto.randomUUID(),
-      title: "Portsmith Fleece",
-      price: "49",
-      price_compare: "69",
-      image: "https://placehold.co/750x1250",
-      badges: ["PRE-ORDER"],
-      swatches: ["#1e293b", "#0f172a"]
-    },
-    {
-      uid: crypto.randomUUID(),
-      title: "Stocker Crew",
-      price: "90",
-      price_compare: "120",
-      image: "https://placehold.co/400x300",
-      badges: ["NEW SEASON"],
-      swatches: ["#1e293b", "#94a3b8"]
-    },
-    {
-      uid: crypto.randomUUID(),
-      title: "Home Tee",
-      price: "18",
-      price_compare: "36",
-      image: "https://placehold.co/150x150",
-      badges: ["ON SALE", "NEW SEASON"],
-      swatches: ["#0f172a", "#000", "#fff"]
-    },
-    {
-      uid: crypto.randomUUID(),
-      title: "Porcelain Tiles",
-      price: "28",
-      price_compare: "136",
-      image: "https://placehold.co/150x150",
-      badges: ["ON SALE", "NEW SEASON"],
-      swatches: ["#0f172a", "#000", "#fff"]
-    }
-  ];
-    
+  // Sample data lives in the preview manifest so the admin gallery and this
+  // page show the same thing; a change in one cannot silently skip the other.
+  const products = SAMPLE_PRODUCTS;
+
+  // Rendered THROUGH the manifest, with the same sample props the admin's
+  // design gallery uses. If an entry breaks, this page shows it.
+  const headerPreview = COMPONENT_PREVIEWS.header_1;
+  const header2Preview = COMPONENT_PREVIEWS.header_2;
+  const footerPreview = COMPONENT_PREVIEWS.footer_1;
+  const footer2Preview = COMPONENT_PREVIEWS.footer_2;
+  const featuredPreview = COMPONENT_PREVIEWS.featured_products_1;
+
 </script>
 
 <div class="flex flex-col gap-2 min-h-screen">
-    <Header1 title="Quick Store" logo="https://i.pinimg.com/1200x/e9/eb/76/e9eb76e6e14467f488e8204dc257ee8b.jpg" links={[
-            { text: "Home", href: "/quick-store" },
-            { text: "Products", href: "/quick-store/products" },
-            { text: "About", href: "/about" },
-            { text: "Contact", href: "/contact" }
-        ]}
-        cartLink="/quick-store/cart" accountLink="/quick-store/account" />
+    <headerPreview.component {...headerPreview.sampleProps} />
 
     <main class="flex flex-col gap-10 flex-1">        
         <Banner1 image="https://placehold.co/150x150" class="bg-white bg-cover bg-no-repeat" mainText="Welcome to Quick Store" subText="Your one-stop shop for all your needs" primaryButtonText="Shop Now" primaryButtonLink="/shop" secondaryButtonText="Learn More" secondaryButtonLink="/about" />
-        <FeaturedProducts1 title="Featured Products" {products} titleDescription="Check out our featured products below. They are every bit as good as they look!" />
+        <featuredPreview.component {...featuredPreview.sampleProps} {products} />
     </main>
 
-    <Footer1 title="Quick Store" logo="https://i.pinimg.com/1200x/e9/eb/76/e9eb76e6e14467f488e8204dc257ee8b.jpg" tagline="Your one-stop shop for quality products at unbeatable prices." links={[
-        {title: "Shop", items: [{"text": "All Products", "href": "/shop"}, {"text": "Categories", "href": "/categories"}, {"text": "Special Offers", "href": "/offers"}]},
-        {title: "Company", items: [{"text": "About Us", "href": "/about"}, {"text": "Contact", "href": "/contact"}, {"text": "Careers", "href": "/careers"}]}
-    ]} copyright="&copy; 2025 Quick Store. All rights reserved" class="mt-20" />
+    <footerPreview.component {...footerPreview.sampleProps} class="mt-20" />
+
+    <!-- The second designs render here too, so this page fails visibly if a
+         preview in the admin gallery would fail. -->
+    <section class="mt-16 flex flex-col gap-2 border-t-4 border-dashed border-neutral-200 pt-8">
+        <p class="px-4 text-sm text-neutral-500">Alternate chrome designs</p>
+        <header2Preview.component {...header2Preview.sampleProps} />
+        <footer2Preview.component {...footer2Preview.sampleProps} />
+    </section>
 </div>
