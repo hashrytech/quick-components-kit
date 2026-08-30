@@ -1,3 +1,10 @@
+# [0.47.0](https://github.com/hashrytech/quick-components-kit/compare/v0.46.0...v0.47.0) (2026-08-30)
+
+
+### Features
+
+* **ui:** add five new header, footer and featured-product designs ([f18b77e](https://github.com/hashrytech/quick-components-kit/commit/f18b77e8a3c18e9f5076b7d5100777be1aa6169b))
+
 # [0.46.0](https://github.com/hashrytech/quick-components-kit/compare/v0.45.1...v0.46.0) (2026-08-30)
 
 
