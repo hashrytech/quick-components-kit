@@ -50,8 +50,11 @@
 	}
 </script>
 
+<!-- Full width for the same reason as Header 1: the cart belongs at the page
+     edge, in line with the content below. The brand stays optically centred
+     within it. -->
 <header class="px-4 shadow-sm">
-	<div class={twMerge('mx-auto w-full max-w-7xl', restProps.class)}>
+	<div class={twMerge('w-full', restProps.class)}>
 		<!-- Row 1: the brand, centred. The cart and menu sit absolutely at the
 		     right so the brand stays optically centred regardless of their width.
 		     The brand is inset by the controls' width on both sides and truncates

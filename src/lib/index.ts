@@ -55,15 +55,30 @@ export * from './functions/click-outside.js';
 
 // UI Components — storefront sections, `<section>/<variant-N>`.
 //
-// Tier A: tenant-composable, each backed by a Web_Component record in the API
-// (header_1, header_2, footer_1, footer_2, product_list_1, banner_1,
-// featured_products_1).
+// Tier A: tenant-composable, each backed by a Web_Component record in the API.
+// Five header designs, five footers, six featured-product layouts, plus the
+// banner and product list.
 export * from './ui/headers/header-1/index.js';
 export * from './ui/headers/header-2/index.js';
+export * from './ui/headers/header-3/index.js';
+export * from './ui/headers/header-4/index.js';
+export * from './ui/headers/header-5/index.js';
+export * from './ui/headers/header-6/index.js';
+export * from './ui/headers/header-7/index.js';
 export * from './ui/footers/footer-1/index.js';
 export * from './ui/footers/footer-2/index.js';
+export * from './ui/footers/footer-3/index.js';
+export * from './ui/footers/footer-4/index.js';
+export * from './ui/footers/footer-5/index.js';
+export * from './ui/footers/footer-6/index.js';
+export * from './ui/footers/footer-7/index.js';
 export * from './ui/banners/banner-1/index.js';
 export * from './ui/featured-products/featured-products-1/index.js';
+export * from './ui/featured-products/featured-products-2/index.js';
+export * from './ui/featured-products/featured-products-3/index.js';
+export * from './ui/featured-products/featured-products-4/index.js';
+export * from './ui/featured-products/featured-products-5/index.js';
+export * from './ui/featured-products/featured-products-6/index.js';
 export * from './ui/product-list/product-list-1/index.js';
 
 // Tier B: application components for the fixed storefront routes (product

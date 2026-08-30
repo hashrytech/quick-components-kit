@@ -39,13 +39,12 @@
 	}
 </script>
 
+<!-- Full width on purpose: page bodies are full-bleed, so a capped header
+     leaves the cart stranded well inside the right edge of the products
+     below it. `class` still overrides, so a storefront that wants a centred
+     column can pass one. -->
 <header class="px-4 shadow-sm">
-	<div
-		class={twMerge(
-			'mx-auto flex min-h-16 w-full max-w-7xl items-center justify-between',
-			restProps.class
-		)}
-	>
+	<div class={twMerge('flex min-h-16 w-full items-center justify-between', restProps.class)}>
 		{#if logo || title}
 			<div class="flex items-center gap-2">
 				{#if logo}<a href="/"><img src={logo} alt="Logo" class="h-8 w-auto" /></a>{/if}
