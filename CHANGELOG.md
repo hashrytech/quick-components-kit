@@ -1,3 +1,10 @@
+## [0.45.1](https://github.com/hashrytech/quick-components-kit/compare/v0.45.0...v0.45.1) (2026-08-25)
+
+
+### Bug Fixes
+
+* **fetch-client:** stop custom headers from replacing merged request headers ([3239883](https://github.com/hashrytech/quick-components-kit/commit/323988313e5d64506254bfdee51f034a7c75ca82))
+
 # [0.45.0](https://github.com/hashrytech/quick-components-kit/compare/v0.44.0...v0.45.0) (2026-08-07)
 
 
