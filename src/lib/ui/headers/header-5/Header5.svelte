@@ -29,6 +29,7 @@
 	 * grows to three lines on a phone pushes the products off the screen.
 	 */
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 	import CartLink from '../../chrome/CartLink.svelte';
 	import ChromeIcon from '../../chrome/ChromeIcon.svelte';
 	import HeaderSearch from '../../chrome/HeaderSearch.svelte';
@@ -48,7 +49,7 @@
 </script>
 
 <header class={twMerge('shadow-sm', restProps.class)}>
-	<div class="flex w-full flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3">
+	<div class="{STORE_CONTENT_WIDTH} flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3">
 		{#if logo || title}
 			<a href="/" class="flex min-w-0 shrink items-center gap-2">
 				{#if logo}<img src={logo} alt="Logo" class="h-9 w-auto shrink-0" />{/if}
@@ -88,7 +89,7 @@
 
 	{#if links.length}
 		<nav
-			class="flex gap-6 overflow-x-auto border-t border-neutral-200 px-4 py-2 text-[13px] whitespace-nowrap text-neutral-600"
+			class="{STORE_CONTENT_WIDTH} flex gap-6 overflow-x-auto border-t border-neutral-200 px-4 py-2 text-[13px] whitespace-nowrap text-neutral-600"
 		>
 			{#each links as { text, href }}
 				<a {href} class="hover:text-primary-button-hover">{text}</a>

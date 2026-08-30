@@ -32,6 +32,7 @@
 	import { HamburgerMenu, onKeydown, Overlay } from '$lib/index.js';
 	import { fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		logo,
@@ -54,7 +55,7 @@
      edge, in line with the content below. The brand stays optically centred
      within it. -->
 <header class="px-4 shadow-sm">
-	<div class={twMerge('w-full', restProps.class)}>
+	<div class={twMerge(STORE_CONTENT_WIDTH, restProps.class)}>
 		<!-- Row 1: the brand, centred. The cart and menu sit absolutely at the
 		     right so the brand stays optically centred regardless of their width.
 		     The brand is inset by the controls' width on both sides and truncates

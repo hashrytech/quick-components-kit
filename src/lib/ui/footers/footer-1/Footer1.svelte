@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import {twMerge} from 'tailwind-merge';
+    import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
     import type { ClassNameValue } from 'tailwind-merge';
     
     export type Footer1Props = {
@@ -24,7 +25,7 @@
 </script>
 
 <footer class={twMerge("bg-neutral-900 text-white flex flex-col justify-center items", restProps.class)}>
-    <div class="px-4 py-6 w-full max-w-5xl mx-auto flex flex-row flex-wrap gap-7">
+    <div class="{STORE_CONTENT_WIDTH} px-4 py-6 flex flex-row flex-wrap gap-7">
 
         <!-- Branding -->
          {#if logo || title }

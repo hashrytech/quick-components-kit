@@ -37,6 +37,7 @@
 	import { HamburgerMenu, onKeydown, Overlay } from '$lib/index.js';
 	import { fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		logo,
@@ -80,7 +81,7 @@
 		></div>
 	{/if}
 
-	<div class="relative flex min-h-16 w-full items-center gap-3 px-4">
+	<div class="{STORE_CONTENT_WIDTH} relative flex min-h-16 items-center gap-3 px-4">
 		<button
 			type="button"
 			class="flex shrink-0 items-center gap-2 text-sm tracking-wide"

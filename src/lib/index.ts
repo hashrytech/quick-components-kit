@@ -58,6 +58,11 @@ export * from './functions/click-outside.js';
 // Tier A: tenant-composable, each backed by a Web_Component record in the API.
 // Five header designs, five footers, six featured-product layouts, plus the
 // banner and product list.
+// The storefront's content column. Exported because the renderer wraps page
+// bodies in the SAME width — that is what makes a header's cart line up with
+// the products underneath it.
+export { STORE_CONTENT_WIDTH } from './ui/chrome/content-width.js';
+
 export * from './ui/headers/header-1/index.js';
 export * from './ui/headers/header-2/index.js';
 export * from './ui/headers/header-3/index.js';

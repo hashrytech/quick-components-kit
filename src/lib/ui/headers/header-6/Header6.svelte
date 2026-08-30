@@ -28,6 +28,7 @@
 	 * deliberate.
 	 */
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		logo,
@@ -42,7 +43,7 @@
 </script>
 
 <header class={twMerge('bg-white', restProps.class)}>
-	<div class="relative flex min-h-20 items-center justify-center px-4 py-6">
+	<div class="{STORE_CONTENT_WIDTH} relative flex min-h-20 items-center justify-center px-4 py-6">
 		<a href="/" class="flex min-w-0 items-center gap-3 px-16">
 			{#if logo}<img src={logo} alt="Logo" class="h-8 w-auto shrink-0" />{/if}
 			{#if title}
@@ -75,7 +76,7 @@
 	{#if links.length}
 		<div class="border-y border-neutral-200">
 			<nav
-				class="flex flex-wrap justify-center gap-x-8 gap-y-2 px-4 py-3 text-[11px] tracking-[0.18em] text-neutral-600 uppercase"
+				class="{STORE_CONTENT_WIDTH} flex flex-wrap justify-center gap-x-8 gap-y-2 px-4 py-3 text-[11px] tracking-[0.18em] text-neutral-600 uppercase"
 			>
 				{#each links as { text, href }}
 					<a {href} class="hover:text-primary-button-hover">{text}</a>

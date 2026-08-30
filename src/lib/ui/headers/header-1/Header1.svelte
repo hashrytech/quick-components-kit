@@ -21,6 +21,7 @@
 	import { HamburgerMenu, onKeydown, Overlay } from '$lib/index.js';
 	import { fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		logo,
@@ -44,7 +45,12 @@
      below it. `class` still overrides, so a storefront that wants a centred
      column can pass one. -->
 <header class="px-4 shadow-sm">
-	<div class={twMerge('flex min-h-16 w-full items-center justify-between', restProps.class)}>
+	<div
+		class={twMerge(
+			`${STORE_CONTENT_WIDTH} flex min-h-16 items-center justify-between`,
+			restProps.class
+		)}
+	>
 		{#if logo || title}
 			<div class="flex items-center gap-2">
 				{#if logo}<a href="/"><img src={logo} alt="Logo" class="h-8 w-auto" /></a>{/if}

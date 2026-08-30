@@ -24,6 +24,7 @@
 	 * social icons, which is often all a small shop needs.
 	 */
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		logo,
@@ -48,7 +49,7 @@
 </script>
 
 <footer class={twMerge('bg-white text-neutral-800', restProps.class)}>
-	<div class="flex flex-col items-center gap-5 px-6 py-12 text-center">
+	<div class="{STORE_CONTENT_WIDTH} flex flex-col items-center gap-5 px-6 py-12 text-center">
 		<a href="/" class="flex min-w-0 max-w-full items-center gap-2">
 			{#if logo}<img src={logo} alt="Logo" class="h-10 w-auto shrink-0" />{/if}
 			{#if title}<span class="truncate text-lg font-semibold">{title}</span>{/if}

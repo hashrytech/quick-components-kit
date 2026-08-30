@@ -27,6 +27,7 @@
 	import { HamburgerMenu, onKeydown, Overlay } from '$lib/index.js';
 	import { fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 	import CartLink from '../../chrome/CartLink.svelte';
 	import ChromeIcon from '../../chrome/ChromeIcon.svelte';
 
@@ -48,7 +49,7 @@
 </script>
 
 <header class={twMerge('shadow-sm', restProps.class)}>
-	<div class="grid min-h-20 w-full grid-cols-3 items-center gap-3 px-4">
+	<div class="{STORE_CONTENT_WIDTH} grid min-h-20 grid-cols-3 items-center gap-3 px-4">
 		<div class="flex items-center">
 			<nav class="hidden gap-6 text-[13px] font-medium tracking-wide text-neutral-700 md:flex">
 				{#each links as { text, href }}

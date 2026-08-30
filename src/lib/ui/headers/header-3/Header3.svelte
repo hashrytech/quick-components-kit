@@ -30,6 +30,7 @@
 	import { HamburgerMenu, onKeydown, Overlay } from '$lib/index.js';
 	import { fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 	import CartLink from '../../chrome/CartLink.svelte';
 	import ChromeIcon from '../../chrome/ChromeIcon.svelte';
 	import HeaderSearch from '../../chrome/HeaderSearch.svelte';
@@ -67,7 +68,7 @@
 		</div>
 	{/if}
 
-	<div class="flex min-h-16 w-full items-center gap-4 px-4">
+	<div class="{STORE_CONTENT_WIDTH} flex min-h-16 items-center gap-4 px-4">
 		{#if logo || title}
 			<a href="/" class="flex min-w-0 shrink items-center gap-2">
 				{#if logo}<img src={logo} alt="Logo" class="h-8 w-auto shrink-0" />{/if}
@@ -122,7 +123,7 @@
 	</div>
 
 	{#if showSearch && searchOpen}
-		<div class="border-t border-neutral-100 px-4 py-3 lg:hidden">
+		<div class="{STORE_CONTENT_WIDTH} border-t border-neutral-100 px-4 py-3 lg:hidden">
 			<HeaderSearch placeholder={searchPlaceholder} />
 		</div>
 	{/if}

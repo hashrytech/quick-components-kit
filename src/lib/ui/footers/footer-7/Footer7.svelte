@@ -25,6 +25,7 @@
 	 * number a phone cannot dial is decoration.
 	 */
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		title,
@@ -57,7 +58,8 @@
 </script>
 
 <footer class={twMerge('text-neutral-800', restProps.class)}>
-	<div class="grid gap-8 bg-neutral-50 px-6 py-10 sm:grid-cols-2 lg:grid-cols-4">
+	<div class="bg-neutral-50">
+		<div class="{STORE_CONTENT_WIDTH} grid gap-8 px-6 py-10 sm:grid-cols-2 lg:grid-cols-4">
 		{#each columns as column, index}
 			<div>
 				<p class="text-xs font-semibold tracking-[0.12em] uppercase">
@@ -95,18 +97,21 @@
 				</ul>
 			</div>
 		{/if}
+		</div>
 	</div>
 
-	<div
-		class="flex flex-wrap items-center gap-x-4 gap-y-2 bg-neutral-900 px-6 py-4 text-xs text-neutral-400"
-	>
-		<span>{copyright || `© ${year} ${title}. All rights reserved.`}</span>
-		{#if showPaymentMarks}
-			<div class="ml-auto flex gap-2">
-				{#each ['VISA', 'MC'] as mark}
-					<span class="rounded border border-neutral-700 px-2 py-1">{mark}</span>
-				{/each}
-			</div>
-		{/if}
+	<div class="bg-neutral-900">
+		<div
+			class="{STORE_CONTENT_WIDTH} flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-4 text-xs text-neutral-400"
+		>
+			<span>{copyright || `© ${year} ${title}. All rights reserved.`}</span>
+			{#if showPaymentMarks}
+				<div class="ml-auto flex gap-2">
+					{#each ['VISA', 'MC'] as mark}
+						<span class="rounded border border-neutral-700 px-2 py-1">{mark}</span>
+					{/each}
+				</div>
+			{/if}
+		</div>
 	</div>
 </footer>

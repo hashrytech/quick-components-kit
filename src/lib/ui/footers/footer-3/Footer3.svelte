@@ -31,6 +31,7 @@
 	 * shop without a mailing list does not ship an empty form.
 	 */
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		logo,
@@ -59,7 +60,7 @@
 </script>
 
 <footer class={twMerge('bg-white text-neutral-800', restProps.class)}>
-	<div class="grid gap-8 px-6 py-10 sm:grid-cols-2 lg:grid-cols-4">
+	<div class="{STORE_CONTENT_WIDTH} grid gap-8 px-6 py-10 sm:grid-cols-2 lg:grid-cols-4">
 		<div>
 			<a href="/" class="flex min-w-0 items-center gap-2">
 				{#if logo}<img src={logo} alt="Logo" class="h-8 w-auto shrink-0" />{/if}
@@ -109,16 +110,18 @@
 		{/if}
 	</div>
 
-	<div
-		class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-neutral-200 px-6 py-4 text-xs text-neutral-500"
-	>
-		<span>{copyright || `© ${year} ${title}`}</span>
-		{#if showPaymentMarks}
-			<div class="ml-auto flex gap-2">
-				{#each ['VISA', 'MC', 'AMEX'] as mark}
-					<span class="rounded border border-neutral-200 px-2 py-1">{mark}</span>
-				{/each}
-			</div>
-		{/if}
+	<div class="border-t border-neutral-200">
+		<div
+			class="{STORE_CONTENT_WIDTH} flex flex-wrap items-center gap-x-4 gap-y-2 px-6 py-4 text-xs text-neutral-500"
+		>
+			<span>{copyright || `© ${year} ${title}`}</span>
+			{#if showPaymentMarks}
+				<div class="ml-auto flex gap-2">
+					{#each ['VISA', 'MC', 'AMEX'] as mark}
+						<span class="rounded border border-neutral-200 px-2 py-1">{mark}</span>
+					{/each}
+				</div>
+			{/if}
+		</div>
 	</div>
 </footer>

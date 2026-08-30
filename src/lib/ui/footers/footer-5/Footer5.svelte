@@ -26,6 +26,7 @@
 	 * already announced in the columns above and hearing it twice helps nobody.
 	 */
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		title,
@@ -55,7 +56,7 @@
 </script>
 
 <footer class={twMerge('bg-neutral-950 text-neutral-300', restProps.class)}>
-	<div class="px-6 pt-10">
+	<div class="{STORE_CONTENT_WIDTH} px-6 pt-10">
 		<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 			{#each columns as column, index}
 				<div>

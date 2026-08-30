@@ -8,14 +8,20 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 
+import Header1 from './headers/header-1/Header1.svelte';
+import Header2 from './headers/header-2/Header2.svelte';
 import Header3 from './headers/header-3/Header3.svelte';
+import Header4 from './headers/header-4/Header4.svelte';
 import Header5 from './headers/header-5/Header5.svelte';
 import Header6 from './headers/header-6/Header6.svelte';
 import Header7 from './headers/header-7/Header7.svelte';
+import Footer1 from './footers/footer-1/Footer1.svelte';
 import Footer3 from './footers/footer-3/Footer3.svelte';
 import Footer4 from './footers/footer-4/Footer4.svelte';
 import Footer5 from './footers/footer-5/Footer5.svelte';
 import Footer6 from './footers/footer-6/Footer6.svelte';
+import Footer7 from './footers/footer-7/Footer7.svelte';
+import { STORE_CONTENT_WIDTH } from './chrome/content-width.js';
 import FeaturedProducts2 from './featured-products/featured-products-2/FeaturedProducts2.svelte';
 import FeaturedProducts4 from './featured-products/featured-products-4/FeaturedProducts4.svelte';
 import FeaturedProducts6 from './featured-products/featured-products-6/FeaturedProducts6.svelte';
@@ -219,5 +225,50 @@ describe('FeaturedProducts4 — hero', () => {
 		const hero = document.querySelector('section > div > a') as HTMLElement;
 		expect(hero.textContent).toContain('Linen apron');
 		expect(screen.getByText('Pick of the month')).toBeTruthy();
+	});
+});
+
+describe('the shared content column', () => {
+	it('puts every header and footer on the same width', () => {
+		// The whole point is alignment: the bar spans the page, its contents sit
+		// on the column the products sit on. One design opting out is a cart
+		// that does not line up with anything, which is what this replaced.
+		const cases = [
+			['Header1', Header1],
+			['Header2', Header2],
+			['Header3', Header3],
+			['Header4', Header4],
+			['Header5', Header5],
+			['Header6', Header6],
+			['Header7', Header7],
+			['Footer1', Footer1],
+			['Footer3', Footer3],
+			['Footer4', Footer4],
+			['Footer5', Footer5],
+			['Footer6', Footer6],
+			['Footer7', Footer7]
+		] as const;
+
+		for (const [name, Component] of cases) {
+			const { container, unmount } = render(Component, {
+				props: { title: 'Shop', links: LINKS, cartLink: '/cart', overBanner: false }
+			});
+			const capped = container.querySelector('.max-w-7xl');
+			expect(capped, name).toBeTruthy();
+			unmount();
+		}
+	});
+
+	it('keeps the bar itself full width so its background reaches the edges', () => {
+		// Capping the <header> instead of its contents leaves a floating bar
+		// with the page colour showing down both sides.
+		const { container } = render(Header3, { props: { title: 'Shop', links: LINKS } });
+		const bar = container.querySelector('header') as HTMLElement;
+		expect(bar.className).not.toContain('max-w-');
+	});
+
+	it('is one definition, not a number copied into each design', () => {
+		expect(STORE_CONTENT_WIDTH).toContain('max-w-7xl');
+		expect(STORE_CONTENT_WIDTH).toContain('mx-auto');
 	});
 });

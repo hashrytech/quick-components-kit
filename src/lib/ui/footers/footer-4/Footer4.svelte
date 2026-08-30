@@ -24,6 +24,7 @@
 	 * is left is a plain link row — a sane footer rather than a broken one.
 	 */
 	import { twMerge } from 'tailwind-merge';
+	import { STORE_CONTENT_WIDTH } from '../../chrome/content-width.js';
 
 	let {
 		logo,
@@ -65,7 +66,9 @@
 		</div>
 	{/if}
 
-	<div class="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 py-5 text-sm text-neutral-600">
+	<div
+		class="{STORE_CONTENT_WIDTH} flex flex-wrap items-center gap-x-6 gap-y-2 px-6 py-5 text-sm text-neutral-600"
+	>
 		<a href="/" class="flex min-w-0 items-center gap-2">
 			{#if logo}<img src={logo} alt="Logo" class="h-7 w-auto shrink-0" />{/if}
 			{#if title}<span class="truncate font-semibold text-neutral-900">{title}</span>{/if}
