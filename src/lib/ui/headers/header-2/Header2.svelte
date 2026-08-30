@@ -51,9 +51,9 @@
 	}
 </script>
 
-<!-- Full width for the same reason as Header 1: the cart belongs at the page
-     edge, in line with the content below. The brand stays optically centred
-     within it. -->
+<!-- Same column as Header 1: the bar spans the page, the rows inside sit on
+     STORE_CONTENT_WIDTH so the cart lines up with the content below. The
+     brand stays optically centred within that column. -->
 <header class="px-4 shadow-sm">
 	<div class={twMerge(STORE_CONTENT_WIDTH, restProps.class)}>
 		<!-- Row 1: the brand, centred. The cart and menu sit absolutely at the

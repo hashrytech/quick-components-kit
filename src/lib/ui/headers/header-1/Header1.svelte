@@ -40,10 +40,10 @@
 	}
 </script>
 
-<!-- Full width on purpose: page bodies are full-bleed, so a capped header
-     leaves the cart stranded well inside the right edge of the products
-     below it. `class` still overrides, so a storefront that wants a centred
-     column can pass one. -->
+<!-- The bar spans the page so its shadow reaches both edges. The row inside
+     sits on STORE_CONTENT_WIDTH — the same column the products below use — so
+     the logo and cart line up with them. `class` still overrides, so a
+     storefront that wants a different width can pass one. -->
 <header class="px-4 shadow-sm">
 	<div
 		class={twMerge(
