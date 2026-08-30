@@ -1,3 +1,10 @@
+# [0.46.0](https://github.com/hashrytech/quick-components-kit/compare/v0.45.1...v0.46.0) (2026-08-30)
+
+
+### Features
+
+* **ui:** add storefront chrome variants and preview metadata ([61bcc09](https://github.com/hashrytech/quick-components-kit/commit/61bcc091c4957a50a290eaf2b4b4cfcf6ecaf793))
+
 ## [0.45.1](https://github.com/hashrytech/quick-components-kit/compare/v0.45.0...v0.45.1) (2026-08-25)
 
 
