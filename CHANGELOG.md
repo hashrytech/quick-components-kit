@@ -1,3 +1,10 @@
+# [0.48.0](https://github.com/hashrytech/quick-components-kit/compare/v0.47.0...v0.48.0) (2026-08-30)
+
+
+### Features
+
+* **ui:** put every header and footer on one shared content column ([4b50ea6](https://github.com/hashrytech/quick-components-kit/commit/4b50ea61f59e1ab1cf4189722419c7d59d5751d6))
+
 # [0.47.0](https://github.com/hashrytech/quick-components-kit/compare/v0.46.0...v0.47.0) (2026-08-30)
 
 
