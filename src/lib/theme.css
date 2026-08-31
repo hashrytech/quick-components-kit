@@ -1,0 +1,91 @@
+/*
+ * THE THEME TOKEN CONTRACT (storefront theming Phase 1, 2026-08-31).
+ *
+ * Every token a storefront theme may override is defined here with its
+ * default value — these ARE the deployed storefront look. Consumers import
+ * this file instead of keeping copies:
+ *
+ *   app.css:  @import '@hashrytech/quick-components-kit/theme.css';
+ *
+ * App-only concerns stay in each app, declared AFTER this import so they
+ * win the cascade: breakpoints, @font-face and font tokens, background
+ * images, the admin's status color families, and the admin's deliberately
+ * darker button mapping.
+ *
+ * Paired files (keep in sync BY RULE — a contract value change is a paired
+ * kit + API seed change):
+ *   - hashry-api services/storefront_themes.py: WEB_THEME_TOKEN_KEYS
+ *     mirrors the overridable keys here (colors + radii); WEB_THEME_TOKENS
+ *     ["simple"] carries these same VALUES as the complete base map.
+ *
+ * Notes:
+ *   - SHADOWS are part of the contract's defaults but are NOT runtime-
+ *     themeable: Tailwind v4 inlines shadow values into the utilities at
+ *     build time (verified in built CSS), so a runtime --shadow-* override
+ *     does nothing. They are shared defaults only.
+ *   - NEVER change this block to `@theme inline`. Inline mode bakes values
+ *     into the compiled utilities and silently kills runtime theming
+ *     everywhere.
+ *   - The secondary scale is a GREY ladder matching Tailwind's neutral
+ *     values, and the secondary-button semantics point into it (2026-08-31,
+ *     theming plan decision 11). Rendered output is identical to the old
+ *     neutral chains until a theme overrides the scale — that override is
+ *     the point.
+ */
+
+@theme {
+	--color-primary-50: oklch(98.6% 0.0256 81.53);
+	--color-primary-100: oklch(96.9% 0.0734 81.53);
+	--color-primary-200: oklch(94.6% 0.1112 81.53);
+	--color-primary-300: oklch(91.9% 0.1419 81.53);
+	--color-primary-400: oklch(88.1% 0.1318 81.53);
+	--color-primary-500: oklch(82.8% 0.1297 81.53);
+	--color-primary-600: oklch(75.8% 0.1491 81.53);
+	--color-primary-700: oklch(72.3% 0.1491 81.53);
+	--color-primary-800: oklch(68.6% 0.1491 81.53);
+	--color-primary-900: oklch(56.9% 0.1491 81.53);
+	--color-primary-950: oklch(35.2% 0.0513 81.53);
+
+	/* Grey ladder = Tailwind neutral values (decision 11). A theme override
+	   of these steps restyles secondary buttons; nothing else moves. */
+	--color-secondary-50: oklch(98.5% 0 0);
+	--color-secondary-100: oklch(97% 0 0);
+	--color-secondary-200: oklch(92.2% 0 0);
+	--color-secondary-300: oklch(87% 0 0);
+	--color-secondary-400: oklch(70.8% 0 0);
+	--color-secondary-500: oklch(55.6% 0 0);
+	--color-secondary-600: oklch(43.9% 0 0);
+	--color-secondary-700: oklch(37.1% 0 0);
+	--color-secondary-800: oklch(26.9% 0 0);
+	--color-secondary-900: oklch(20.5% 0 0);
+	--color-secondary-950: oklch(14.5% 0 0);
+
+	--color-primary-overlay: oklch(0.371 0 0 / 0.8);
+	--color-primary-input-border: var(--color-neutral-300);
+	--color-primary-input-background: var(--color-neutral-100);
+	--color-primary-input-accent: var(--color-primary-700);
+	--color-primary-label-text: var(--color-neutral-600);
+	/* 800, not the 500 this file once had — the deployed storefront look
+	   wins the reconcile (theming plan, Phase 1 kit scope). */
+	--color-primary-focus: var(--color-primary-800);
+	--color-primary-button: var(--color-primary-700);
+	--color-primary-button-hover: var(--color-primary-800);
+	--color-primary-button-disabled: var(--color-neutral-300);
+	--color-secondary-button: var(--color-secondary-700);
+	--color-secondary-button-hover: var(--color-secondary-600);
+	--color-secondary-button-disabled: var(--color-secondary-300);
+	--color-primary-table-border: var(--color-neutral-200);
+	--color-primary-table-heading: var(--color-neutral-200);
+	--color-primary-table-heading-text: var(--color-neutral-600);
+	--color-primary-table-row-selected: var(--color-primary-50);
+	--color-primary-table-row-hover: var(--color-neutral-100);
+	--color-primary-table-row-text: var(--color-neutral-700);
+	--color-primary-card-border: var(--color-neutral-300);
+
+	/* Shared defaults only — not runtime-themeable (see header). */
+	--shadow-primary: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+	--shadow-secondary: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+	--radius-primary: 0.5rem;
+	--radius-secondary: 0.375rem;
+}

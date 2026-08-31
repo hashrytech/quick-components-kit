@@ -1,74 +1,11 @@
- 
-@theme {
+/* App-only tokens for the kit's own dev app. The THEMEABLE contract lives
+   in src/lib/theme.css (shipped as '@hashrytech/quick-components-kit/theme.css')
+   and is imported by app.css BEFORE this file — breakpoints are app concerns
+   and deliberately not part of the contract. */
 
+@theme {
     --breakpoint-xs: 480px;
     --breakpoint-xxs: 400px;
     --breakpoint-xxxs: 360px;
     --breakpoint-xxxxs: 320px;
-    
-    --color-primary-50: oklch(98.6% 0.0256 81.53);
-    --color-primary-100: oklch(96.9% 0.0734 81.53);
-    --color-primary-200: oklch(94.6% 0.1112 81.53);
-    --color-primary-300: oklch(91.9% 0.1419 81.53);
-    --color-primary-400: oklch(88.1% 0.1318 81.53);
-    --color-primary-500: oklch(82.8% 0.1297 81.53);
-    --color-primary-600: oklch(75.8% 0.1491 81.53);
-    --color-primary-700: oklch(72.3% 0.1491 81.53);
-    --color-primary-800: oklch(68.6% 0.1491 81.53);
-    --color-primary-900: oklch(56.9% 0.1491 81.53);
-    --color-primary-950: oklch(35.2% 0.0513 81.53);
-
-    --color-secondary-50: oklch(0.972 0.037 19.87);
-    --color-secondary-100: oklch(0.945 0.046 19.95);
-    --color-secondary-200: oklch(0.868 0.092 19.81);
-    --color-secondary-300: oklch(0.749 0.158 20.04);
-    --color-secondary-400: oklch(0.618 0.226 20.19);
-    --color-secondary-500: oklch(0.519 0.26 20.31);
-    --color-secondary-600: oklch(0.437 0.229 20.44);
-    --color-secondary-700: oklch(0.352 0.197 20.45);
-    --color-secondary-800: oklch(0.293 0.172 20.38);
-    --color-secondary-900: oklch(0.252 0.15 20.25);
-    --color-secondary-950: oklch(0.131 0.098 19.98);
-
-    /* Updated Theme Variables */
-    --color-primary-overlay: oklch(0.371 0 0 / 0.8);
-    --color-primary-input-border: var(--color-neutral-300);
-    --color-primary-input-background: var(--color-neutral-100);
-    --color-primary-input-accent: var(--color-primary-700);
-    --color-primary-label-text: var(--color-neutral-600);
-    --color-primary-focus: var(--color-primary-500);
-    --color-primary-button: var(--color-primary-700);
-    --color-primary-button-hover: var(--color-primary-800);
-    --color-primary-button-disabled: var(--color-neutral-300);
-    --color-secondary-button: var(--color-neutral-700);
-    --color-secondary-button-hover: var(--color-neutral-600);
-    --color-secondary-button-disabled: var(--color-neutral-300);
-    --color-primary-table-border: var(--color-neutral-200);
-    --color-primary-table-heading: var(--color-neutral-200);
-    --color-primary-table-heading-text: var(--color-neutral-600);
-    --color-primary-table-row-selected: var(--color-primary-50);
-    --color-primary-table-row-hover: var(--color-neutral-100);
-    --color-primary-table-row-text: var(--color-neutral-700);
-    --color-primary-card-border: var(--color-neutral-300);
-    
-    --shadow-primary: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-secondary: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-
-    --radius-primary: 0.5rem;
-    --radius-secondary: 0.375rem;
-    /*---- END Updated Theme Variables ----*/
-
-    /* OLD STYLES 
-    --color-button-primary: var(--color-primary-600);
-    --color-button-primary-hover: var(--color-primary-700);
-    --color-button-secondary: var(--color-secondary-600);
-    --color-button-secondary-hover: var(--color-secondary-700);
-
-    --color-input-primary: var(--color-primary-500);
-    --color-input-secondary: var(--color-primary-500);
-
-    --color-focus-primary: var(--color-primary-800);
-    --color-overlay-primary: oklch(0.371 0 0 / 0.8); /* --color-neutral-700: oklch(0.371 0 0);
-    --color-border-primary: oklch(0.87 0 0);    
-    */
 }

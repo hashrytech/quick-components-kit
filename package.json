@@ -13,7 +13,7 @@
 		"build": "vite build && npm run prepack",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
-		"prepack": "svelte-kit sync && svelte-package && publint",
+		"prepack": "svelte-kit sync && svelte-package && node scripts/check-package.mjs && publint",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"commitlint": "commitlint --from=HEAD~1 --to=HEAD",
@@ -51,7 +51,8 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
 		},
-		"./tailwind": "./dist/quick-components-kit-plugin.js"
+		"./tailwind": "./dist/quick-components-kit-plugin.js",
+		"./theme.css": "./dist/theme.css"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"
