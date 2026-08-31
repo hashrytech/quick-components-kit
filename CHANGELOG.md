@@ -1,3 +1,15 @@
+# [0.49.0](https://github.com/hashrytech/quick-components-kit/compare/v0.48.0...v0.49.0) (2026-08-31)
+
+
+### Code Refactoring
+
+* **ui:** move storefront components to quick-store-ux ([9cea050](https://github.com/hashrytech/quick-components-kit/commit/9cea050c81a9631fc950754d6553706136a7583d))
+
+
+### BREAKING CHANGES
+
+* **ui:** Storefront components must now be imported from @hashrytech/quick-store-ux.
+
 # [0.48.0](https://github.com/hashrytech/quick-components-kit/compare/v0.47.0...v0.48.0) (2026-08-30)
 
 
