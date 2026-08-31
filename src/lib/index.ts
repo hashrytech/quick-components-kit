@@ -53,72 +53,9 @@ export * from './functions/object-to-form-data.js';
 export * from './functions/compare-objects.js';
 export * from './functions/click-outside.js';
 
-// UI Components — storefront sections, `<section>/<variant-N>`.
-//
-// Tier A: tenant-composable, each backed by a Web_Component record in the API.
-// Five header designs, five footers, six featured-product layouts, plus the
-// banner and product list.
-// The storefront's content column. Exported because the renderer wraps page
-// bodies in the SAME width — that is what makes a header's cart line up with
-// the products underneath it.
-export { STORE_CONTENT_WIDTH } from './ui/chrome/content-width.js';
-
-export * from './ui/headers/header-1/index.js';
-export * from './ui/headers/header-2/index.js';
-export * from './ui/headers/header-3/index.js';
-export * from './ui/headers/header-4/index.js';
-export * from './ui/headers/header-5/index.js';
-export * from './ui/headers/header-6/index.js';
-export * from './ui/headers/header-7/index.js';
-export * from './ui/footers/footer-1/index.js';
-export * from './ui/footers/footer-2/index.js';
-export * from './ui/footers/footer-3/index.js';
-export * from './ui/footers/footer-4/index.js';
-export * from './ui/footers/footer-5/index.js';
-export * from './ui/footers/footer-6/index.js';
-export * from './ui/footers/footer-7/index.js';
-export * from './ui/banners/banner-1/index.js';
-export * from './ui/featured-products/featured-products-1/index.js';
-export * from './ui/featured-products/featured-products-2/index.js';
-export * from './ui/featured-products/featured-products-3/index.js';
-export * from './ui/featured-products/featured-products-4/index.js';
-export * from './ui/featured-products/featured-products-5/index.js';
-export * from './ui/featured-products/featured-products-6/index.js';
-export * from './ui/product-list/product-list-1/index.js';
-
-// Tier B: application components for the fixed storefront routes (product
-// detail, cart, checkout, confirmation). Same kit and theming, not
-// tenant-pickable in v1 — promoting one later is just adding a record.
-export * from './ui/price/price-1/index.js';
-export * from './ui/availability-badge/availability-badge-1/index.js';
-export * from './ui/quantity-stepper/quantity-stepper-1/index.js';
-export * from './ui/product-card/product-card-1/index.js';
-export * from './ui/variant-selector/variant-selector-1/index.js';
-export * from './ui/product-detail/product-detail-1/index.js';
-export * from './ui/cart-summary/cart-summary-1/index.js';
-export * from './ui/empty-cart/empty-cart-1/index.js';
-export * from './ui/totals-breakdown/totals-breakdown-1/index.js';
-export * from './ui/contact-form/contact-form-1/index.js';
-export * from './ui/address-form/address-form-1/index.js';
-export * from './ui/order-type-selector/order-type-selector-1/index.js';
-export * from './ui/location-picker/location-picker-1/index.js';
-export * from './ui/order-confirmation/order-confirmation-1/index.js';
-export * from './ui/resume-payment/resume-payment-1/index.js';
-export * from './ui/alerts/alert-1/index.js';
-export * from './ui/spinner/spinner-1/index.js';
-export * from './ui/store-404/store-404-1/index.js';
-export * from './ui/friendly-error/friendly-error-1/index.js';
-
-// Preview metadata for the tenant-composable components — labels and sample
-// props, so the admin builder can render each design live instead of shipping
-// screenshots that go stale.
-export * from './ui/component-previews.js';
-
-// Previously built but never exported, so no consumer could import them.
-export * from './ui/searchbox/index.js';
-export * from './ui/breadcrumbs/breadcrumbs-1/index.js';
-export * from './ui/order-product-line-item/order-product-line-item-1/index.js';
-export * from './ui/product-list-navigation/product-list-navigation-1/index.js';
-export * from './ui/product-filters/product-filter-1/index.js';
+// Storefront UI components (headers, footers, product layouts, checkout
+// sections, COMPONENT_PREVIEWS) moved to @hashrytech/quick-store-ux
+// (2026-08-31 split). That package peer-depends on this one; consumers
+// install both and register both tailwind plugins.
 
 // Add more components here...

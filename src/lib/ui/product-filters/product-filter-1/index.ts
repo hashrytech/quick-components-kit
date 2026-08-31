@@ -1,1 +1,0 @@
-export { default as ProductFilter1 } from './ProductFilter1.svelte';

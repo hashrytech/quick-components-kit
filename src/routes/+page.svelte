@@ -116,7 +116,6 @@
 <h1 class="bg-primary-600 mx-2 mt-4 rounded-lg p-2 text-center text-xl font-semibold text-white">
 	Quick Components Kit
 </h1>
-<a href="/quick-store">Go to Quick Store</a>
 
 <div class="flex w-full flex-row gap-10 rounded bg-gray-50">
 	<div class="flex w-full flex-col gap-1 px-2">

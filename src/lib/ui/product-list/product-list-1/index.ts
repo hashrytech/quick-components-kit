@@ -1,1 +1,0 @@
-export { default as ProductList1 } from './ProductList1.svelte';

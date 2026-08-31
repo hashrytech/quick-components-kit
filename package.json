@@ -26,7 +26,8 @@
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
 		"package": "svelte-package",
-		"clean-package-json": "node ./scripts/clean-package-json.js"
+		"clean-package-json": "node ./scripts/clean-package-json.js",
+		"push": "node scripts/push-local.mjs"
 	},
 	"files": [
 		"dist",
