@@ -82,6 +82,26 @@
 	--color-primary-table-row-text: var(--color-neutral-700);
 	--color-primary-card-border: var(--color-neutral-300);
 
+	/* Area color schemes (backgrounds plan): each AREA — header, footer,
+	   page — carries a background/text/text-muted/border bundle. Schemes are
+	   authored as readable PAIRS admin-side; these defaults are today's
+	   exact look, so nothing changes until a merchant picks one. Chrome
+	   components consume the header/footer bundles; the page bundle's text
+	   tokens are reserved (body components do not consume them yet, which is
+	   why the page picker offers light schemes only). */
+	--color-header-background: #ffffff;
+	--color-header-text: var(--color-neutral-800);
+	--color-header-text-muted: var(--color-neutral-600);
+	--color-header-border: var(--color-neutral-200);
+	--color-footer-background: #ffffff;
+	--color-footer-text: var(--color-neutral-800);
+	--color-footer-text-muted: var(--color-neutral-600);
+	--color-footer-border: var(--color-neutral-200);
+	--color-page-background: #ffffff;
+	--color-page-text: var(--color-neutral-900);
+	--color-page-text-muted: var(--color-neutral-600);
+	--color-page-border: var(--color-neutral-200);
+
 	/* Shared defaults only — not runtime-themeable (see header). */
 	--shadow-primary: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 	--shadow-secondary: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
