@@ -1,3 +1,10 @@
+# [0.50.0](https://github.com/hashrytech/quick-components-kit/compare/v0.49.0...v0.50.0) (2026-08-31)
+
+
+### Features
+
+* export the theme token contract as ./theme.css ([cbf1bd2](https://github.com/hashrytech/quick-components-kit/commit/cbf1bd29f543d153543854da2725d5f1491d0149))
+
 # [0.49.0](https://github.com/hashrytech/quick-components-kit/compare/v0.48.0...v0.49.0) (2026-08-31)
 
 
