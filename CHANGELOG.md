@@ -1,3 +1,10 @@
+# [0.52.0](https://github.com/hashrytech/quick-components-kit/compare/v0.51.0...v0.52.0) (2026-09-19)
+
+
+### Features
+
+* **money:** support directed exchange rates ([acacfa6](https://github.com/hashrytech/quick-components-kit/commit/acacfa66a41e38c3b3feea22c35e1fbf8669b9ec))
+
 # [0.51.0](https://github.com/hashrytech/quick-components-kit/compare/v0.50.0...v0.51.0) (2026-09-04)
 
 
