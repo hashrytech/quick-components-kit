@@ -238,11 +238,11 @@ export function viewCurrencies(order: OrderRateMaps): CurrencyCode[] {
 }
 
 // A rate is not money, so it is never rounded to currency decimals. Every
-// saved decimal is kept (the API allows 6); trailing zeros are trimmed down
+// saved decimal is kept (the API allows 8); trailing zeros are trimmed down
 // to the conventional minimum of 2.
 function formatRateValue(rate: string): string {
 	const d = new Decimal(rate);
-	const places = Math.min(Math.max(d.decimalPlaces(), 2), 6);
+	const places = Math.min(Math.max(d.decimalPlaces(), 2), 8);
 	const fixed = d.toFixed(places, Decimal.ROUND_HALF_UP);
 	const [whole, frac = ''] = fixed.split('.');
 	const grouped = new Intl.NumberFormat('en-JM', { maximumFractionDigits: 0 }).format(

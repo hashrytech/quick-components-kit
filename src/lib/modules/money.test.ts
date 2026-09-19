@@ -509,6 +509,12 @@ describe('formatRateLine', () => {
 		);
 	});
 
+	it.each(['0.00666667', '0.00000001'])('preserves all eight decimal places in %s', (rate) => {
+		expect(formatRateLine({ rate, one: 'JMD' }, 'JMD', 'USD')).toBe(
+			'1 JMD = ' + rate + ' USD'
+		);
+	});
+
 	it('keeps every saved decimal instead of rounding to four', () => {
 		expect(formatRateLine({ rate: '0.00625', one: 'JMD' }, 'JMD', 'USD')).toBe(
 			'1 JMD = 0.00625 USD'
