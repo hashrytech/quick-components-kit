@@ -1,3 +1,10 @@
+# [0.51.0](https://github.com/hashrytech/quick-components-kit/compare/v0.50.0...v0.51.0) (2026-09-04)
+
+
+### Features
+
+* **theme:** add color tokens for header, footer, and page areas ([581ec72](https://github.com/hashrytech/quick-components-kit/commit/581ec722f28c02041d03a966691dc3027e72f7c0))
+
 # [0.50.0](https://github.com/hashrytech/quick-components-kit/compare/v0.49.0...v0.50.0) (2026-08-31)
 
 
