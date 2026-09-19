@@ -1,3 +1,10 @@
+# [0.53.0](https://github.com/hashrytech/quick-components-kit/compare/v0.52.0...v0.53.0) (2026-09-19)
+
+
+### Features
+
+* **money:**  additional fixes ([93af12d](https://github.com/hashrytech/quick-components-kit/commit/93af12d5329c3a95a8b11302e611b8eef07da860))
+
 # [0.52.0](https://github.com/hashrytech/quick-components-kit/compare/v0.51.0...v0.52.0) (2026-09-19)
 
 
