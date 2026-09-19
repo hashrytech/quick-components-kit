@@ -103,9 +103,25 @@ export function orderAmountPaid(payments: PaidPayment[] | null | undefined): num
 // Display formatter — locale-aware grouping via Intl, sign and currency
 // adornment applied here.
 
+// A directed rate names the currency that equals 1 in the equation:
+// { rate: "155", one: "USD" } under key "JMD" means 1 USD = 155 JMD.
+// `one` is either the map key or the store's base currency.
+export type DirectedRate = { rate: string; one: CurrencyCode };
+export type DirectedRateMap = Record<string, DirectedRate>;
+
 export type OrderCurrencyStore = {
 	base_currency?: CurrencyCode;
+	// Legacy direction, strings only: 1 <key> = N <base>.
 	default_exchange_rates?: Record<string, string>;
+	// Directed rates. A code lives in at most one of the two maps.
+	default_directed_rates?: DirectedRateMap;
+};
+
+// The rate maps an order carries. Both are snapshots taken at create time.
+export type OrderRateMaps = {
+	currency?: CurrencyCode;
+	exchange_rates?: Record<string, string> | null;
+	directed_rates?: DirectedRateMap | null;
 };
 
 export function formatMoney(
@@ -152,19 +168,105 @@ export function formatBaseMoney(amount: string | number): string {
 	return formatMoney(amount, 'JMD', { asBase: true });
 }
 
+// Find the rate between the order's base and `foreign`. The directed map
+// wins; a legacy string means 1 <foreign> = N <base>, so `one` is the
+// foreign code. Returns null for a missing, invalid or non-positive rate.
+export function resolveRate(order: OrderRateMaps, foreign: CurrencyCode): DirectedRate | null {
+	const valid = (rate: unknown): rate is string | number => {
+		if (typeof rate !== 'string' && typeof rate !== 'number') return false;
+		if (rate === '') return false;
+		try {
+			return new Decimal(rate).gt(0);
+		} catch {
+			return false;
+		}
+	};
+	const directed = order.directed_rates?.[foreign];
+	if (directed && typeof directed === 'object' && valid(directed.rate) && directed.one) {
+		return { rate: String(directed.rate), one: directed.one };
+	}
+	const legacy = order.exchange_rates?.[foreign];
+	if (valid(legacy)) return { rate: String(legacy), one: foreign };
+	return null;
+}
+
+// Convert `amount` from one side of the pair to the other. Multiplies when
+// the amount is in the rate's "one" currency, divides when it is in the
+// other. No inverse rate is ever built. Returns the unrounded result, or
+// null when the rate does not describe this pair.
+export function projectAmount(
+	amount: string | number,
+	rate: DirectedRate,
+	from: CurrencyCode,
+	to: CurrencyCode
+): string | null {
+	if (from === to) return new Decimal(amount).toString();
+	const value = new Decimal(rate.rate);
+	if (value.lte(0)) return null;
+	if (rate.one === from) return new Decimal(amount).mul(value).toString();
+	if (rate.one === to) return new Decimal(amount).div(value).toString();
+	return null;
+}
+
+// Currencies an order can be viewed in: its own currency first, then every
+// code present in either rate map. The toggle and the projection both go
+// through the same maps, so they can never disagree.
+export function viewCurrencies(order: OrderRateMaps): CurrencyCode[] {
+	const own = (order.currency ?? 'JMD') as CurrencyCode;
+	const out: CurrencyCode[] = [own];
+	const keys = [
+		...Object.keys(order.exchange_rates ?? {}),
+		...Object.keys(order.directed_rates ?? {})
+	] as CurrencyCode[];
+	for (const code of keys) {
+		if (!out.includes(code) && resolveRate(order, code)) out.push(code);
+	}
+	return out;
+}
+
+// A rate is not money, so it is never rounded to currency decimals. Every
+// saved decimal is kept (the API allows 6); trailing zeros are trimmed down
+// to the conventional minimum of 2.
+function formatRateValue(rate: string): string {
+	const d = new Decimal(rate);
+	const places = Math.min(Math.max(d.decimalPlaces(), 2), 6);
+	const fixed = d.toFixed(places, Decimal.ROUND_HALF_UP);
+	const [whole, frac = ''] = fixed.split('.');
+	const grouped = new Intl.NumberFormat('en-JM', { maximumFractionDigits: 0 }).format(
+		Number(whole)
+	);
+	return `${grouped}.${frac.padEnd(2, '0')}`;
+}
+
+// "1 USD = 155.00 JMD", in the direction the rate was entered. `foreign` is
+// the map key the rate was found under; `base` is the other side.
+export function formatRateLine(
+	rate: DirectedRate | null | undefined,
+	foreign: CurrencyCode,
+	base: CurrencyCode
+): string {
+	if (!rate) return '';
+	try {
+		if (new Decimal(rate.rate).lte(0)) return '';
+		const other = rate.one === foreign ? base : foreign;
+		return `1 ${rate.one} = ${formatRateValue(rate.rate)} ${other}`;
+	} catch {
+		return '';
+	}
+}
+
 // Format an amount stored in an order's currency, optionally projecting
 // it into a different "view currency" using the order's snapshotted
-// rate map. When viewCurrency matches the order's currency (or no rate is
+// rate maps. When viewCurrency matches the order's currency (or no rate is
 // available in the snapshot), behaves identically to formatMoney.
 //
-// Rate convention: order.exchange_rates[foreign] is base-per-foreign
-// (how many base units equal 1 unit of `foreign`), copied verbatim from
-// store.default_exchange_rates at order create time. v1 supports JMD<->USD
-// on a single-base store. Foreign->foreign is unsupported; in that case
-// the projection is skipped.
+// Rates come from resolveRate: order.directed_rates first, then the legacy
+// order.exchange_rates string (1 <foreign> = N <base>). v1 supports
+// JMD<->USD on a single-base store. Foreign->foreign is unsupported; in
+// that case the projection is skipped.
 export function formatOrderAmount(
 	amount: string | number,
-	order: { currency?: CurrencyCode; exchange_rates?: Record<string, string> | null; store?: OrderCurrencyStore | null },
+	order: OrderRateMaps & { store?: OrderCurrencyStore | null },
 	viewCurrency: CurrencyCode | undefined,
 	opts?: { store?: OrderCurrencyStore | null }
 ): string {
@@ -178,35 +280,21 @@ export function formatOrderAmount(
 
 	if (target === orderCurrency) return renderNative();
 
-	// Strict snapshot: only currencies present in the order's snapshot
-	// at create time are projectable. The store's CURRENT
-	// default_exchange_rates is NOT consulted — that would retroactively
-	// rewrite historical receipts when the store updates rates
-	// (lock-currency/idea-honing.md Q5).
-	const rateFor = (currency: CurrencyCode): string | null | undefined => {
-		if (currency === baseCurrency) return null;
-		return order.exchange_rates?.[currency];
-	};
+	// Exactly one side of the pair must be the base. Foreign -> foreign is
+	// unsupported in v1.
+	if (orderCurrency !== baseCurrency && target !== baseCurrency) return renderNative();
+	const foreign = orderCurrency === baseCurrency ? target : orderCurrency;
 
-	let rate: string | null | undefined;
-	let multiplier: string;
 	try {
-		if (orderCurrency === baseCurrency && target !== baseCurrency) {
-			// base -> foreign: divide
-			rate = rateFor(target);
-			if (!rate) return renderNative();
-			multiplier = inverseRate(rate);
-		} else if (orderCurrency !== baseCurrency && target === baseCurrency) {
-			// foreign -> base: multiply
-			rate = rateFor(orderCurrency);
-			if (!rate) return renderNative();
-			multiplier = String(rate);
-		} else {
-			// foreign -> foreign: unsupported in v1
-			return renderNative();
-		}
-
-		const converted = roundForCurrency(convert(amount, multiplier), target);
+		// Strict snapshot: only currencies present in the order's snapshot
+		// at create time are projectable. The store's CURRENT rates are NOT
+		// consulted — that would retroactively rewrite historical receipts
+		// when the store updates rates (lock-currency/idea-honing.md Q5).
+		const rate = resolveRate(order, foreign);
+		if (!rate) return renderNative();
+		const projected = projectAmount(amount, rate, orderCurrency, target);
+		if (projected === null) return renderNative();
+		const converted = roundForCurrency(projected, target);
 		return formatMoney(converted, target, { ...opts, asBase: target === baseCurrency });
 	} catch {
 		return renderNative();

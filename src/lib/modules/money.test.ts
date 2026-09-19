@@ -7,11 +7,15 @@ import {
 	formatBaseMoney,
 	formatOrderAmount,
 	formatMoney,
+	formatRateLine,
 	getCurrencyMeta,
 	inverseRate,
 	normalizeCurrencyCode,
 	orderAmountPaid,
+	projectAmount,
+	resolveRate,
 	roundForCurrency,
+	viewCurrencies,
 	type CurrencyCode,
 	type CurrencyMeta
 } from './money.js';
@@ -342,5 +346,188 @@ describe('formatOrderAmount', () => {
 				'USD'
 			)
 		).toBe('US$600.00');
+	});
+});
+
+describe('resolveRate', () => {
+	it('reads a directed entry as saved', () => {
+		expect(
+			resolveRate({ directed_rates: { JMD: { rate: '155', one: 'USD' } } }, 'JMD')
+		).toEqual({ rate: '155', one: 'USD' });
+	});
+
+	it('reads a legacy string as 1 <foreign> = N <base>', () => {
+		expect(resolveRate({ exchange_rates: { USD: '160' } }, 'USD')).toEqual({
+			rate: '160',
+			one: 'USD'
+		});
+	});
+
+	it('prefers the directed map when a code is in both maps', () => {
+		expect(
+			resolveRate(
+				{
+					exchange_rates: { JMD: '0.006452' },
+					directed_rates: { JMD: { rate: '155', one: 'USD' } }
+				},
+				'JMD'
+			)
+		).toEqual({ rate: '155', one: 'USD' });
+	});
+
+	it('returns null for missing, invalid and non-positive rates', () => {
+		expect(resolveRate({}, 'JMD')).toBeNull();
+		expect(resolveRate({ exchange_rates: { JMD: 'abc' } }, 'JMD')).toBeNull();
+		expect(resolveRate({ exchange_rates: { JMD: '0' } }, 'JMD')).toBeNull();
+		expect(
+			resolveRate({ directed_rates: { JMD: { rate: '-1', one: 'USD' } } }, 'JMD')
+		).toBeNull();
+		// An object that leaked into the legacy map is not a rate.
+		expect(
+			resolveRate({ exchange_rates: { JMD: { rate: '155' } as unknown as string } }, 'JMD')
+		).toBeNull();
+	});
+});
+
+describe('projectAmount', () => {
+	it('multiplies when the amount is in the "one" currency', () => {
+		expect(projectAmount('10', { rate: '155', one: 'USD' }, 'USD', 'JMD')).toBe('1550');
+	});
+
+	it('divides when the amount is in the other currency', () => {
+		expect(projectAmount('1550', { rate: '155', one: 'USD' }, 'JMD', 'USD')).toBe('10');
+	});
+
+	it('returns null when the rate does not describe the pair', () => {
+		expect(
+			projectAmount('10', { rate: '155', one: 'EUR' as CurrencyCode }, 'USD', 'JMD')
+		).toBeNull();
+	});
+});
+
+describe('formatOrderAmount with directed rates', () => {
+	it('projects a base order exactly when the rate is entered from the base side', () => {
+		expect(
+			formatOrderAmount(
+				'10.00',
+				{
+					currency: 'USD',
+					exchange_rates: {},
+					directed_rates: { JMD: { rate: '155', one: 'USD' } },
+					store: { base_currency: 'USD' }
+				},
+				'JMD'
+			)
+		).toBe('J$1,550.00');
+	});
+
+	it('shows the old drift for the rounded legacy inverse, so the two can be told apart', () => {
+		expect(
+			formatOrderAmount(
+				'10.00',
+				{
+					currency: 'USD',
+					exchange_rates: { JMD: '0.006452' },
+					store: { base_currency: 'USD' }
+				},
+				'JMD'
+			)
+		).toBe('J$1,549.91');
+	});
+
+	it('divides a base order when the directed rate is entered from the foreign side', () => {
+		expect(
+			formatOrderAmount(
+				'16000',
+				{
+					currency: 'JMD',
+					directed_rates: { USD: { rate: '160', one: 'USD' } },
+					store: { base_currency: 'JMD' }
+				},
+				'USD'
+			)
+		).toBe('US$100.00');
+	});
+
+	it('still multiplies a legacy foreign-currency order back into the base', () => {
+		expect(
+			formatOrderAmount(
+				'600',
+				{ currency: 'USD', exchange_rates: { USD: '158.5' }, store: { base_currency: 'JMD' } },
+				'JMD'
+			)
+		).toBe('$95,100.00');
+	});
+
+	it('returns to the original amount when the view switches back', () => {
+		const order = {
+			currency: 'USD' as CurrencyCode,
+			directed_rates: { JMD: { rate: '155', one: 'USD' as CurrencyCode } },
+			store: { base_currency: 'USD' as CurrencyCode }
+		};
+		expect(formatOrderAmount('10.01', order, 'JMD')).toBe('J$1,551.55');
+		expect(formatOrderAmount('10.01', order, 'USD')).toBe('$10.01');
+	});
+});
+
+describe('formatRateLine', () => {
+	it('prints a base-side rate in the entered direction', () => {
+		expect(formatRateLine({ rate: '155', one: 'USD' }, 'JMD', 'USD')).toBe('1 USD = 155.00 JMD');
+	});
+
+	it('prints a foreign-side rate in the entered direction', () => {
+		expect(formatRateLine({ rate: '158.5', one: 'USD' }, 'USD', 'JMD')).toBe(
+			'1 USD = 158.50 JMD'
+		);
+	});
+
+	it('keeps every saved decimal instead of rounding to four', () => {
+		expect(formatRateLine({ rate: '0.00625', one: 'JMD' }, 'JMD', 'USD')).toBe(
+			'1 JMD = 0.00625 USD'
+		);
+		expect(formatRateLine({ rate: '0.006452', one: 'JMD' }, 'JMD', 'USD')).toBe(
+			'1 JMD = 0.006452 USD'
+		);
+	});
+
+	it('trims trailing zeros down to two decimals and groups thousands', () => {
+		expect(formatRateLine({ rate: '1580.5000', one: 'USD' }, 'USD', 'JMD')).toBe(
+			'1 USD = 1,580.50 JMD'
+		);
+	});
+
+	it('returns an empty string for a missing or non-positive rate', () => {
+		expect(formatRateLine(null, 'JMD', 'USD')).toBe('');
+		expect(formatRateLine({ rate: '0', one: 'USD' }, 'JMD', 'USD')).toBe('');
+	});
+});
+
+describe('viewCurrencies', () => {
+	it('lists the order currency first, then legacy codes', () => {
+		expect(viewCurrencies({ currency: 'JMD', exchange_rates: { USD: '160' } })).toEqual([
+			'JMD',
+			'USD'
+		]);
+	});
+
+	it('lists directed codes', () => {
+		expect(
+			viewCurrencies({ currency: 'USD', directed_rates: { JMD: { rate: '155', one: 'USD' } } })
+		).toEqual(['USD', 'JMD']);
+	});
+
+	it('merges both maps without duplicates and skips unusable rates', () => {
+		expect(
+			viewCurrencies({
+				currency: 'USD',
+				exchange_rates: { JMD: '0.006452', USD: '1' },
+				directed_rates: { JMD: { rate: '155', one: 'USD' } }
+			})
+		).toEqual(['USD', 'JMD']);
+		expect(viewCurrencies({ currency: 'USD', exchange_rates: { JMD: '' } })).toEqual(['USD']);
+	});
+
+	it('returns only the order currency when there are no rates', () => {
+		expect(viewCurrencies({ currency: 'USD', exchange_rates: null })).toEqual(['USD']);
 	});
 });
