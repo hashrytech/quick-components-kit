@@ -108,6 +108,9 @@ export function orderAmountPaid(payments: PaidPayment[] | null | undefined): num
 // `one` is either the map key or the store's base currency.
 export type DirectedRate = { rate: string; one: CurrencyCode };
 export type DirectedRateMap = Record<string, DirectedRate>;
+// What resolveRate returns. `legacy` is true when the rate came from the
+// legacy string map; those keep the calculation they have always had.
+export type ResolvedRate = DirectedRate & { legacy?: boolean };
 
 export type OrderCurrencyStore = {
 	base_currency?: CurrencyCode;
@@ -171,7 +174,7 @@ export function formatBaseMoney(amount: string | number): string {
 // Find the rate between the order's base and `foreign`. The directed map
 // wins; a legacy string means 1 <foreign> = N <base>, so `one` is the
 // foreign code. Returns null for a missing, invalid or non-positive rate.
-export function resolveRate(order: OrderRateMaps, foreign: CurrencyCode): DirectedRate | null {
+export function resolveRate(order: OrderRateMaps, foreign: CurrencyCode): ResolvedRate | null {
 	const valid = (rate: unknown): rate is string | number => {
 		if (typeof rate !== 'string' && typeof rate !== 'number') return false;
 		if (rate === '') return false;
@@ -186,17 +189,24 @@ export function resolveRate(order: OrderRateMaps, foreign: CurrencyCode): Direct
 		return { rate: String(directed.rate), one: directed.one };
 	}
 	const legacy = order.exchange_rates?.[foreign];
-	if (valid(legacy)) return { rate: String(legacy), one: foreign };
+	if (valid(legacy)) return { rate: String(legacy), one: foreign, legacy: true };
 	return null;
 }
 
 // Convert `amount` from one side of the pair to the other. Multiplies when
 // the amount is in the rate's "one" currency, divides when it is in the
-// other. No inverse rate is ever built. Returns the unrounded result, or
-// null when the rate does not describe this pair.
+// other. A directed rate never builds an inverse. Returns the unrounded
+// result, or null when the rate does not describe this pair.
+//
+// A LEGACY rate (from the string map) keeps the calculation legacy snapshots
+// have always used for base -> foreign: amount * (1 / rate). That differs from
+// a direct division at rounding boundaries. With the legacy rate USD: "14",
+// 1.19 JMD is 0.08499... this way and shows as US$0.08; 1.19 / 14 is exactly
+// 0.085 and would show as US$0.09. Orders placed before directed rates must
+// keep showing the figures they always showed.
 export function projectAmount(
 	amount: string | number,
-	rate: DirectedRate,
+	rate: ResolvedRate,
 	from: CurrencyCode,
 	to: CurrencyCode
 ): string | null {
@@ -204,7 +214,10 @@ export function projectAmount(
 	const value = new Decimal(rate.rate);
 	if (value.lte(0)) return null;
 	if (rate.one === from) return new Decimal(amount).mul(value).toString();
-	if (rate.one === to) return new Decimal(amount).div(value).toString();
+	if (rate.one === to) {
+		if (rate.legacy) return convert(amount, inverseRate(rate.rate));
+		return new Decimal(amount).div(value).toString();
+	}
 	return null;
 }
 
@@ -241,7 +254,7 @@ function formatRateValue(rate: string): string {
 // "1 USD = 155.00 JMD", in the direction the rate was entered. `foreign` is
 // the map key the rate was found under; `base` is the other side.
 export function formatRateLine(
-	rate: DirectedRate | null | undefined,
+	rate: ResolvedRate | null | undefined,
 	foreign: CurrencyCode,
 	base: CurrencyCode
 ): string {

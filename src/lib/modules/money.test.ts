@@ -359,7 +359,8 @@ describe('resolveRate', () => {
 	it('reads a legacy string as 1 <foreign> = N <base>', () => {
 		expect(resolveRate({ exchange_rates: { USD: '160' } }, 'USD')).toEqual({
 			rate: '160',
-			one: 'USD'
+			one: 'USD',
+			legacy: true
 		});
 	});
 
@@ -396,6 +397,14 @@ describe('projectAmount', () => {
 
 	it('divides when the amount is in the other currency', () => {
 		expect(projectAmount('1550', { rate: '155', one: 'USD' }, 'JMD', 'USD')).toBe('10');
+	});
+
+	it('keeps the old inverse-multiply for a legacy rate going base -> foreign', () => {
+		// 1.19 * (1/14) = 0.08499..., not the exact 0.085 of 1.19 / 14.
+		const legacy = projectAmount('1.19', { rate: '14', one: 'USD', legacy: true }, 'JMD', 'USD');
+		const directed = projectAmount('1.19', { rate: '14', one: 'USD' }, 'JMD', 'USD');
+		expect(roundForCurrency(legacy as string, 'USD')).toBe('0.08');
+		expect(roundForCurrency(directed as string, 'USD')).toBe('0.09');
 	});
 
 	it('returns null when the rate does not describe the pair', () => {
@@ -457,6 +466,25 @@ describe('formatOrderAmount with directed rates', () => {
 				'JMD'
 			)
 		).toBe('$95,100.00');
+	});
+
+	it('does not move a historical legacy projection at a rounding boundary', () => {
+		// Regression: kit 0.52.0 divided legacy snapshots directly and showed
+		// US$0.09 here. Every release before it showed US$0.08.
+		const order = {
+			currency: 'JMD' as CurrencyCode,
+			exchange_rates: { USD: '14' },
+			store: { base_currency: 'JMD' as CurrencyCode }
+		};
+		expect(formatOrderAmount('1.19', order, 'USD')).toBe('US$0.08');
+		// The same pair entered as a directed rate is new data and divides exactly.
+		expect(
+			formatOrderAmount(
+				'1.19',
+				{ currency: 'JMD', directed_rates: { USD: { rate: '14', one: 'USD' } }, store: { base_currency: 'JMD' } },
+				'USD'
+			)
+		).toBe('US$0.09');
 	});
 
 	it('returns to the original amount when the view switches back', () => {
