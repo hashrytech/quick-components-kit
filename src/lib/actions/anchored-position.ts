@@ -19,12 +19,14 @@ export interface AnchoredPositionOptions {
   padding?: number;
   /** When `false`, the action does nothing (leaves the node in normal flow). Default: `true`. */
   enabled?: boolean;
+  /** Allow a tall panel to overlap its anchor and use the full viewport height. Default: `false`. */
+  allowOverlap?: boolean;
 }
 
 type ResolvedOptions = Required<Omit<AnchoredPositionOptions, 'anchor'>> & Pick<AnchoredPositionOptions, 'anchor'>;
 
 function resolve(options: AnchoredPositionOptions): ResolvedOptions {
-  return { placement: 'bottom-start', gap: 8, padding: 8, enabled: true, ...options };
+  return { placement: 'bottom-start', gap: 8, padding: 8, enabled: true, allowOverlap: false, ...options };
 }
 
 /**
@@ -65,9 +67,9 @@ export function anchoredPosition(node: HTMLElement, options: AnchoredPositionOpt
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    // Pin and clear prior constraints so the natural size can be measured.
+    // scrollHeight includes clipped content. Keep max-height in place so
+    // measuring the panel does not expand it and reset its scroll position.
     node.style.position = 'fixed';
-    node.style.maxHeight = '';
     node.style.maxWidth = `${vw - padding * 2}px`;
 
     const a = anchor.getBoundingClientRect();
@@ -94,6 +96,15 @@ export function anchoredPosition(node: HTMLElement, options: AnchoredPositionOpt
       top = a.top - gap - Math.min(fullHeight, maxHeight);
     }
 
+    if (opts.allowOverlap) {
+      // Date pickers need room for their controls even when the trigger sits
+      // midway down a dialog. Preserve the preferred side when it fits.
+      maxHeight = Math.max(0, vh - padding * 2);
+      const height = Math.min(fullHeight, maxHeight);
+      top = placeBelow ? a.bottom + gap : a.top - gap - height;
+      top = Math.max(padding, Math.min(top, vh - padding - height));
+    }
+
     // Horizontal alignment with shift (clamp into the viewport).
     let left = align === 'end' ? a.right - width : a.left;
     left = Math.min(left, vw - padding - width);
@@ -105,7 +116,11 @@ export function anchoredPosition(node: HTMLElement, options: AnchoredPositionOpt
     node.style.overflowY = 'auto';
   }
 
-  const onScroll = () => reposition();
+  const onScroll = (event: Event) => {
+    // Scrolling inside the popover does not move its anchor.
+    if (event.target instanceof Node && node.contains(event.target)) return;
+    reposition();
+  };
   const onResize = () => reposition();
 
   window.addEventListener('scroll', onScroll, true);

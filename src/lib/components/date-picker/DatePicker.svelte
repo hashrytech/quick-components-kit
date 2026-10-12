@@ -507,78 +507,59 @@ Class props are available for theming specific parts:
 				role="dialog"
 				aria-label={ariaLabel}
 				class={twMerge(
-					'rounded-primary border-primary-card-border shadow-secondary border bg-white p-4 text-neutral-800',
+					'rounded-primary border-primary-card-border shadow-secondary flex flex-col border bg-white p-4 text-neutral-800',
 					inline
 						? 'w-full'
 						: 'fixed top-0 left-0 z-20 w-[19rem] max-w-[calc(100vw-2rem)] md:w-[40rem]',
 					panelClass
 				)}
-				use:anchoredPosition={{ anchor: anchorEl, placement: 'bottom-start', enabled: !inline }}
+				use:anchoredPosition={{ anchor: anchorEl, placement: 'bottom-start', enabled: !inline, allowOverlap: true }}
 				transition:fly={{ y: -8, duration: transitionDuration }}
 			>
-				<div class={twMerge('flex w-full flex-col gap-4', controlsClass)}>
-					{#if showPresets}
-						<Select
-							id={`${baseId}-preset`}
-							labelText="Date Range"
-							options={presetOptions}
-							bind:value={selectedPresetId}
-							size="md"
-							onchange={handlePresetChange}
-							class="w-full bg-white text-sm"
-						/>
-					{/if}
+				<div class="min-h-0 overflow-y-auto overscroll-contain">
+					<div class={twMerge('flex w-full flex-col gap-4', controlsClass)}>
+						{#if showPresets}
+							<Select
+								id={`${baseId}-preset`}
+								labelText="Date Range"
+								options={presetOptions}
+								bind:value={selectedPresetId}
+								size="md"
+								onchange={handlePresetChange}
+								class="w-full bg-white text-sm"
+							/>
+						{/if}
 
-					<div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-						<TextInput
-							id={`${baseId}-start-date`}
-							labelText="Start Date"
-							placeholder="YYYY-MM-DD"
-							bind:value={startDateText}
-							size="md"
-							inputmode="numeric"
-							pattern="\d{4}-\d{2}-\d{2}"
-							onchange={commitStartDateText}
-							onblur={commitStartDateText}
-						/>
+						<div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+							<TextInput
+								id={`${baseId}-start-date`}
+								labelText="Start Date"
+								placeholder="YYYY-MM-DD"
+								bind:value={startDateText}
+								size="md"
+								inputmode="numeric"
+								pattern="\d{4}-\d{2}-\d{2}"
+								onchange={commitStartDateText}
+								onblur={commitStartDateText}
+							/>
 
-						<TextInput
-							id={`${baseId}-end-date`}
-							labelText="End Date"
-							placeholder="YYYY-MM-DD"
-							bind:value={endDateText}
-							size="md"
-							inputmode="numeric"
-							pattern="\d{4}-\d{2}-\d{2}"
-							onchange={commitEndDateText}
-							onblur={commitEndDateText}
-						/>
+							<TextInput
+								id={`${baseId}-end-date`}
+								labelText="End Date"
+								placeholder="YYYY-MM-DD"
+								bind:value={endDateText}
+								size="md"
+								inputmode="numeric"
+								pattern="\d{4}-\d{2}-\d{2}"
+								onchange={commitEndDateText}
+								onblur={commitEndDateText}
+							/>
+						</div>
 					</div>
-				</div>
 
-				<div class="mt-5 flex flex-col gap-4 md:flex-row">
-					<CalendarMonth
-						month={numberOfMonths === 1 ? rightMonth : leftMonth}
-						startDate={draftStartDate}
-						endDate={draftEndDate}
-						{minDate}
-						{maxDate}
-						{today}
-						{disableFuture}
-						{weekStartsOn}
-						{locale}
-						showPrevious
-						showNext={numberOfMonths === 1}
-						onprevious={handlePreviousMonth}
-						onnext={handleNextMonth}
-						onselect={handleDaySelect}
-						class={calendarClass}
-						{dayClass}
-					/>
-
-					{#if numberOfMonths === 2}
+					<div class="mt-5 flex flex-col gap-4 md:flex-row">
 						<CalendarMonth
-							month={rightMonth}
+							month={numberOfMonths === 1 ? rightMonth : leftMonth}
 							startDate={draftStartDate}
 							endDate={draftEndDate}
 							{minDate}
@@ -587,16 +568,37 @@ Class props are available for theming specific parts:
 							{disableFuture}
 							{weekStartsOn}
 							{locale}
-							showNext
+							showPrevious
+							showNext={numberOfMonths === 1}
+							onprevious={handlePreviousMonth}
 							onnext={handleNextMonth}
 							onselect={handleDaySelect}
 							class={calendarClass}
 							{dayClass}
 						/>
-					{/if}
+
+						{#if numberOfMonths === 2}
+							<CalendarMonth
+								month={rightMonth}
+								startDate={draftStartDate}
+								endDate={draftEndDate}
+								{minDate}
+								{maxDate}
+								{today}
+								{disableFuture}
+								{weekStartsOn}
+								{locale}
+								showNext
+								onnext={handleNextMonth}
+								onselect={handleDaySelect}
+								class={calendarClass}
+								{dayClass}
+							/>
+						{/if}
+					</div>
 				</div>
 
-				<div class={twMerge('mt-5 flex flex-row justify-end gap-3', footerClass)}>
+				<div class={twMerge('mt-5 flex shrink-0 flex-row justify-end gap-3', footerClass)}>
 					<Button variant="ghost" size="sm" onclick={handleCancel}>Cancel</Button>
 					<Button variant="primary" size="sm" onclick={handleApply}>Apply</Button>
 				</div>
