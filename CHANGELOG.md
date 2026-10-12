@@ -1,3 +1,10 @@
+## [0.53.2](https://github.com/hashrytech/quick-components-kit/compare/v0.53.1...v0.53.2) (2026-10-12)
+
+
+### Bug Fixes
+
+* **date-picker:** keep the popover usable when space is tight ([5319737](https://github.com/hashrytech/quick-components-kit/commit/5319737b4392939a4c5c128bc438da794528e6f7))
+
 ## [0.53.1](https://github.com/hashrytech/quick-components-kit/compare/v0.53.0...v0.53.1) (2026-09-19)
 
 
