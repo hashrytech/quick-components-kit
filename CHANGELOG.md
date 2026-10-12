@@ -1,3 +1,10 @@
+## [0.53.1](https://github.com/hashrytech/quick-components-kit/compare/v0.53.0...v0.53.1) (2026-09-19)
+
+
+### Bug Fixes
+
+* **money:** keep all 8 decimal places in formatted rates ([f6cda58](https://github.com/hashrytech/quick-components-kit/commit/f6cda58ba03453d8fa0ace197ca96dc0f2a99bb7))
+
 # [0.53.0](https://github.com/hashrytech/quick-components-kit/compare/v0.52.0...v0.53.0) (2026-09-19)
 
 
