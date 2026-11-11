@@ -43,6 +43,27 @@ describe('orderAmountPaid', () => {
 	it('counts an unsaved client-side payment in the order editor preview', () => {
 		expect(orderAmountPaid([{ amount: '100.00', type: { id: 'cash' } }])).toBe(100);
 	});
+
+	it('leaves the card processing fee out: it is not order money', () => {
+		// The card was charged 1025.29: 850.00 for the order and a 175.29 fee.
+		expect(orderAmountPaid([
+			{ amount: '1025.2900', processing_fee: '175.2900', type: { id: 'online' }, status: { id: 'success' }, date_created: '2026-11-10' }
+		])).toBe(850);
+	});
+
+	it('is zero once the order money is refunded, whatever the fee was', () => {
+		expect(orderAmountPaid([
+			{ amount: '1025.2900', processing_fee: '175.2900', type: { id: 'online' }, status: { id: 'success' }, date_created: '2026-11-10' },
+			{ amount: '850.0000', processing_fee: '0.0000', type: { id: 'refund' }, status: { id: 'success' }, date_created: '2026-11-10' }
+		])).toBe(0);
+	});
+
+	it('leaves out a fee that a refund gave back', () => {
+		expect(orderAmountPaid([
+			{ amount: '103.50', processing_fee: '3.50', type: { id: 'online' }, status: { id: 'success' }, date_created: '2026-11-10' },
+			{ amount: '31.05', processing_fee: '1.05', type: { id: 'refund' }, status: { id: 'success' }, date_created: '2026-11-10' }
+		])).toBe(70);
+	});
 });
 
 describe('CURRENCIES registry', () => {

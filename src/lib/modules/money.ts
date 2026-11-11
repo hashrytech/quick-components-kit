@@ -78,8 +78,14 @@ export function inverseRate(rate: string | number): string {
 // and the Add-Payment "paid in full" gate so the two never disagree.
 // Payment amounts are recorded in the order currency, so summing the raw
 // strings is correct; projecting to a view currency is a display concern.
+//
+// A card charge's `amount` is the order money plus the gateway's
+// `processing_fee`. The fee belongs to the payment record, not to the order,
+// so it is taken off each row (charge or refund) before the row is counted.
+// The API does the same (`calculate_order_net_paid`).
 type PaidPayment = {
 	amount?: string;
+	processing_fee?: string;
 	type?: { id?: string } | null;
 	payment_type?: { id?: string } | null;
 	status?: { id?: string } | string | null;
@@ -95,9 +101,12 @@ export function orderAmountPaid(payments: PaidPayment[] | null | undefined): num
 		if (statusId ? statusId !== 'success' : Boolean(p.date_created)) return sum;
 		const amount = Number.parseFloat(p.amount ?? '0');
 		if (!Number.isFinite(amount)) return sum;
+		const fee = Number.parseFloat(p.processing_fee ?? '0');
+		// Decimal, so 1025.29 - 175.29 is 850 and not 849.9999999999999.
+		const orderMoney = new Decimal(amount).minus(Number.isFinite(fee) ? fee : 0);
 		const typeId = (p.type ?? p.payment_type)?.id ?? '';
-		return typeId === 'refund' ? sum - amount : sum + amount;
-	}, 0);
+		return typeId === 'refund' ? sum.minus(orderMoney) : sum.plus(orderMoney);
+	}, new Decimal(0)).toNumber();
 }
 
 // Display formatter — locale-aware grouping via Intl, sign and currency
