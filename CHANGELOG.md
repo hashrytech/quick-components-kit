@@ -1,3 +1,10 @@
+## [0.53.3](https://github.com/hashrytech/quick-components-kit/compare/v0.53.2...v0.53.3) (2026-11-11)
+
+
+### Bug Fixes
+
+* **money:** leave the card processing fee out of orderAmountPaid ([e99da30](https://github.com/hashrytech/quick-components-kit/commit/e99da308cf79ab926cd94b7544c8a02082d9986c))
+
 ## [0.53.2](https://github.com/hashrytech/quick-components-kit/compare/v0.53.1...v0.53.2) (2026-10-12)
 
 
